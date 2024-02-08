@@ -6,6 +6,8 @@
 #include <Components/CapsuleComponent.h>
 #include <GameFramework/Character.h>
 
+#include "ProjectJQ/Core/ProjectJQPlayerController.h"
+
 void UObjectManagementGSS::SetObjectId(AActor* InActor, int32 InObjectId)
 {
 	if(InActor->GetClass()->ImplementsInterface(UObjectManagementTargetInterface::StaticClass()))
@@ -36,9 +38,9 @@ void UObjectManagementGSS::Initialize(FSubsystemCollectionBase& Collection)
 	//Player Controller를 찾습니다.
 	for(FConstPlayerControllerIterator iter = World->GetPlayerControllerIterator(); iter; ++iter)
 	{
-		if(iter->IsValid())
+		if(iter->IsValid() && Cast<AProjectJQPlayerController>(iter->Get()) != nullptr)
 		{
-			Controller = iter->Get();
+			Controller = Cast<AProjectJQPlayerController>(iter->Get());
 			break;
 		}
 	}

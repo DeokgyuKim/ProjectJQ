@@ -8,6 +8,7 @@
 #include "../Interface/ObjectManagementTargetInterface.h"
 #include "ObjectManagementGSS.generated.h"
 
+class AProjectJQPlayerController;
 class AProjectJQCharacter;
 
 struct FSpawnParam
@@ -26,10 +27,10 @@ class PROJECTJQ_API UObjectManagementGSS : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 protected:
-	TArray<TWeakObjectPtr<AActor>>		ManagementTargets;
-	FIdGenerator<int32>					ObjectIdGenerator;
-	TWeakObjectPtr<UWorld>				World;
-	TWeakObjectPtr<AProjectJQCharacter>	Controller;
+	TArray<TWeakObjectPtr<AActor>>				ManagementTargets;
+	FIdGenerator<int32>							ObjectIdGenerator;
+	TWeakObjectPtr<UWorld>						World;
+	TWeakObjectPtr<AProjectJQPlayerController>	Controller;
 public:
 	static constexpr int32 INVALID_OBJECTID = -9999;
 private:

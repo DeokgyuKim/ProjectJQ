@@ -8,8 +8,6 @@ private:
 	T Max;
 	T CurrentID = Min;
 public:
-	FIdGenerator(T InMin, T InMax) : Min(InMin), Max(InMax) {}
-
 	void Initialize(T InMin, T InMax)
 	{
 		Min = InMin;
