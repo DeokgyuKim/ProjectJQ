@@ -8,10 +8,15 @@
 #include "../Interface/ObjectManagementTargetInterface.h"
 #include "CharacterBase.generated.h"
 
+class UStatControlComponent;
+
 UCLASS(Blueprintable)
 class ACharacterBase : public ACharacter, public IObjectManagementTargetInterface
 {
 	GENERATED_BODY()
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadwrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStatControlComponent> StatControlComponent;
 
 public:
 	ACharacterBase();

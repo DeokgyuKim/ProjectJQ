@@ -32,4 +32,10 @@ namespace UtilPath
 		int32 index = enumClass->GetValueByName(FName(InString));
 		return (index != INDEX_NONE) ? (T)index : InDefault;
 	}
+	
+	//데이터 테이블 Path를 생성합니다.
+	inline FString GetDataTablePath(const TCHAR* InTableName)
+	{
+		return FString::Printf(TEXT("/Script/Engine.DataTable'/Game/ProjectJQ/Data/DataTable/DT_%s.DT_%s'"), InTableName, InTableName);
+	}
 }
