@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Templates/SubclassOf.h"
-#include "GameFramework/PlayerController.h"
+#include <CoreMinimal.h>
+#include <Templates/SubclassOf.h>
+#include <GameFramework/PlayerController.h>
 #include "ProjectJQPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
