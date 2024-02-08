@@ -2,7 +2,7 @@
 
 #include "ProjectJQGameMode.h"
 #include "ProjectJQPlayerController.h"
-#include "../Character/ProjectJQCharacter.h"
+#include "../Character/CharacterPC.h"
 #include "UObject/ConstructorHelpers.h"
 
 AProjectJQGameMode::AProjectJQGameMode()
