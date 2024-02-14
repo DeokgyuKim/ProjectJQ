@@ -3,6 +3,8 @@
 
 #include "StatControlComponent.h"
 #include "../Data/ActorDataTable.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "ProjectJQ/Character/CharacterBase.h"
 
 // Sets default values for this component's properties
 UStatControlComponent::UStatControlComponent()
@@ -23,8 +25,6 @@ void UStatControlComponent::BeginPlay()
 	Owner = GetOwner();
 	if(!Owner.IsValid())
 		return;
-
-	DelegateChangeStat.Clear();
 	
 	//스탯 초기화
 	Stat.Empty();
@@ -35,6 +35,9 @@ void UStatControlComponent::BeginPlay()
 
 		Stat.FindOrAdd(statType) = 0.0;
 	}
+
+	DelegateChangeStat.Clear();
+	DelegateChangeStat.AddUObject(this, &UStatControlComponent::ChangeStatDelegateFunction);
 
 	if(ActorName == TEXT(""))
 	{
@@ -50,10 +53,41 @@ void UStatControlComponent::BeginPlay()
 		return;
 	}
 
-	ChangeStat(EStatControlType::Hp, data->Hp);
-	ChangeStat(EStatControlType::HpMax, data->Hp);
-	ChangeStat(EStatControlType::Attack, data->Attack);
+	SetStat(EStatControlType::Hp, data->Hp);
+	SetStat(EStatControlType::HpMax, data->Hp);
+	SetStat(EStatControlType::Attack, data->Attack);
+	SetStat(EStatControlType::DetectRange, data->DetectRange);
+	SetStat(EStatControlType::MoveSpeed, data->MoveSpeed);
+}
 
+void UStatControlComponent::ChangeStatDelegateFunction(TWeakObjectPtr<AActor> InActor, EStatControlType InStatType, double InValue)
+{
+	if(!InActor.IsValid())
+		return;
+
+	if(InStatType == EStatControlType::MoveSpeed)
+	{
+		ACharacterBase* charBase = Cast<ACharacterBase>(InActor);
+		UActorComponent* comp = charBase->GetComponentByClass(UCharacterMovementComponent::StaticClass());
+		if(comp == nullptr)
+			return;
+
+		UCharacterMovementComponent* movementComponent = Cast<UCharacterMovementComponent>(comp);
+		movementComponent->MaxWalkSpeed = InValue;
+		movementComponent->MaxWalkSpeedCrouched = InValue / 2;
+	}
+}
+
+void UStatControlComponent::SetStat(EStatControlType InStatType, double InValue)
+{
+	double* stat = Stat.Find(InStatType);
+	if(!stat)
+		return;
+
+	*stat = *stat + InValue;
+
+	if(DelegateChangeStat.IsBound())
+		DelegateChangeStat.Broadcast(Owner, InStatType, *stat);
 }
 
 
@@ -63,18 +97,6 @@ void UStatControlComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-}
-
-void UStatControlComponent::ChangeStat(EStatControlType InStatType, double InValue)
-{
-	double* stat = Stat.Find(InStatType);
-	if(!stat)
-		return;
-
-	*stat = *stat + InValue;
-
-	if(DelegateChangeStat.IsBound())
-		DelegateChangeStat.Broadcast(Owner, InStatType, InValue);
 }
 
 const double& UStatControlComponent::GetStat(EStatControlType InStatType)

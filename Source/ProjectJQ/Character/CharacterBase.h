@@ -18,10 +18,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadwrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStatControlComponent> StatControlComponent;
 
+	ECharacterType CharacterType = ECharacterType::None;
 public:
 	ACharacterBase();
 
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
+
+public:
+	ECharacterType GetCharacterType() const {return CharacterType;}
 };
 

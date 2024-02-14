@@ -25,4 +25,12 @@ struct PROJECTJQ_API FActorDataTable : public FTableRowBase
 	//공격력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	double Attack = 10.0;
+
+	//탐지 범위
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double DetectRange = 600.0;
+	
+	//이동 속도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double MoveSpeed = 600.0;
 };

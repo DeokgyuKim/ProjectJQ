@@ -43,6 +43,8 @@ ACharacterPC::ACharacterPC()
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	CharacterType = ECharacterType::Player;
 }
 
 void ACharacterPC::Tick(float DeltaSeconds)
