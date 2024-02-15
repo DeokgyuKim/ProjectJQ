@@ -13,7 +13,7 @@ class PROJECTJQ_API AMonsterAIController : public AAIController
 
 private:
 	// 비헤비어 트리
-	UPROPERTY(EditAnywhere, Category = "MYDP_Setting")
+	UPROPERTY(EditAnywhere, Category = "JQ_Setting")
 	UBehaviorTree *AIBehavior;
 
 public:

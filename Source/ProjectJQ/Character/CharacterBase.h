@@ -8,6 +8,7 @@
 #include "../Interface/ObjectManagementTargetInterface.h"
 #include "CharacterBase.generated.h"
 
+class UDecoratorComponent;
 class UStatControlComponent;
 
 UCLASS(Blueprintable)
@@ -17,6 +18,9 @@ class ACharacterBase : public ACharacter, public IObjectManagementTargetInterfac
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadwrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStatControlComponent> StatControlComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadwrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UDecoratorComponent> DecoratorComponent;
 
 	ECharacterType CharacterType = ECharacterType::None;
 public:

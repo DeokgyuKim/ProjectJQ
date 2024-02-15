@@ -24,3 +24,13 @@ enum class EStatControlType : uint8
 	Count		UMETA(Hidden)
 };
 ENUM_RANGE_BY_COUNT(EStatControlType, EStatControlType::Count);
+
+// 이펙트 재생 타입
+UENUM( BlueprintType )
+enum class EEffectPlayType : uint8
+{
+	Spawn	UMETA(ToolTip = "스폰 시"),
+	Death	UMETA(ToolTip = "사망 시"),
+	Walk	UMETA(ToolTip = "걸을 때"),
+	None	UMETA(Hidden),
+};

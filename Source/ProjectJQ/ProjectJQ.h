@@ -22,7 +22,9 @@
 #include "Common/Enum.h"
 #include "Common/Macro.h"
 #include "Common/Struct.h"
+#include "Common/EffectStruct.h"
 #include "Common/Util/UtilPath.h"
+#include "Common/Util/UtilEffect.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogProjectJQ, Log, All);
 

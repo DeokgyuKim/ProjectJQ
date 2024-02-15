@@ -3,6 +3,7 @@
 #include "CharacterBase.h"
 
 #include "../Component/StatControlComponent.h"
+#include "../Component/DecoratorComponent.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -11,6 +12,7 @@ ACharacterBase::ACharacterBase()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	StatControlComponent = CreateDefaultSubobject<UStatControlComponent>("StatControl");
+	DecoratorComponent = CreateDefaultSubobject<UDecoratorComponent>("Decorator");
 }
 
 void ACharacterBase::Tick(float DeltaSeconds)
