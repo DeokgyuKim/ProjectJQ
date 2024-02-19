@@ -85,6 +85,8 @@ void UDecoratorComponent::StartEffect(EEffectPlayType InEffectPlayType, FName In
 			}
 			else
 			{
+				if(effect.AttachBoneName != InBoneName)
+					continue;
 				TArray<USkeletalMeshComponent*> comp;
 				Owner->GetComponents<USkeletalMeshComponent>(comp);
 
@@ -105,10 +107,10 @@ void UDecoratorComponent::StartEffect(EEffectPlayType InEffectPlayType, FName In
 
 				if (effect.N_Effect)
 					UtilEffect::SpawnNiagaraEffect(GetWorld(), effect.N_Effect, mesh->GetBoneLocation(effect.AttachBoneName, EBoneSpaces::WorldSpace),
-						 mesh->GetBoneQuaternion(effect.AttachBoneName, EBoneSpaces::WorldSpace).Rotator(), Owner->GetActorScale());
+						 Owner->GetActorRotation(), Owner->GetActorScale());
 				if (effect.Effect)
 					UtilEffect::SpawnParticleEffect(GetWorld(), effect.Effect, mesh->GetBoneLocation(effect.AttachBoneName, EBoneSpaces::WorldSpace),
-						 mesh->GetBoneQuaternion(effect.AttachBoneName, EBoneSpaces::WorldSpace).Rotator(), Owner->GetActorScale());
+						 Owner->GetActorRotation(), Owner->GetActorScale());
 				if (effect.Sound)
 					UtilEffect::SpawnSoundBase(this, effect.Sound, mesh->GetBoneLocation(effect.AttachBoneName, EBoneSpaces::WorldSpace));
 			}
