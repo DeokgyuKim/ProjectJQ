@@ -90,13 +90,16 @@ void UBTService_DetectEnemy::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		});
 		
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMonsterAIController::TargetKey, targets[0].Get());
-
+#if ENABLE_DRAW_DEBUG
 		DrawDebugSphere(world, center, range, 16, FColor::Green, false, 0.2f);
 		DrawDebugLine(world, characterBase->GetActorLocation(), targets[0]->GetActorLocation(), FColor::Blue, false, 0.2f);
+#endif
 	}
 	else
 	{
+#if ENABLE_DRAW_DEBUG
 		DrawDebugSphere(world, center, range, 16, FColor::Red, false, 0.2f);
+#endif
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMonsterAIController::TargetKey, nullptr);
 	}
 	
