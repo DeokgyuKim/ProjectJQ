@@ -11,7 +11,6 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
-#include "GameFramework/SpringArmComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -54,10 +53,6 @@ void AProjectJQPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AProjectJQPlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AProjectJQPlayerController::OnTouchReleased);
-
-		// Setup Camera ZoomIn, Out Events
-		EnhancedInputComponent->BindAction(ZoomInAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomIn);
-		EnhancedInputComponent->BindAction(ZoomOutAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomOut);
 	}
 	else
 	{
@@ -128,23 +123,3 @@ void AProjectJQPlayerController::OnTouchReleased()
 	bIsTouch = false;
 	OnSetDestinationReleased();
 }
-
-void AProjectJQPlayerController::OnZoomIn()
-{
-	ACharacterPC* PlayerCharacter = Cast<ACharacterPC>(GetPawn());
-	if(PlayerCharacter)
-	{
-		PlayerCharacter->GetCameraBoom()->TargetArmLength -= ZoomValue;
-	}
-}
-
-void AProjectJQPlayerController::OnZoomOut()
-{
-	ACharacterPC* PlayerCharacter = Cast<ACharacterPC>(GetPawn());
-	if(PlayerCharacter)
-	{
-		PlayerCharacter->GetCameraBoom()->TargetArmLength += ZoomValue;
-	}
-}
-
-
