@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
+#include "GameFramework/SpringArmComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -53,6 +54,10 @@ void AProjectJQPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AProjectJQPlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AProjectJQPlayerController::OnTouchReleased);
+
+		// Camera Zoom input events
+		EnhancedInputComponent->BindAction(ZoomInAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomIn);
+		EnhancedInputComponent->BindAction(ZoomOutAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomOut);
 	}
 	else
 	{
@@ -122,4 +127,22 @@ void AProjectJQPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+void AProjectJQPlayerController::OnZoomIn()
+{
+	ACharacterPC* PC = Cast<ACharacterPC>(GetPawn());
+	if(PC)
+	{
+		PC->GetCameraBoom()->TargetArmLength -= ZoomValue;
+	}
+}
+
+void AProjectJQPlayerController::OnZoomOut()
+{
+	ACharacterPC* PC = Cast<ACharacterPC>(GetPawn());
+	if(PC)
+	{
+		PC->GetCameraBoom()->TargetArmLength += ZoomValue;
+	}
 }
