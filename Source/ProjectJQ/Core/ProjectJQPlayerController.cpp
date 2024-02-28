@@ -12,6 +12,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "JQCheatManager.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -21,6 +22,8 @@ AProjectJQPlayerController::AProjectJQPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
+
+	CheatClass = UJQCheatManager::StaticClass();
 }
 
 void AProjectJQPlayerController::BeginPlay()

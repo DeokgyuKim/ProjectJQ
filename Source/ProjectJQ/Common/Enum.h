@@ -34,3 +34,11 @@ enum class EEffectPlayType : uint8
 	Walk	UMETA(ToolTip = "걸을 때"),
 	None	UMETA(Hidden),
 };
+
+// 버프 밸류 타입
+UENUM( BlueprintType )
+enum class EBuffValueType : uint8
+{
+	Percentage	UMETA(ToolTip = "백분율"),
+	Constant	UMETA(ToolTip = "상수"),
+};

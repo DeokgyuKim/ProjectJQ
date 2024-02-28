@@ -3,15 +3,17 @@
 
 #include "StatControlComponent.h"
 #include "../Data/ActorDataTable.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "ProjectJQ/Character/CharacterBase.h"
+#include "../Character/CharacterBase.h"
+#include "../Raw/Buff.h"
+
+#include <GameFramework/CharacterMovementComponent.h>
 
 // Sets default values for this component's properties
 UStatControlComponent::UStatControlComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
 }
@@ -97,6 +99,12 @@ void UStatControlComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	for(TMap<FString, FBuff*>::TIterator iter = Buffs.CreateIterator(); iter; ++iter)
+	{
+		if(iter->Value->Tick(DeltaTime))
+			iter.RemoveCurrent();
+	}
 }
 
 const double& UStatControlComponent::GetStat(EStatControlType InStatType)
@@ -108,3 +116,19 @@ const double& UStatControlComponent::GetStat(EStatControlType InStatType)
 	return *stat;
 }
 
+void UStatControlComponent::AddBuff(const FString& InBuffName)
+{
+	FBuff** findTemp = Buffs.Find(InBuffName);
+	
+	FBuff* buff = nullptr;
+	if(findTemp != nullptr)
+	{
+		buff = *findTemp;
+		buff->Initialize();
+	}
+	else
+	{
+		buff = new FBuff(this, InBuffName);
+		Buffs.Add(InBuffName, buff);
+	}
+}

@@ -5,7 +5,6 @@
 #include "AIController.h"
 #include "MonsterAIController.generated.h"
 
-
 UCLASS()
 class PROJECTJQ_API AMonsterAIController : public AAIController
 {
@@ -14,11 +13,9 @@ class PROJECTJQ_API AMonsterAIController : public AAIController
 private:
 	// 비헤비어 트리
 	UPROPERTY(EditAnywhere, Category = "JQ_Setting")
-	UBehaviorTree *AIBehavior;
+	UBehaviorTree* AIBehavior;
 
 public:
-	bool bPlaySpawnAnim = true;			//BTService 에서 활용
-
 	static const FName TargetKey;		//블랙보드에 등록된 변수를 지칭합니다.
 	
 protected:

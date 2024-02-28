@@ -6,6 +6,8 @@
 #include <Components/ActorComponent.h>
 #include "StatControlComponent.generated.h"
 
+class FBuff;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTJQ_API UStatControlComponent : public UActorComponent
 {
@@ -26,6 +28,8 @@ protected:
 
 	//스탯 변경 시 호출될 델리게이트
 	FSetStatDelegate DelegateChangeStat;
+
+	TMap<FString, FBuff*> Buffs;
 public:
 	constexpr static double INVALID_STAT = -999999.0;
 public:	
@@ -45,4 +49,6 @@ public:
 	void SetStat(EStatControlType InStatType, double InValue);
 
 	const double& GetStat(EStatControlType InStatType);
+
+	void AddBuff(const FString& InBuffName);
 };
