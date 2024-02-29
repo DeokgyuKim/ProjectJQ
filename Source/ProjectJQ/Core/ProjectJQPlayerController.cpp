@@ -13,6 +13,8 @@
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "JQCheatManager.h"
+#include "Animation/AnimInstance.h"
+#include "Components/SkeletalMeshComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -61,6 +63,9 @@ void AProjectJQPlayerController::SetupInputComponent()
 		// Camera Zoom input events
 		EnhancedInputComponent->BindAction(ZoomInAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomIn);
 		EnhancedInputComponent->BindAction(ZoomOutAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomOut);
+
+		// Attack Input Events
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::Attack);
 	}
 	else
 	{
@@ -149,3 +154,13 @@ void AProjectJQPlayerController::OnZoomOut()
 		PC->GetCameraBoom()->TargetArmLength += ZoomValue;
 	}
 }
+
+void AProjectJQPlayerController::Attack()
+{
+	ACharacterBase* PC = Cast<ACharacterBase>(GetPawn());
+	if(PC)
+	{
+		PC->ProcessComboCommand();
+	}
+}
+
