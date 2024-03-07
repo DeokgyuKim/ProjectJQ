@@ -3,18 +3,15 @@
 #include "ProjectJQPlayerController.h"
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "../Character/CharacterPC.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
-#include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "JQCheatManager.h"
-#include "Animation/AnimInstance.h"
-#include "Components/SkeletalMeshComponent.h"
+#include "ProjectJQ/Component/AttackComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -160,7 +157,8 @@ void AProjectJQPlayerController::Attack()
 	ACharacterBase* PC = Cast<ACharacterBase>(GetPawn());
 	if(PC)
 	{
-		PC->ProcessComboCommand();
+		UAttackComponent* AttackComponent = PC->GetComponentByClass<UAttackComponent>();
+		AttackComponent->ProcessComboCommand();
 	}
 }
 
