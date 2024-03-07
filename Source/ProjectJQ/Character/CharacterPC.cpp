@@ -2,6 +2,7 @@
 
 #include "CharacterPC.h"
 
+#include "Editor.h"
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "UObject/ConstructorHelpers.h"
@@ -12,7 +13,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
-#include "Engine/World.h"
+#include "../SubSystem/ObjectManagementGSS.h"
 
 ACharacterPC::ACharacterPC()
 {
@@ -48,6 +49,15 @@ ACharacterPC::ACharacterPC()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	CharacterType = ECharacterType::Player;
+}
+
+void ACharacterPC::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	UObjectManagementGSS* subsystem = GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
+	if(subsystem != nullptr)
+		subsystem->AddActor(this);
 }
 
 void ACharacterPC::Tick(float DeltaSeconds)

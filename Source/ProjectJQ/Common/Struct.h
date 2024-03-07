@@ -15,7 +15,7 @@ public:
 		CurrentID = Min;
 	}
 	
-	static int32 GenerateID()
+	int32 GenerateID()
 	{
 		int32 out = CurrentID++;
 		if(CurrentID > Max)

@@ -83,10 +83,10 @@ void UStatControlComponent::ChangeStatDelegateFunction(TWeakObjectPtr<AActor> In
 void UStatControlComponent::SetStat(EStatControlType InStatType, double InValue)
 {
 	double* stat = Stat.Find(InStatType);
-	if(!stat)
+	if(!stat || *stat == InValue)
 		return;
 
-	*stat = *stat + InValue;
+	*stat = InValue;
 
 	if(DelegateChangeStat.IsBound())
 		DelegateChangeStat.Broadcast(Owner, InStatType, *stat);

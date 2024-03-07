@@ -4,11 +4,11 @@
 
 #include <CoreMinimal.h>
 #include <UObject/Interface.h>
-#include "ObjectManagementTargetInterface.generated.h"
+#include "ObjectPoolingInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UObjectManagementTargetInterface : public UInterface
+class UObjectPoolingInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,14 +16,11 @@ class UObjectManagementTargetInterface : public UInterface
 /**
  * 오브젝트 매니저 서브 시스템에서 관리되는 대상입니다.
  */
-class PROJECTJQ_API IObjectManagementTargetInterface
+class PROJECTJQ_API IObjectPoolingInterface
 {
 	GENERATED_BODY()
-protected:
-	int32	ObjectId = -1;
-	
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	void SetObjectId(int32 InObjectId){ObjectId = InObjectId;}
-	const int32& GetObjectId() const {return ObjectId;}
+	virtual void Initialize()=0;
+	virtual void Release()=0;
 };

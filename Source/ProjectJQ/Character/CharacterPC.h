@@ -15,6 +15,8 @@ class ACharacterPC : public ACharacterBase
 public:
 	ACharacterPC();
 
+	virtual void BeginPlay() override;
+
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
