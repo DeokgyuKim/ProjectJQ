@@ -7,10 +7,26 @@
 #include "InputActionValue.h"
 #include "CharacterPC.generated.h"
 
+class USkillStampComponent;
+
 UCLASS(Blueprintable)
 class ACharacterPC : public ACharacterBase
 {
 	GENERATED_BODY()
+
+	/** Top down camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* TopDownCameraComponent;
+
+	/** Camera boom positioning the camera above the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraBoom;
+	
+	UPROPERTY(EditDefaultsOnly, Category="JQ_Skill")
+	TMap<ESkillInputKey, TSubclassOf<USkillStampComponent>> OwnSkills;
+
+	UPROPERTY()
+	TMap<ESkillInputKey, TObjectPtr<USkillStampComponent>> Skills;
 
 public:
 	ACharacterPC();
@@ -25,13 +41,13 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-private:
-	/** Top down camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* TopDownCameraComponent;
+public:
+	void SkillTriggered(ESkillInputKey InInputKey);
+    void SkillStarted(ESkillInputKey InInputKey);
+    void SkillOnGoing(ESkillInputKey InInputKey);
+    void SkillCanceled(ESkillInputKey InInputKey);
+    void SkillCompleted(ESkillInputKey InInputKey);
+	
 
-	/** Camera boom positioning the camera above the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
 };
 

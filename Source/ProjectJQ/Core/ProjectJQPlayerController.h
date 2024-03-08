@@ -7,6 +7,7 @@
 #include <GameFramework/PlayerController.h>
 #include "ProjectJQPlayerController.generated.h"
 
+struct FInputActionInstance;
 /** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 class UInputMappingContext;
@@ -51,6 +52,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* AttackAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	TMap<ESkillInputKey, UInputAction*> SkillAction;
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -73,6 +77,15 @@ protected:
 
 	/* Attack Action */
 	void Attack();
+
+	/* Skill Action*/
+	void SkillTriggered(const FInputActionInstance& InInstance);
+	void SkillStarted(const FInputActionInstance& InInstance);
+	void SkillOnGoing(const FInputActionInstance& InInstance);
+	void SkillCanceled(const FInputActionInstance& InInstance);
+	void SkillCompleted(const FInputActionInstance& InInstance);
+
+	const ESkillInputKey GetSkillInputKeyFromAction(const FInputActionInstance &inInstance) const;
 
 	float ZoomValue = 20.0f;
 

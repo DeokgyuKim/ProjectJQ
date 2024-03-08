@@ -66,6 +66,15 @@ void AProjectJQPlayerController::SetupInputComponent()
 
 		// Attack Input Events
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::Attack);
+
+		for(ESkillInputKey inputKeyType : TEnumRange<ESkillInputKey>())
+		{
+			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Started, this, &AProjectJQPlayerController::SkillStarted);
+			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Ongoing, this, &AProjectJQPlayerController::SkillOnGoing);
+			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Triggered, this, &AProjectJQPlayerController::SkillTriggered);
+			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Completed, this, &AProjectJQPlayerController::SkillCompleted);
+			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Canceled, this, &AProjectJQPlayerController::SkillCanceled);
+		}
 	}
 	else
 	{
@@ -164,3 +173,66 @@ void AProjectJQPlayerController::Attack()
 	}
 }
 
+void AProjectJQPlayerController::SkillTriggered(const FInputActionInstance& InInstance)
+{
+	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
+	if(pc == nullptr)
+		return;
+	
+	pc->SkillTriggered(GetSkillInputKeyFromAction(InInstance));
+}
+
+void AProjectJQPlayerController::SkillStarted(const FInputActionInstance& InInstance)
+{
+	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
+	if(pc == nullptr)
+		return;
+	
+	pc->SkillStarted(GetSkillInputKeyFromAction(InInstance));
+}
+
+void AProjectJQPlayerController::SkillOnGoing(const FInputActionInstance& InInstance)
+{
+	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
+	if(pc == nullptr)
+		return;
+	
+	pc->SkillOnGoing(GetSkillInputKeyFromAction(InInstance));
+}
+
+void AProjectJQPlayerController::SkillCanceled(const FInputActionInstance& InInstance)
+{
+	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
+	if(pc == nullptr)
+		return;
+	
+	pc->SkillCanceled(GetSkillInputKeyFromAction(InInstance));
+}
+
+void AProjectJQPlayerController::SkillCompleted(const FInputActionInstance& InInstance)
+{
+	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
+	if(pc == nullptr)
+		return;
+	
+	pc->SkillCompleted(GetSkillInputKeyFromAction(InInstance));
+}
+
+const ESkillInputKey AProjectJQPlayerController::GetSkillInputKeyFromAction(const FInputActionInstance &inInstance) const
+{
+	if (const UInputAction *inputAction = inInstance.GetSourceAction())
+	{
+		if (inputAction->GetName().Contains(TEXT("IA_SkillQ")))
+			return ESkillInputKey::Q;
+		
+		else if (inputAction->GetName().Contains(TEXT("IA_SkillW")))
+			return ESkillInputKey::W;
+		
+		else if (inputAction->GetName().Contains(TEXT("IA_SkillE")))
+			return ESkillInputKey::E;
+		
+		else if (inputAction->GetName().Contains(TEXT("IA_SkillR")))
+			return ESkillInputKey::R;
+	}
+	return ESkillInputKey::None;
+}

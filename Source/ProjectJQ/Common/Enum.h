@@ -42,3 +42,15 @@ enum class EBuffValueType : uint8
 	Percentage	UMETA(ToolTip = "백분율"),
 	Constant	UMETA(ToolTip = "상수"),
 };
+
+// 버프 밸류 타입
+UENUM( BlueprintType )
+enum class ESkillInputKey : uint8
+{
+	Q	UMETA(ToolTip = "백분율"),
+	W	UMETA(ToolTip = "상수"),
+	E	UMETA(ToolTip = "상수"),
+	R	UMETA(ToolTip = "상수"),
+	None	UMETA(Hidden),
+};
+ENUM_RANGE_BY_COUNT(ESkillInputKey, ESkillInputKey::None);

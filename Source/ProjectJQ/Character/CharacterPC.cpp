@@ -14,6 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "../SubSystem/ObjectManagementGSS.h"
+#include "ProjectJQ/Component/SkillStampComponent.h"
 
 ACharacterPC::ACharacterPC()
 {
@@ -58,9 +59,59 @@ void ACharacterPC::BeginPlay()
 	UObjectManagementGSS* subsystem = GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
 	if(subsystem != nullptr)
 		subsystem->AddActor(this);
+
+	for(const TPair<ESkillInputKey, TSubclassOf<USkillStampComponent>>& skillStamp : OwnSkills)
+	{
+		Skills.Add(skillStamp.Key, NewObject<USkillStampComponent>(this, skillStamp.Value));
+	}
 }
 
 void ACharacterPC::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+}
+
+void ACharacterPC::SkillTriggered(ESkillInputKey InInputKey)
+{
+	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	if(findSkill == nullptr || *findSkill == nullptr)
+		return;
+
+	(*findSkill)->SkillTriggered();
+}
+
+void ACharacterPC::SkillStarted(ESkillInputKey InInputKey)
+{
+	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	if(findSkill == nullptr || *findSkill == nullptr)
+		return;
+
+	(*findSkill)->SkillStarted();
+}
+
+void ACharacterPC::SkillOnGoing(ESkillInputKey InInputKey)
+{
+	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	if(findSkill == nullptr || *findSkill == nullptr)
+		return;
+
+	(*findSkill)->SkillOnGoing();
+}
+
+void ACharacterPC::SkillCanceled(ESkillInputKey InInputKey)
+{
+	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	if(findSkill == nullptr || *findSkill == nullptr)
+		return;
+
+	(*findSkill)->SkillCanceled();
+}
+
+void ACharacterPC::SkillCompleted(ESkillInputKey InInputKey)
+{
+	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	if(findSkill == nullptr || *findSkill == nullptr)
+		return;
+
+	(*findSkill)->SkillCompleted();
 }
