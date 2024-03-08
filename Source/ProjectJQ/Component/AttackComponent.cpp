@@ -14,7 +14,6 @@
 #include "ProjectJQ/Character/CharacterMonster.h"
 #include "ProjectJQ/Character/CharacterPC.h"
 #include "ProjectJQ/Character/JQComboActionData.h"
-#include "ProjectJQ/Physics/JQCollision.h"
 
 // Sets default values for this component's properties
 UAttackComponent::UAttackComponent()
@@ -33,7 +32,6 @@ void UAttackComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 

@@ -4,7 +4,6 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "ProjectJQ/Physics/JQCollision.h"
 
 ACharacterMonster::ACharacterMonster()
 {

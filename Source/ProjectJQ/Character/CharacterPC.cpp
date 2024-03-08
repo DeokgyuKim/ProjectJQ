@@ -62,7 +62,12 @@ void ACharacterPC::BeginPlay()
 
 	for(const TPair<ESkillInputKey, TSubclassOf<USkillStampComponent>>& skillStamp : OwnSkills)
 	{
-		Skills.Add(skillStamp.Key, NewObject<USkillStampComponent>(this, skillStamp.Value));
+		USkillStampComponent* skillStampComp = NewObject<USkillStampComponent>(this, skillStamp.Value);
+		skillStampComp->RegisterComponent();
+		if(skillStampComp->HasBeenInitialized() == false)
+			skillStampComp->InitializeComponent();
+		Skills.Add(skillStamp.Key, skillStampComp);
+		
 	}
 }
 

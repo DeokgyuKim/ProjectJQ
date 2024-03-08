@@ -3,7 +3,12 @@
 #include "CharacterBase.h"
 #include "../Component/StatControlComponent.h"
 #include "../Component/DecoratorComponent.h"
-#include "ProjectJQ/Component/AttackComponent.h"
+#include "../Component/AttackComponent.h"
+
+#include <Animation/AnimInstance.h>
+#include <Components/SkeletalMeshComponent.h>
+
+#include "Animation/AnimMontage.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -29,4 +34,18 @@ float ACharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	StatControlComponent->SetStat(EStatControlType::Hp, CurrentHp - DamageAmount);
 	UE_LOG(LogTemp, Log, TEXT("%s takes %f Damage"), *GetName(), DamageAmount);
 	return 0.0f;
+}
+
+float ACharacterBase::PlayCharacterAnimMontage(float InPlayRate, FName InSectionName)
+{
+	UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
+	if(animInstance == nullptr || AnimMontage == nullptr)
+		return INVALID_ANIMMONTAGE;
+	
+	if(animInstance->Montage_Play(AnimMontage, InPlayRate, EMontagePlayReturnType::Duration) <= 0.f)
+		return INVALID_ANIMMONTAGE;
+	animInstance->Montage_JumpToSection(InSectionName);
+	
+	int32 index = AnimMontage->GetSectionIndex(InSectionName);
+	return AnimMontage->GetSectionLength(index) / InPlayRate;
 }
