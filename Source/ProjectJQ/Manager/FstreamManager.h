@@ -26,10 +26,10 @@ public:
 	static bool ReadDataBinaryCustom(FString InFileName, TArray<FString>& OutString, FString InDivideWord = TEXT("/"));
 	
 	//바이너리 파일 쓰기
-	static bool WriteDataBinary(FString InFileName, const TArray<FString>& InString);
+	static bool WriteDataBinary(FString InFileName, const TArray<FString>& InString, FString InDivideWord = TEXT("/"));
 
 	//바이너리 파일 읽기
-	static bool ReadDataBinary(FString InFileName, TArray<FString>& OutString);
+	static bool ReadDataBinary(FString InFileName, TArray<FString>& OutString, FString InDivideWord = TEXT("/"));
 	
 	//Integer계열의 데이터 쓰기
 	template<typename T>

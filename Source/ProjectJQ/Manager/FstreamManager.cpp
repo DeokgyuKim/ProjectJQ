@@ -7,7 +7,7 @@ std::wofstream FFstreamManager::CustomOutStream;
 std::wifstream FFstreamManager::CustomInStream;
 
 //바이너리 파일 쓰기
-bool FFstreamManager::WriteDataBinary(FString InFileName, const TArray<FString>& InString)
+bool FFstreamManager::WriteDataBinary(FString InFileName, const TArray<FString>& InString, FString InDivideWord)
 {
 	std::wofstream fout;
 	FString filePath = FilePath;
@@ -19,7 +19,7 @@ bool FFstreamManager::WriteDataBinary(FString InFileName, const TArray<FString>&
 		for(const FString& data : InString)
 		{
 			FString outData = data;
-			outData += TEXT("/");
+			outData += InDivideWord;
 			fout.write(*outData, outData.Len());
 		}
 		FString endString = TEXT("\0");
@@ -31,7 +31,7 @@ bool FFstreamManager::WriteDataBinary(FString InFileName, const TArray<FString>&
 }
 
 //바이너리 파일 읽기
-bool FFstreamManager::ReadDataBinary(FString InFileName, TArray<FString>& OutString)
+bool FFstreamManager::ReadDataBinary(FString InFileName, TArray<FString>& OutString, FString InDivideWord)
 {
 	std::wifstream fin;
 	FString filePath = FilePath;
@@ -51,7 +51,7 @@ bool FFstreamManager::ReadDataBinary(FString InFileName, TArray<FString>& OutStr
 		fin.close();
 
 		FString loadString = buffer;
-		OutString = SplitString(loadString);
+		OutString = SplitString(loadString, InDivideWord);
 
 		delete[] buffer;
 
@@ -66,16 +66,18 @@ TArray<FString> FFstreamManager::SplitString(const FString& InString, FString In
 	FString storeString;
 	TArray<FString> outString;
 
-	for(size_t i = 0; i < InString.Len(); ++i)
-	{
-		if(FString(&InString[i]) == InDivideWord)
-		{
-			outString.Add(storeString);
-			storeString = "";
-		}
-		else
-			storeString += InString[i];
-	}
+	InString.ParseIntoArray(outString, *InDivideWord);
+
+	//for(size_t i = 0; i < InString.Len(); ++i)
+	//{
+	//	if(FString(&InString[i]) == InDivideWord)
+	//	{
+	//		outString.Add(storeString);
+	//		storeString = "";
+	//	}
+	//	else
+	//		storeString += InString[i];
+	//}
 
 	return outString;
 }
