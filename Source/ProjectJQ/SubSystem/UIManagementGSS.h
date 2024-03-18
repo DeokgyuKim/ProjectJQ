@@ -31,10 +31,11 @@ public:
 	virtual void Deinitialize() override;
 	void SetController(APlayerController* InController){Controller = InController;}
 public:
-	int32 CreateWidgetBase(FString InBPName, FString InWidgetName, UUserWidgetBase* InOwningObject = nullptr);
-	int32 CreateWidgetBase(UClass* InUClass, FString InWidgetName, UUserWidgetBase* InOwningObject = nullptr);
+	int32 CreateWidgetBase(FString InBPName, FString InWidgetName, AActor* InOwner, UUserWidgetBase* InOwningObject = nullptr);
+	int32 CreateWidgetBase(UClass* InUClass, FString InWidgetName, AActor* InOwner, UUserWidgetBase* InOwningObject = nullptr);
 	void DestroyWidgetBase(int32 InUserWidgetId);
 	UUserWidgetBase* FindWidgetBase(int32 InUserWidgetId);
+	UClass* GetUClassWidgetBP(FString InBPName);
 private:
 	void FindUIDirectroy(FString InPath, TArray<FString>& OutData);
 };

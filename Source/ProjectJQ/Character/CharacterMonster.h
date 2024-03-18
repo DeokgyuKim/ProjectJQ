@@ -3,12 +3,12 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "CharacterBase.h"
+#include "CharacterNPC.h"
 #include "CharacterMonster.generated.h"
 
 class AAIController;
 UCLASS(Blueprintable)
-class ACharacterMonster : public ACharacterBase
+class ACharacterMonster : public ACharacterNPC
 {
 	GENERATED_BODY()
 protected:

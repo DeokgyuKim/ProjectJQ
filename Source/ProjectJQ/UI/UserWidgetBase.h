@@ -13,13 +13,14 @@ UCLASS()
 class PROJECTJQ_API UUserWidgetBase : public UUserWidget
 {
 	GENERATED_BODY()
-
-	int32 UserWidgetId;
+protected:
+	TWeakObjectPtr<AActor>	OwnerActor;
+	int32					UserWidgetId;
 public:
 	UWidget* operator[](const TCHAR* InWidgetName);
 
-public:
 	void SetUserWidgetId(int32 InUserWidgetId);
-
+	void SetOwnerActor(AActor* InActor){OwnerActor = InActor;}
+	
 	virtual void OnCreated() {}
 };

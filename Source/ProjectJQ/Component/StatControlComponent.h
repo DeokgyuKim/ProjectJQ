@@ -51,4 +51,6 @@ public:
 	const double& GetStat(EStatControlType InStatType);
 
 	void AddBuff(const FString& InBuffName);
+
+	FSetStatDelegate& GetSetStatDelegate(){return DelegateChangeStat;}
 };

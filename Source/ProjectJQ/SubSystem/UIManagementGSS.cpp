@@ -40,16 +40,16 @@ void UUIManagementGSS::Deinitialize()
 	Super::Deinitialize();
 }
 
-int32 UUIManagementGSS::CreateWidgetBase(FString InBPName, FString InWidgetName, UUserWidgetBase* InOwningObject)
+int32 UUIManagementGSS::CreateWidgetBase(FString InBPName, FString InWidgetName, AActor* InOwner, UUserWidgetBase* InOwningObject)
 {
 	FString* referencePathPtr = UIReferencePath.Find(InBPName);
 	if(!referencePathPtr)
 		return INVALID_UIID;
 	
-	return CreateWidgetBase(LoadClass<UUserWidgetBase>(nullptr, **referencePathPtr), InWidgetName, InOwningObject);
+	return CreateWidgetBase(LoadClass<UUserWidgetBase>(nullptr, **referencePathPtr), InWidgetName, InOwner, InOwningObject);
 }
 
-int32 UUIManagementGSS::CreateWidgetBase(UClass* InUClass, FString InWidgetName, UUserWidgetBase* InOwningObject)
+int32 UUIManagementGSS::CreateWidgetBase(UClass* InUClass, FString InWidgetName, AActor* InOwner, UUserWidgetBase* InOwningObject)
 {
 	for(TMap<int32, TWeakObjectPtr<UUserWidgetBase>>::TIterator iter = ManagementTargets.CreateIterator(); iter; ++iter)
 	{
@@ -71,6 +71,7 @@ int32 UUIManagementGSS::CreateWidgetBase(UClass* InUClass, FString InWidgetName,
 
 	int32 uiId = UIIdGenerator.GenerateID(); 
 	widgetBase->SetUserWidgetId(uiId);
+	widgetBase->SetOwnerActor(InOwner);
 	widgetBase->OnCreated();
 	widgetBase->AddToViewport();
 
@@ -98,6 +99,15 @@ UUserWidgetBase* UUIManagementGSS::FindWidgetBase(int32 InUserWidgetId)
 		return findWidget->Get();
 	
 	return nullptr;
+}
+
+UClass* UUIManagementGSS::GetUClassWidgetBP(FString InBPName)
+{
+	FString* referencePathPtr = UIReferencePath.Find(InBPName);
+	if(!referencePathPtr)
+		return nullptr;
+
+	return LoadClass<UUserWidgetBase>(nullptr, **referencePathPtr);
 }
 
 void UUIManagementGSS::FindUIDirectroy(FString InPath, TArray<FString>& OutData)
