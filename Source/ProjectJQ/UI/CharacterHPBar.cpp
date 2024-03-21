@@ -39,6 +39,23 @@ void UCharacterHPBar::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	CurrentValue += DiffValue * InDeltaTime / AnimSpeed;
+	if(DiffValue < 0)
+	{
+		if(CurrentValue < GoalValue)
+		{
+			CurrentValue = GoalValue;
+			DiffValue = 0.0;
+		}
+	}
+	else if(DiffValue > 0)
+	{
+		if(CurrentValue > GoalValue)
+		{
+			CurrentValue = GoalValue;
+			DiffValue = 0.0;
+		}
+	}
+	
 	HPBar->SetPercent(CurrentValue / MaxValue);
 }
 

@@ -73,7 +73,6 @@ int32 UUIManagementGSS::CreateWidgetBase(UClass* InUClass, FString InWidgetName,
 	widgetBase->SetUserWidgetId(uiId);
 	widgetBase->SetOwnerActor(InOwner);
 	widgetBase->OnCreated();
-	widgetBase->AddToViewport();
 
 	ManagementTargets.Add(uiId, widgetBase);
 
