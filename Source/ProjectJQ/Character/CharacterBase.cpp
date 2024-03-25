@@ -41,9 +41,13 @@ float ACharacterBase::PlayCharacterAnimMontage(float InPlayRate, FName InSection
 	UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
 	if(animInstance == nullptr || AnimMontage == nullptr)
 		return INVALID_ANIMMONTAGE;
+
+	if(!AnimMontage->IsValidSectionName(InSectionName))
+		return INVALID_ANIMMONTAGE;
 	
 	if(animInstance->Montage_Play(AnimMontage, InPlayRate, EMontagePlayReturnType::Duration) <= 0.f)
 		return INVALID_ANIMMONTAGE;
+	
 	animInstance->Montage_JumpToSection(InSectionName);
 	
 	int32 index = AnimMontage->GetSectionIndex(InSectionName);

@@ -61,11 +61,12 @@ void AProjectJQPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(ZoomInAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomIn);
 		EnhancedInputComponent->BindAction(ZoomOutAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomOut);
 
-		// Attack Input Events
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::Attack);
+		// // Attack Input Events
+		// EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::Attack);
 
 		for(ESkillInputKey inputKeyType : TEnumRange<ESkillInputKey>())
 		{
+			if(inputKeyType == ESkillInputKey::None) continue;
 			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Started, this, &AProjectJQPlayerController::SkillStarted);
 			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Ongoing, this, &AProjectJQPlayerController::SkillOnGoing);
 			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Triggered, this, &AProjectJQPlayerController::SkillTriggered);
@@ -231,6 +232,9 @@ const ESkillInputKey AProjectJQPlayerController::GetSkillInputKeyFromAction(cons
 		
 		else if (inputAction->GetName().Contains(TEXT("IA_SkillR")))
 			return ESkillInputKey::R;
+
+		else if (inputAction->GetName().Contains(TEXT("IA_BasicAttack")))
+			return ESkillInputKey::BasicAttack;
 	}
 	return ESkillInputKey::None;
 }

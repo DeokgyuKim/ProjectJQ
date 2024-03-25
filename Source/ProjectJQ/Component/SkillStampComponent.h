@@ -18,6 +18,10 @@ struct FSkillAnimMontageInfo
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FName SectionName;
 
+	// 몽타주 콤보 갯수입니다.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	int32 ComboCount;
+
 	//몽타주를 실행할 타이밍을 지정합니다.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	ETriggerEvent PlayTiming;
@@ -41,9 +45,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
 	TArray<FSkillAnimMontageInfo> SkillAnimInfos;
 
+	// 트리거 이벤트와 몽타주 섹션 이름을 담아두는 맵입니다.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	TMap<ETriggerEvent, FSkillAnimMontageInfo> EventSkillsMap;
+
 	//충돌체 정보입니다.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
 	FVector ColliderBoxExtend = FVector::ZeroVector;
+
+	// 현재 몇 번째 콤보가 재생되고 있는지 저장하는 값입니다.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "JQ_Skill")
+	int32 Count;
+
 
 protected:
 	// Called when the game starts
@@ -54,9 +67,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 public:
 	UFUNCTION(BlueprintCallable)
-	void ActivateSkill();
+	void ActivateSkill(ETriggerEvent InEvent);
 
-	virtual void _ActivateSkill();
+	virtual void _ActivateSkill(ETriggerEvent InEvent);
 	
 public:
 	virtual void SkillTriggered();

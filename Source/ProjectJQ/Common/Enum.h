@@ -47,10 +47,12 @@ enum class EBuffValueType : uint8
 UENUM( BlueprintType )
 enum class ESkillInputKey : uint8
 {
-	Q	UMETA(ToolTip = "백분율"),
-	W	UMETA(ToolTip = "상수"),
-	E	UMETA(ToolTip = "상수"),
-	R	UMETA(ToolTip = "상수"),
-	None	UMETA(Hidden),
+	None = 0,
+	Q			UMETA(ToolTip = "스킬"),
+	W			UMETA(ToolTip = "스킬"),
+	E			UMETA(ToolTip = "스킬"),
+	R			UMETA(ToolTip = "스킬"),
+	BasicAttack	UMETA(ToolTip = "기본공격"),
+	End
 };
-ENUM_RANGE_BY_COUNT(ESkillInputKey, ESkillInputKey::None);
+ENUM_RANGE_BY_COUNT(ESkillInputKey, ESkillInputKey::End);

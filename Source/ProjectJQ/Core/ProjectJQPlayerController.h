@@ -50,9 +50,6 @@ public:
 	UInputAction* ZoomOutAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* AttackAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	TMap<ESkillInputKey, UInputAction*> SkillAction;
 
 protected:

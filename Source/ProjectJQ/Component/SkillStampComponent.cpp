@@ -3,6 +3,8 @@
 
 #include "SkillStampComponent.h"
 
+#include <string>
+
 #include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"
 #include "Engine/DamageEvents.h"
@@ -13,7 +15,7 @@ USkillStampComponent::USkillStampComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
 }
@@ -26,6 +28,10 @@ void USkillStampComponent::BeginPlay()
 
 	// ...
 	OwnerPC = Cast<ACharacterPC>(GetOwner());
+
+	for(FSkillAnimMontageInfo skillInfo : SkillAnimInfos)
+		EventSkillsMap.FindOrAdd(skillInfo.PlayTiming) = skillInfo;
+	
 }
 
 
@@ -37,12 +43,12 @@ void USkillStampComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void USkillStampComponent::ActivateSkill()
+void USkillStampComponent::ActivateSkill(ETriggerEvent InEvent)
 {
-	_ActivateSkill();
+	_ActivateSkill(InEvent);
 }
 
-void USkillStampComponent::_ActivateSkill()
+void USkillStampComponent::_ActivateSkill(ETriggerEvent InEvent)
 {
 	//실제 작동 함수
 	FCollisionQueryParams param;
@@ -67,6 +73,10 @@ void USkillStampComponent::_ActivateSkill()
 		}
 	}
 
+	// 애니메이션 콤보 길이를 얻고 모듈러 연산하여 반복되게합니다.(ex. 0 -> 1 -> 2 -> 0 -> 1...)
+	FSkillAnimMontageInfo* animInfo = EventSkillsMap.Find(InEvent);
+	if(animInfo) Count = (Count + 1) % animInfo->ComboCount;
+
 #if ENABLE_DRAW_DEBUG
 	FColor DrawColor = hitDetected ? FColor::Green : FColor::Red;
 
@@ -78,10 +88,17 @@ void USkillStampComponent::_ActivateSkill()
 void USkillStampComponent::SkillTriggered()
 {
 	LOG_SCREEN(FColor::White, TEXT("%s: SkillTriggerd"), *GetName());
+	
 
-	for(const FSkillAnimMontageInfo& info : SkillAnimInfos)
-		if(OwnerPC.IsValid() && info.PlayTiming == ETriggerEvent::Triggered)
-			OwnerPC->PlayCharacterAnimMontage(1.f, info.SectionName);
+	FSkillAnimMontageInfo* animInfo = EventSkillsMap.Find(ETriggerEvent::Triggered);
+	
+	if(animInfo == nullptr) return;
+	if(!OwnerPC.IsValid()) return;
+	if(Count > animInfo->ComboCount) return;
+	
+	FString inputSectionName = animInfo->SectionName.ToString();
+	FName NextSection = *FString::Printf(TEXT("%s%d"), *inputSectionName, Count);
+	OwnerPC->PlayCharacterAnimMontage(1.f, NextSection);
 }
 
 void USkillStampComponent::SkillStarted()
