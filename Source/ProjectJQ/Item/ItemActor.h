@@ -25,6 +25,9 @@ class PROJECTJQ_API AItemActor : public AActor
 	//아이템 스탯
 	TMap<EStatControlType, double> ItemStat;
 
+	//젬스톤
+	EGemStoneType Gemstones[3];
+
 	//아이템 이미지
 	TObjectPtr<UTexture> UIImage;
 	

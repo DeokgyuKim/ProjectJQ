@@ -35,4 +35,6 @@ void UItemDetail::AddStatWidget(EStatControlType InStatControlType, double InVal
 	textBlock->SetText(FText::FromString(itemInfo));
 
 	ItemStat->AddChild(textBlock);
+
+	StatTextBlocks.Add(textBlock);
 }

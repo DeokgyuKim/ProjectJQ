@@ -56,3 +56,15 @@ enum class ESkillInputKey : uint8
 	End
 };
 ENUM_RANGE_BY_COUNT(ESkillInputKey, ESkillInputKey::End);
+
+// 버프 밸류 타입
+UENUM( BlueprintType )
+enum class EGemStoneType : uint8
+{
+	None = 0,
+	Ruby		UMETA(ToolTip = "루비: 공격 및 해당 스킬 강화/딜러"),
+	Emerald		UMETA(ToolTip = "에메랄드: 체력, 방어력 및 해당 스킬 강화/탱커"),
+	Obsidian	UMETA(ToolTip = "흑요석: 이동, 신속 및 해당 스킬 강화/이동기"),
+	Pearl		UMETA(ToolTip = "진주: 회복, 유틸 및 해당 스킬 강화/힐러"),
+	Sapphire	UMETA(ToolTip = "사파이어: 마나, 주문력 및 마법 스킬 강화/법사"),
+};

@@ -42,11 +42,26 @@ void AItemActor::BeginPlay()
 	if(UIImage == nullptr)
 		return;
 
+	//스태틱 메시
 	ItemMesh = NewObject<UStaticMesh>(itemTable->ItemMesh);
 	if(ItemMesh == nullptr)
 		return;
 
 	StaticMeshComp->SetStaticMesh(ItemMesh);
+
+	//젬스톤 세팅
+	if(itemTable->PresetGemstone)
+	{
+		Gemstones[0] = itemTable->Gemstone1;
+		Gemstones[1] = itemTable->Gemstone2;
+		Gemstones[2] = itemTable->Gemstone3;
+	}
+	else
+	{
+		//프리셋이 되어있는 아이템이 아닌 경우 랜덤 젬스톤 삽입
+		for(int i = 0; i < 3; ++i)
+			Gemstones[i] = static_cast<EGemStoneType>(FMath::RandRange(static_cast<uint8>(EGemStoneType::None), static_cast<uint8>(EGemStoneType::Sapphire)));
+	}
 
 	//아이템 디테일 위젯 생성
 	UUIManagementGSS* gss = GetGameInstance()->GetSubsystem<UUIManagementGSS>();

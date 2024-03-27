@@ -15,14 +15,33 @@ struct PROJECTJQ_API FItemDataTable : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 	
 	//아이템 설명
-	FString ItemDescription;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString ItemDescription = TEXT("");
 
 	//아이템 스탯
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<EStatControlType, double> ItemStat;
 
 	//아이템 이미지
-	TSubclassOf<UTexture> UIImage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UTexture> UIImage = nullptr;
 	
 	//월드에서 보여줄 스태틱 메쉬
-	TSubclassOf<UStaticMesh> ItemMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UStaticMesh> ItemMesh = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool PresetGemstone = false;
+
+	//젬스톤 1
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(EditCondition="PresetGemstone"))
+	EGemStoneType Gemstone1 = EGemStoneType::None;
+	
+	//젬스톤 2
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(EditCondition="PresetGemstone"))
+	EGemStoneType Gemstone2 = EGemStoneType::None;
+	
+	//젬스톤 3
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(EditCondition="PresetGemstone"))
+	EGemStoneType Gemstone3 = EGemStoneType::None;
 };
