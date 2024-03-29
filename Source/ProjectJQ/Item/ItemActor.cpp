@@ -98,9 +98,11 @@ void AItemActor::OnPossess(AActor* InOwner)
 	if(InOwner == nullptr)
 		return;
 
-	Owner = InOwner;
+	//아이템 소유자와 착용자가 다릅니다.
+	if(ItemOwner != InOwner)
+		return;
 
-	UActorComponent* comp = Owner->GetComponentByClass(UStatControlComponent::StaticClass());
+	UActorComponent* comp = ItemOwner->GetComponentByClass(UStatControlComponent::StaticClass());
 	if(comp == nullptr)
 		return;
 
@@ -112,10 +114,10 @@ void AItemActor::OnPossess(AActor* InOwner)
 
 void AItemActor::OnUnPossess(AActor* InOwner)
 {
-	if(Owner != InOwner)
+	if(ItemOwner != InOwner)
 		return;
 	
-	UActorComponent* comp = Owner->GetComponentByClass(UStatControlComponent::StaticClass());
+	UActorComponent* comp = ItemOwner->GetComponentByClass(UStatControlComponent::StaticClass());
 	if(comp == nullptr)
 		return;
 
@@ -123,7 +125,5 @@ void AItemActor::OnUnPossess(AActor* InOwner)
 
 	for(const TPair<EStatControlType, double>& statValue : ItemStat)
 		statComp->SetStat(statValue.Key, statComp->GetStat(statValue.Key) - statValue.Value);
-	
-	Owner = nullptr;
 }
 

@@ -12,6 +12,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "JQCheatManager.h"
 #include "ProjectJQ/Component/AttackComponent.h"
+#include "ProjectJQ/Component/InventoryComponent.h"
+#include "ProjectJQ/SubSystem/UIManagementGSS.h"
+#include "ProjectJQ/UI/Inventory.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -34,6 +37,12 @@ void AProjectJQPlayerController::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+
+	UUIManagementGSS* gss = GetGameInstance()->GetSubsystem<UUIManagementGSS>();
+	if(gss)
+	{
+		gss->SetController(this);
 	}
 }
 
@@ -60,6 +69,8 @@ void AProjectJQPlayerController::SetupInputComponent()
 		// Camera Zoom input events
 		EnhancedInputComponent->BindAction(ZoomInAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomIn);
 		EnhancedInputComponent->BindAction(ZoomOutAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomOut);
+
+		EnhancedInputComponent->BindAction(InventoryOnOff, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnOffInventory);
 
 		// // Attack Input Events
 		// EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::Attack);
@@ -237,4 +248,23 @@ const ESkillInputKey AProjectJQPlayerController::GetSkillInputKeyFromAction(cons
 			return ESkillInputKey::BasicAttack;
 	}
 	return ESkillInputKey::None;
+}
+
+void AProjectJQPlayerController::OnOffInventory()
+{
+	UInventoryComponent* comp = Cast<UInventoryComponent>(GetPawn()->GetComponentByClass(UInventoryComponent::StaticClass()));
+	if(comp == nullptr)
+		return;
+
+	UInventory* inven = comp->GetInventoryUI();
+	if(inven->GetVisibility() == ESlateVisibility::Visible)
+	{
+		inven->SetVisibility(ESlateVisibility::Collapsed);
+		inven->RemoveFromParent();
+	}
+	else
+	{
+		inven->SetVisibility(ESlateVisibility::Visible);
+		inven->AddToViewport();
+	}
 }

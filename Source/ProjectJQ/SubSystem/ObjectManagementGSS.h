@@ -140,7 +140,7 @@ T* UObjectManagementGSS::CreateActor(UClass* InClass, const FSpawnParam& InSpawn
 	
 	ManagementTargets.Add(actor);
 
-	return actor;
+	return Cast<T>(actor);
 }
 
 template <typename T>

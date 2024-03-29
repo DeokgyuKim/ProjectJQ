@@ -48,6 +48,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* ZoomOutAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* InventoryOnOff;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	TMap<ESkillInputKey, UInputAction*> SkillAction;
@@ -84,6 +87,8 @@ protected:
 
 	const ESkillInputKey GetSkillInputKeyFromAction(const FInputActionInstance &inInstance) const;
 
+	void OnOffInventory();
+
 	float ZoomValue = 20.0f;
 
 private:
@@ -94,5 +99,4 @@ private:
 
 	
 };
-
 

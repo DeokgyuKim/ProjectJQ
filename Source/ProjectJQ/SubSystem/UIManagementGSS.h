@@ -29,7 +29,7 @@ public:
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
-	void SetController(APlayerController* InController){Controller = InController;}
+	void SetController(TWeakObjectPtr<APlayerController> InController){Controller = InController;}
 public:
 	int32 CreateWidgetBase(FString InBPName, FString InWidgetName, AActor* InOwner, UUserWidgetBase* InOwningObject = nullptr);
 	int32 CreateWidgetBase(UClass* InUClass, FString InWidgetName, AActor* InOwner, UUserWidgetBase* InOwningObject = nullptr);

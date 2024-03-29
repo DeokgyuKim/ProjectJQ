@@ -4,21 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Interface/ObjectManagementTargetInterface.h"
 #include "ItemActor.generated.h"
 
 class UItemDetail;
 class UUserWidgetBase;
 
 UCLASS()
-class PROJECTJQ_API AItemActor : public AActor
+class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetInterface
 {
 	GENERATED_BODY()
 
 	//아이템 소유 액터
-	TWeakObjectPtr<AActor> Owner;
+	TWeakObjectPtr<AActor> ItemOwner;
 
 	//아이템 이름
 	FString ItemName;
+	
 	//아이템 설명
 	FString ItemDescription;
 
@@ -60,4 +62,8 @@ public:
 
 	// 아이템을 해제할 때 호출합니다.
 	virtual void OnUnPossess(AActor* InOwner);
+
+	void SetItemName(FString InItemName) {ItemName = InItemName;}
+
+	void SetItemOwner(TWeakObjectPtr<AActor> InItemOwner) {ItemOwner = InItemOwner;}
 };
