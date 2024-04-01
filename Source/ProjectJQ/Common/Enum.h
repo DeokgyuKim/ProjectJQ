@@ -68,3 +68,13 @@ enum class EGemStoneType : uint8
 	Pearl		UMETA(ToolTip = "진주: 회복, 유틸 및 해당 스킬 강화/힐러"),
 	Sapphire	UMETA(ToolTip = "사파이어: 마나, 주문력 및 마법 스킬 강화/법사"),
 };
+
+//공격 스킬 범위 타입
+UENUM(BlueprintType)
+enum class EAttackRangeType : uint8
+{
+	None = 0,
+	Box			UMETA(ToolTip = "박스 형태 공격"),
+	Sphere		UMETA(ToolTip = "구 형태 공격"),
+	Projectile	UMETA(ToolTip = "투사체 공격")
+};

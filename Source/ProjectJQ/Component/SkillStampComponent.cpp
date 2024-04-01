@@ -2,12 +2,11 @@
 
 
 #include "SkillStampComponent.h"
-
-#include <string>
-
 #include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
+#include "ProjectJQ/Actor/JQProjectile.h"
 #include "ProjectJQ/Character/CharacterPC.h"
 
 // Sets default values for this component's properties
@@ -43,12 +42,30 @@ void USkillStampComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void USkillStampComponent::ActivateSkill(ETriggerEvent InEvent)
+void USkillStampComponent::ActivateSkill(ETriggerEvent InEvent, EAttackRangeType InAttackRange)
 {
-	_ActivateSkill(InEvent);
+	_ActiveSkill(InEvent, InAttackRange);
 }
 
-void USkillStampComponent::_ActivateSkill(ETriggerEvent InEvent)
+void USkillStampComponent::_ActiveSkill(ETriggerEvent InEvent, EAttackRangeType InAttackRange)
+{
+	switch (InAttackRange)
+	{
+	case EAttackRangeType::Box:
+		ActiveBoxCollisionAttack(InEvent);
+		break;
+	case EAttackRangeType::Sphere:
+		ActiveSphereCollsionAttack(InEvent);
+		break;
+	case EAttackRangeType::Projectile:
+		ActiveProjectileAttack(InEvent);
+		break;
+	case EAttackRangeType::None:
+		break;
+	}
+}
+
+void USkillStampComponent::ActiveBoxCollisionAttack(ETriggerEvent InEvent)
 {
 	//실제 작동 함수
 	FCollisionQueryParams param;
@@ -56,7 +73,11 @@ void USkillStampComponent::_ActivateSkill(ETriggerEvent InEvent)
 	TArray<FOverlapResult> overlapResults;
 
 	bool hitDetected = false;
-	if(GetWorld()->OverlapMultiByChannel(overlapResults, OwnerPC->GetActorLocation() + OwnerPC->GetActorRotation().Quaternion() * ColliderBoxExtend / 2, OwnerPC->GetActorRotation().Quaternion(), CCHANNEL_CharacterBase,
+
+	FVector pos = OwnerPC->GetActorLocation() + OwnerPC->GetActorForwardVector() * (OwnerPC->GetCapsuleComponent()->GetScaledCapsuleRadius() + ColliderBoxExtend.X / 2);
+	FQuat rot = OwnerPC->GetActorForwardVector().ToOrientationQuat();
+	
+	if(GetWorld()->OverlapMultiByChannel(overlapResults, pos, rot, CCHANNEL_CharacterBase,
 		FCollisionShape::MakeBox(ColliderBoxExtend / 2), param))
 	{
 		for(const FOverlapResult& result : overlapResults)
@@ -79,10 +100,24 @@ void USkillStampComponent::_ActivateSkill(ETriggerEvent InEvent)
 
 #if ENABLE_DRAW_DEBUG
 	FColor DrawColor = hitDetected ? FColor::Green : FColor::Red;
-
-	DrawDebugBox(GetWorld(), OwnerPC->GetActorLocation() + OwnerPC->GetActorRotation().Quaternion() * ColliderBoxExtend / 2,
-		ColliderBoxExtend / 2, OwnerPC->GetActorRotation().Quaternion(), DrawColor, false, 5.0f);
+	DrawDebugBox(GetWorld(), pos, ColliderBoxExtend / 2, rot, DrawColor, false, 5.0f);
 #endif
+}
+
+void USkillStampComponent::ActiveSphereCollsionAttack(ETriggerEvent InEvent)
+{
+	return;
+}
+
+void USkillStampComponent::ActiveProjectileAttack(ETriggerEvent InEvent)
+{
+	FVector pos = OwnerPC->GetActorLocation() + OwnerPC->GetActorForwardVector() * OwnerPC->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	FRotator rot = FRotator::ZeroRotator;
+	AJQProjectile* ProjectileActor = GetWorld()->SpawnActor<AJQProjectile>(ProjectileObject, pos, rot);
+	if(ProjectileActor)
+	{
+		ProjectileActor->Initialize(OwnerPC->GetActorForwardVector(), OwnerPC->GetController());
+	}
 }
 
 void USkillStampComponent::SkillTriggered()
