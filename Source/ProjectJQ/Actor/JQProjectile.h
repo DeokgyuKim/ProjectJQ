@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Interface/ObjectManagementTargetInterface.h"
 #include "JQProjectile.generated.h"
 
 
@@ -15,7 +16,7 @@ class UStaticMeshComponent;
 class UArrowComponent;
 
 UCLASS()
-class PROJECTJQ_API AJQProjectile : public AActor
+class PROJECTJQ_API AJQProjectile : public AActor, public IObjectManagementTargetInterface
 {
 	GENERATED_BODY()
 	

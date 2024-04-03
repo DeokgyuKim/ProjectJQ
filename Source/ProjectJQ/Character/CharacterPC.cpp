@@ -83,6 +83,7 @@ void ACharacterPC::SkillTriggered(ESkillInputKey InInputKey)
 		return;
 
 	(*findSkill)->SkillTriggered();
+	CurrentSkill = *findSkill;
 }
 
 void ACharacterPC::SkillStarted(ESkillInputKey InInputKey)
@@ -92,6 +93,7 @@ void ACharacterPC::SkillStarted(ESkillInputKey InInputKey)
 		return;
 
 	(*findSkill)->SkillStarted();
+	CurrentSkill = *findSkill;
 }
 
 void ACharacterPC::SkillOnGoing(ESkillInputKey InInputKey)
@@ -101,6 +103,7 @@ void ACharacterPC::SkillOnGoing(ESkillInputKey InInputKey)
 		return;
 
 	(*findSkill)->SkillOnGoing();
+	CurrentSkill = *findSkill;
 }
 
 void ACharacterPC::SkillCanceled(ESkillInputKey InInputKey)
@@ -110,6 +113,7 @@ void ACharacterPC::SkillCanceled(ESkillInputKey InInputKey)
 		return;
 
 	(*findSkill)->SkillCanceled();
+	CurrentSkill = *findSkill;
 }
 
 void ACharacterPC::SkillCompleted(ESkillInputKey InInputKey)
@@ -119,4 +123,5 @@ void ACharacterPC::SkillCompleted(ESkillInputKey InInputKey)
 		return;
 
 	(*findSkill)->SkillCompleted();
+	CurrentSkill = *findSkill;
 }

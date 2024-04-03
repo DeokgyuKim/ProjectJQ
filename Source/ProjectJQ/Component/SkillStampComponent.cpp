@@ -6,8 +6,9 @@
 #include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
-#include "ProjectJQ/Actor/JQProjectile.h"
-#include "ProjectJQ/Character/CharacterPC.h"
+#include "../Actor/JQProjectile.h"
+#include "../Character/CharacterPC.h"
+#include "../SubSystem/ObjectManagementGSS.h"
 
 // Sets default values for this component's properties
 USkillStampComponent::USkillStampComponent()
@@ -30,7 +31,12 @@ void USkillStampComponent::BeginPlay()
 
 	for(FSkillAnimMontageInfo skillInfo : SkillAnimInfos)
 		EventSkillsMap.FindOrAdd(skillInfo.PlayTiming) = skillInfo;
-	
+
+	if(AttackRange == EAttackRangeType::None)
+	{
+		LOG_SCREEN(FColor::Red, TEXT("%s의 AttackRange가 None입니다."), *GetName())
+		return;
+	}
 }
 
 
@@ -42,30 +48,51 @@ void USkillStampComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void USkillStampComponent::ActivateSkill(ETriggerEvent InEvent, EAttackRangeType InAttackRange)
+void USkillStampComponent::ActivateSkill(FName InAnimSectionName)
 {
-	_ActiveSkill(InEvent, InAttackRange);
+	_ActiveSkill(InAnimSectionName);
 }
 
-void USkillStampComponent::_ActiveSkill(ETriggerEvent InEvent, EAttackRangeType InAttackRange)
+void USkillStampComponent::_ActiveSkill(FName InAnimSectionName)
 {
-	switch (InAttackRange)
+	//현재 재생중인 애니메이션 섹션 네임으로 카운트를 올릴 FSkillAnimMontageInfo를 찾음.
+	FSkillAnimMontageInfo* findInfo = nullptr;
+	for(TPair<ETriggerEvent, FSkillAnimMontageInfo> animMontage : EventSkillsMap)
+	{
+		for(int i = 0; i < animMontage.Value.ComboCount; ++i)
+		{
+			FString inputSectionName = animMontage.Value.SectionName.ToString();
+			FName findName = *FString::Printf(TEXT("%s%d"), *inputSectionName, Count);
+			if(findName == InAnimSectionName)
+			{
+				findInfo = &animMontage.Value;
+				break;
+			}
+		}
+		if(findInfo)
+			break;
+	}
+
+	if(findInfo == nullptr)
+		return;
+	
+	switch (AttackRange)
 	{
 	case EAttackRangeType::Box:
-		ActiveBoxCollisionAttack(InEvent);
+		ActiveBoxCollisionAttack(findInfo);
 		break;
 	case EAttackRangeType::Sphere:
-		ActiveSphereCollsionAttack(InEvent);
+		ActiveSphereCollsionAttack(findInfo);
 		break;
 	case EAttackRangeType::Projectile:
-		ActiveProjectileAttack(InEvent);
+		ActiveProjectileAttack(findInfo);
 		break;
 	case EAttackRangeType::None:
 		break;
 	}
 }
 
-void USkillStampComponent::ActiveBoxCollisionAttack(ETriggerEvent InEvent)
+void USkillStampComponent::ActiveBoxCollisionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
 {
 	//실제 작동 함수
 	FCollisionQueryParams param;
@@ -95,7 +122,7 @@ void USkillStampComponent::ActiveBoxCollisionAttack(ETriggerEvent InEvent)
 	}
 
 	// 애니메이션 콤보 길이를 얻고 모듈러 연산하여 반복되게합니다.(ex. 0 -> 1 -> 2 -> 0 -> 1...)
-	FSkillAnimMontageInfo* animInfo = EventSkillsMap.Find(InEvent);
+	FSkillAnimMontageInfo* animInfo = InCurrentPlayAnimMontageInfo;
 	if(animInfo) Count = (Count + 1) % animInfo->ComboCount;
 
 #if ENABLE_DRAW_DEBUG
@@ -104,16 +131,25 @@ void USkillStampComponent::ActiveBoxCollisionAttack(ETriggerEvent InEvent)
 #endif
 }
 
-void USkillStampComponent::ActiveSphereCollsionAttack(ETriggerEvent InEvent)
+void USkillStampComponent::ActiveSphereCollsionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
 {
 	return;
 }
 
-void USkillStampComponent::ActiveProjectileAttack(ETriggerEvent InEvent)
+void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
 {
 	FVector pos = OwnerPC->GetActorLocation() + OwnerPC->GetActorForwardVector() * OwnerPC->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	FRotator rot = FRotator::ZeroRotator;
-	AJQProjectile* ProjectileActor = GetWorld()->SpawnActor<AJQProjectile>(ProjectileObject, pos, rot);
+
+	UObjectManagementGSS* gss = GetOwner()->GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
+
+	FSpawnParam param;
+	param.Location = pos;
+	param.Rotation = rot;
+	param.CallbackSpawn = nullptr;
+	
+	AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileObject, param);
+	
 	if(ProjectileActor)
 	{
 		ProjectileActor->Initialize(OwnerPC->GetActorForwardVector(), OwnerPC->GetController());

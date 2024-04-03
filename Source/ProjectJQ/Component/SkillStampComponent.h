@@ -67,9 +67,12 @@ public:
 	TMap<ETriggerEvent, FSkillAnimMontageInfo> EventSkillsMap;
 
 	//투사체 BP를 저장하는 변수입니다.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
 	TSubclassOf<AJQProjectile> ProjectileObject;
-	
+
+	//충돌 판정을 어떤 걸로 할 건지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
+	EAttackRangeType AttackRange = EAttackRangeType::None;
 
 
 protected:
@@ -82,12 +85,12 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void ActivateSkill(ETriggerEvent InEvent, EAttackRangeType InAttackRange);
-	virtual void _ActiveSkill(ETriggerEvent InEvent, EAttackRangeType InAttackRange);
+	void ActivateSkill(FName InAnimSectionName);
+	virtual void _ActiveSkill(FName InAnimSectionName);
 	
-	virtual void ActiveBoxCollisionAttack(ETriggerEvent InEvent);
-	virtual void ActiveSphereCollsionAttack(ETriggerEvent InEvent);
-	virtual void ActiveProjectileAttack(ETriggerEvent InEvent);
+	virtual void ActiveBoxCollisionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
+	virtual void ActiveSphereCollsionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
+	virtual void ActiveProjectileAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 public:
 	virtual void SkillTriggered();
 	virtual void SkillStarted();

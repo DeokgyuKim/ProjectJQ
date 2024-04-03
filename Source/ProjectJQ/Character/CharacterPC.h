@@ -26,6 +26,9 @@ class ACharacterPC : public ACharacterBase
 	TMap<ESkillInputKey, TSubclassOf<USkillStampComponent>> OwnSkills;
 
 	UPROPERTY()
+	TWeakObjectPtr<USkillStampComponent> CurrentSkill = nullptr;
+
+	UPROPERTY()
 	TMap<ESkillInputKey, TObjectPtr<USkillStampComponent>> Skills;
 
 public:
@@ -48,6 +51,8 @@ public:
     void SkillCanceled(ESkillInputKey InInputKey);
     void SkillCompleted(ESkillInputKey InInputKey);
 	
-
+public:
+	UFUNCTION(BlueprintCallable)
+	USkillStampComponent* GetCurrentSkill(){return CurrentSkill.Get();}
 };
 
