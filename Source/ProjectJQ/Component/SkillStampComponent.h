@@ -8,6 +8,8 @@
 
 class ACharacterPC;
 class AJQProjectile;
+class UMaterialInterface;
+class ADecalActor;
 enum class ETriggerEvent : uint8;
 
 USTRUCT(BlueprintType)
@@ -59,9 +61,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
 	TArray<FSkillAnimMontageInfo> SkillAnimInfos;
 	
-	//충돌체 정보입니다.
+	//Box 공격 형태 충돌체 정보입니다.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
 	FVector ColliderBoxExtend = FVector::ZeroVector;
+
+	/*
+	 공격 범위 길이입니다.
+	 box : 해당 변수를 사용하지 않음.
+	 sphere : 구의 반지름
+	 Projectile : 투사체 날아가는 거리
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	float Length;
 	
 	// 트리거 이벤트와 몽타주 섹션 이름을 담아두는 맵입니다.
 	TMap<ETriggerEvent, FSkillAnimMontageInfo> EventSkillsMap;
@@ -72,7 +83,14 @@ public:
 
 	//충돌 판정을 어떤 걸로 할 건지
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
-	EAttackRangeType AttackRange = EAttackRangeType::None;
+	EAttackRangeType AttackRangeType = EAttackRangeType::None;
+
+	//데칼 머테리얼, null이 아니면 키 Released 시에 스킬이 시전됩니다.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	TObjectPtr<UMaterialInterface> DecalMaterial;
+
+	//데칼 액터 포인터
+	TObjectPtr<ADecalActor> DecalActor;
 
 
 protected:
@@ -92,9 +110,17 @@ public:
 	virtual void ActiveSphereCollsionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 	virtual void ActiveProjectileAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 public:
-	virtual void SkillTriggered();
 	virtual void SkillStarted();
+	virtual void SkillTriggered();
 	virtual void SkillOnGoing();
 	virtual void SkillCanceled();
 	virtual void SkillCompleted();
+
+protected:
+	//카메라에서 마우스 커서로 레이를 쏴서 가장 처음 부딫힌 지점의 월드 좌표계를 구합니다.
+	FVector GetWorldLocationAtMousePointer();
+	//캐릭터에서 마우스 커서를 향하는 정규 벡터를 구합니다.
+	FVector GetVector2DFromCharacterToMousePointer();
+	//캐릭터를 마우스 방향으로 쳐다보게 합니다.
+	void SetCharacterRotationToMousePointer(FVector InVectorToMouse) const;
 };

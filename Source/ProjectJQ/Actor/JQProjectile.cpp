@@ -9,6 +9,7 @@
 #include "Engine/DamageEvents.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "ProjectJQ/Character/CharacterMonster.h"
+#include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 
 // Sets default values
 AJQProjectile::AJQProjectile()
@@ -61,7 +62,9 @@ void AJQProjectile::Tick(float DeltaTime)
 
 	if (FVector::Dist(StartLocation, GetActorLocation()) >= MaxRange)
 	{
-		Destroy();
+		UObjectManagementGSS* gss = GetOwner()->GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
+		gss->DestroyActor(this);
+		//Destroy();
 	}
 
 	PrevLocation = GetActorLocation();

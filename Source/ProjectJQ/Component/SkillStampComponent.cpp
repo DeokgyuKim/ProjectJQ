@@ -9,6 +9,8 @@
 #include "../Actor/JQProjectile.h"
 #include "../Character/CharacterPC.h"
 #include "../SubSystem/ObjectManagementGSS.h"
+#include "Components/DecalComponent.h"
+#include "Engine/DecalActor.h"
 
 // Sets default values for this component's properties
 USkillStampComponent::USkillStampComponent()
@@ -32,7 +34,7 @@ void USkillStampComponent::BeginPlay()
 	for(FSkillAnimMontageInfo skillInfo : SkillAnimInfos)
 		EventSkillsMap.FindOrAdd(skillInfo.PlayTiming) = skillInfo;
 
-	if(AttackRange == EAttackRangeType::None)
+	if(AttackRangeType == EAttackRangeType::None)
 	{
 		LOG_SCREEN(FColor::Red, TEXT("%s의 AttackRange가 None입니다."), *GetName())
 		return;
@@ -76,7 +78,7 @@ void USkillStampComponent::_ActiveSkill(FName InAnimSectionName)
 	if(findInfo == nullptr)
 		return;
 	
-	switch (AttackRange)
+	switch (AttackRangeType)
 	{
 	case EAttackRangeType::Box:
 		ActiveBoxCollisionAttack(findInfo);
@@ -156,10 +158,53 @@ void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurre
 	}
 }
 
+void USkillStampComponent::SkillStarted()
+{
+	LOG_SCREEN(FColor::White, TEXT("%s: SkillStarted"), *GetName());
+
+	if(DecalMaterial != nullptr)
+	{
+		DecalActor = GetWorld()->SpawnActor<ADecalActor>(GetWorldLocationAtMousePointer(), FRotator::ZeroRotator);
+		DecalActor->SetDecalMaterial(DecalMaterial);
+		UDecalComponent* decalComponent = DecalActor->GetDecal();
+		
+		//데칼의 크기를 조정합니다.
+		switch (AttackRangeType)
+		{
+		case EAttackRangeType::Sphere:
+			decalComponent->DecalSize = FVector(300, Length * 2, Length * 2);
+			break;
+		case EAttackRangeType::Projectile:
+			decalComponent->DecalSize = FVector(Length, Length, 300);
+			break;
+		}
+		return;
+	}
+
+	for(const FSkillAnimMontageInfo& info : SkillAnimInfos)
+		if(OwnerPC.IsValid() && info.PlayTiming == ETriggerEvent::Started)
+			OwnerPC->PlayCharacterAnimMontage(1.f, info.SectionName);
+}
+
 void USkillStampComponent::SkillTriggered()
 {
 	LOG_SCREEN(FColor::White, TEXT("%s: SkillTriggerd"), *GetName());
-	
+
+	if(DecalActor->IsValidLowLevel())
+	{
+		switch (AttackRangeType)
+		{
+		case EAttackRangeType::Sphere:
+			DecalActor->SetActorLocation(OwnerPC->GetActorLocation());
+			break;
+		case EAttackRangeType::Projectile:
+			FVector location = (OwnerPC->GetActorLocation() + GetVector2DFromCharacterToMousePointer() * (OwnerPC->GetCapsuleComponent()->GetScaledCapsuleRadius() + Length));
+			FRotator rotation = GetVector2DFromCharacterToMousePointer().Rotation();
+			DecalActor->SetActorLocationAndRotation(location, FRotator(90, rotation.Yaw + 90, 0));
+			break;
+		}
+		return;
+	}
 
 	FSkillAnimMontageInfo* animInfo = EventSkillsMap.Find(ETriggerEvent::Triggered);
 	
@@ -170,15 +215,6 @@ void USkillStampComponent::SkillTriggered()
 	FString inputSectionName = animInfo->SectionName.ToString();
 	FName NextSection = *FString::Printf(TEXT("%s%d"), *inputSectionName, Count);
 	OwnerPC->PlayCharacterAnimMontage(1.f, NextSection);
-}
-
-void USkillStampComponent::SkillStarted()
-{
-	LOG_SCREEN(FColor::White, TEXT("%s: SkillStarted"), *GetName());
-
-	for(const FSkillAnimMontageInfo& info : SkillAnimInfos)
-		if(OwnerPC.IsValid() && info.PlayTiming == ETriggerEvent::Started)
-			OwnerPC->PlayCharacterAnimMontage(1.f, info.SectionName);
 }
 
 void USkillStampComponent::SkillOnGoing()
@@ -203,8 +239,41 @@ void USkillStampComponent::SkillCompleted()
 {
 	LOG_SCREEN(FColor::White, TEXT("%s: SkillCompleted"), *GetName());
 
+	if(DecalActor->IsValidLowLevel())
+	{
+		DecalActor->Destroy();
+	}
+
 	for(const FSkillAnimMontageInfo& info : SkillAnimInfos)
 		if(OwnerPC.IsValid() && info.PlayTiming == ETriggerEvent::Completed)
 			OwnerPC->PlayCharacterAnimMontage(1.f, info.SectionName);
 }
+
+FVector USkillStampComponent::GetWorldLocationAtMousePointer()
+{
+	FHitResult hitResult;
+	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+	if(playerController->GetHitResultUnderCursor(ECC_Visibility, false, hitResult))
+	{
+		return hitResult.ImpactPoint;
+	}
+	if(DecalActor->IsValidLowLevel())
+	{
+		DecalActor->Destroy();
+	}
+	return FVector::ZeroVector;
+}
+
+FVector USkillStampComponent::GetVector2DFromCharacterToMousePointer()
+{
+	const FVector direction = GetWorldLocationAtMousePointer() - OwnerPC->GetActorLocation();
+	return FVector(direction.X, direction.Y, 0).GetSafeNormal();
+}
+
+void USkillStampComponent::SetCharacterRotationToMousePointer(FVector InVectorToMouse) const
+{
+	const FVector direction2D = FVector(InVectorToMouse.X, InVectorToMouse.Y, 0);
+	OwnerPC->SetActorRotation(direction2D.Rotation());
+}
+
 
