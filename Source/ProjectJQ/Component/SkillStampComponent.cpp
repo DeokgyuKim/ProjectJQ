@@ -150,7 +150,7 @@ void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurre
 	param.Rotation = rot;
 	param.CallbackSpawn = nullptr;
 	
-	AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileObject, param);
+	AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileObject, param, GetOwner());
 	
 	if(ProjectileActor)
 	{

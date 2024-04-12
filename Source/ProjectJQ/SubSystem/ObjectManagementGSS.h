@@ -60,7 +60,7 @@ public:
 public:
 	//액터를 생성합니다. ObjectManagementTargetInterface를 상속받지 않은 클래스는 생성하지 않습니다.
 	template<typename T>
-	T* CreateActor(UClass* InClass, const FSpawnParam& InSpawnParam);
+	T* CreateActor(UClass* InClass, const FSpawnParam& InSpawnParam, AActor* InOwner = nullptr);
 
 	//액터의 포인터를 받아 액터를 파괴합니다.
 	void DestroyActor(AActor* InActor);
@@ -78,7 +78,7 @@ public:
 };
 
 template <typename T>
-T* UObjectManagementGSS::CreateActor(UClass* InClass, const FSpawnParam& InSpawnParam)
+T* UObjectManagementGSS::CreateActor(UClass* InClass, const FSpawnParam& InSpawnParam, AActor* InOwner)
 {
 	if(!InClass)
 		return nullptr;
@@ -117,7 +117,7 @@ T* UObjectManagementGSS::CreateActor(UClass* InClass, const FSpawnParam& InSpawn
 	else
 	{
 		//액터 생성
-		actor = World->SpawnActorDeferred<T>(InClass, spawnTransform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		actor = World->SpawnActorDeferred<T>(InClass, spawnTransform, InOwner, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		if(!actor)
 			return nullptr;
