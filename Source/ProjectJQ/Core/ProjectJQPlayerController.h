@@ -5,7 +5,22 @@
 #include <CoreMinimal.h>
 #include <Templates/SubclassOf.h>
 #include <GameFramework/PlayerController.h>
+
+#include "InputAction.h"
 #include "ProjectJQPlayerController.generated.h"
+
+enum class ETriggerEvent : uint8;
+class UInputAction;
+
+struct BindActionInfo
+{
+	const UInputAction* IA;
+	ETriggerEvent TriggerEvent;
+	uint32 Handle;
+	FName FunctionName;
+};
+
+#define BindActionFunctionName(FunctionName) &AProjectJQPlayerController::##FunctionName
 
 struct FInputActionInstance;
 /** Forward declaration to improve compiling times */
@@ -55,6 +70,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	TMap<ESkillInputKey, UInputAction*> SkillAction;
 
+	TArray<BindActionInfo> CurrentBindActionInfos;
+
+	TArray<TArray<BindActionInfo>> SavedBindActionInfos;
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -65,31 +84,52 @@ protected:
 	virtual void BeginPlay();
 
 	/** Input handlers for SetDestination action. */
+	UFUNCTION()
 	void OnInputStarted();
+	UFUNCTION()
 	void OnSetDestinationTriggered();
+	UFUNCTION()
 	void OnSetDestinationReleased();
+	UFUNCTION()
 	void OnTouchTriggered();
+	UFUNCTION()
 	void OnTouchReleased();
 
 	/* Camera Zoom Action */
+	UFUNCTION()
 	void OnZoomIn();
+	UFUNCTION()
 	void OnZoomOut();
 
 	/* Attack Action */
+	UFUNCTION()
 	void Attack();
 
 	/* Skill Action*/
-	void SkillTriggered(const FInputActionInstance& InInstance);
-	void SkillStarted(const FInputActionInstance& InInstance);
-	void SkillOnGoing(const FInputActionInstance& InInstance);
-	void SkillCanceled(const FInputActionInstance& InInstance);
-	void SkillCompleted(const FInputActionInstance& InInstance);
+	UFUNCTION()
+	void SkillTriggered(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction);
+	UFUNCTION()
+	void SkillStarted(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction);
+	UFUNCTION()
+	void SkillOnGoing(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction);
+	UFUNCTION()
+	void SkillCanceled(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction);
+	UFUNCTION()
+	void SkillCompleted(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction);
 
-	const ESkillInputKey GetSkillInputKeyFromAction(const FInputActionInstance &inInstance) const;
+	const ESkillInputKey GetSkillInputKeyFromAction(const UInputAction* InSourceAction) const;
 
+	UFUNCTION()
 	void OnOffInventory();
 
 	float ZoomValue = 20.0f;
+
+	void JQBindAction(const UInputAction* InInputAction, ETriggerEvent InTriggerEvent, FName InFunctionName);
+	void JQUnbindAction(const UInputAction* InInputAction, ETriggerEvent InTriggerEvent);
+
+	void SaveCurrentBindAction();
+
+	void RestoreBindAction();
 
 private:
 	FVector CachedDestination;

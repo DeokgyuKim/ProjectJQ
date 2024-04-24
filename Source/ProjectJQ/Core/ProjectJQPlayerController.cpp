@@ -55,22 +55,36 @@ void AProjectJQPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		// Setup mouse input events
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AProjectJQPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnSetDestinationTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AProjectJQPlayerController::OnSetDestinationReleased);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AProjectJQPlayerController::OnSetDestinationReleased);
+		JQBindAction(SetDestinationClickAction, ETriggerEvent::Started, TEXT("OnInputStarted"));
+		JQBindAction(SetDestinationClickAction, ETriggerEvent::Triggered, TEXT("OnSetDestinationTriggered"));
+		JQBindAction(SetDestinationClickAction, ETriggerEvent::Completed, TEXT("OnSetDestinationReleased"));
+		JQBindAction(SetDestinationClickAction, ETriggerEvent::Canceled, TEXT("OnSetDestinationReleased"));
+		
+		//EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AProjectJQPlayerController::OnInputStarted);
+		//EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnSetDestinationTriggered);
+		//EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AProjectJQPlayerController::OnSetDestinationReleased);
+		//EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AProjectJQPlayerController::OnSetDestinationReleased);
 
 		// Setup touch input events
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AProjectJQPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnTouchTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AProjectJQPlayerController::OnTouchReleased);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AProjectJQPlayerController::OnTouchReleased);
+		JQBindAction(SetDestinationTouchAction, ETriggerEvent::Started, TEXT("OnInputStarted"));
+		JQBindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, TEXT("OnTouchTriggered"));
+		JQBindAction(SetDestinationTouchAction, ETriggerEvent::Completed, TEXT("OnTouchReleased"));
+		JQBindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, TEXT("OnTouchReleased"));
+		
+		//EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AProjectJQPlayerController::OnInputStarted);
+		//EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnTouchTriggered);
+		//EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AProjectJQPlayerController::OnTouchReleased);
+		//EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AProjectJQPlayerController::OnTouchReleased);
 
 		// Camera Zoom input events
-		EnhancedInputComponent->BindAction(ZoomInAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomIn);
-		EnhancedInputComponent->BindAction(ZoomOutAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomOut);
+		JQBindAction(ZoomInAction, ETriggerEvent::Triggered, TEXT("OnZoomIn"));
+		JQBindAction(ZoomOutAction, ETriggerEvent::Triggered, TEXT("OnZoomOut"));
+		
+		//EnhancedInputComponent->BindAction(ZoomInAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomIn);
+		//EnhancedInputComponent->BindAction(ZoomOutAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomOut);
 
-		EnhancedInputComponent->BindAction(InventoryOnOff, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnOffInventory);
+		JQBindAction(InventoryOnOff, ETriggerEvent::Triggered, TEXT("OnOffInventory"));
+		//EnhancedInputComponent->BindAction(InventoryOnOff, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnOffInventory);
 
 		// // Attack Input Events
 		// EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::Attack);
@@ -78,17 +92,26 @@ void AProjectJQPlayerController::SetupInputComponent()
 		for(ESkillInputKey inputKeyType : TEnumRange<ESkillInputKey>())
 		{
 			if(inputKeyType == ESkillInputKey::None) continue;
-			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Started, this, &AProjectJQPlayerController::SkillStarted);
-			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Ongoing, this, &AProjectJQPlayerController::SkillOnGoing);
-			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Triggered, this, &AProjectJQPlayerController::SkillTriggered);
-			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Completed, this, &AProjectJQPlayerController::SkillCompleted);
-			EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Canceled, this, &AProjectJQPlayerController::SkillCanceled);
+
+			JQBindAction(SkillAction[inputKeyType], ETriggerEvent::Started, TEXT("SkillStarted"));
+			JQBindAction(SkillAction[inputKeyType], ETriggerEvent::Ongoing, TEXT("SkillOnGoing"));
+			JQBindAction(SkillAction[inputKeyType], ETriggerEvent::Triggered, TEXT("SkillTriggered"));
+			JQBindAction(SkillAction[inputKeyType], ETriggerEvent::Completed, TEXT("SkillCompleted"));
+			JQBindAction(SkillAction[inputKeyType], ETriggerEvent::Canceled, TEXT("SkillCanceled"));
+			
+			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Started, this, &AProjectJQPlayerController::SkillStarted);
+			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Ongoing, this, &AProjectJQPlayerController::SkillOnGoing);
+			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Triggered, this, &AProjectJQPlayerController::SkillTriggered);
+			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Completed, this, &AProjectJQPlayerController::SkillCompleted);
+			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Canceled, this, &AProjectJQPlayerController::SkillCanceled);
 		}
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+
+	SaveCurrentBindAction();
 }
 
 void AProjectJQPlayerController::OnInputStarted()
@@ -183,71 +206,75 @@ void AProjectJQPlayerController::Attack()
 	}
 }
 
-void AProjectJQPlayerController::SkillTriggered(const FInputActionInstance& InInstance)
+void AProjectJQPlayerController::SkillTriggered(FInputActionValue InActionValue, float InElapsedTime,
+	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
 	if(pc == nullptr)
 		return;
 	
-	pc->SkillTriggered(GetSkillInputKeyFromAction(InInstance));
+	pc->SkillTriggered(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-void AProjectJQPlayerController::SkillStarted(const FInputActionInstance& InInstance)
+void AProjectJQPlayerController::SkillStarted(FInputActionValue InActionValue, float InElapsedTime,
+	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
 	if(pc == nullptr)
 		return;
 	
-	pc->SkillStarted(GetSkillInputKeyFromAction(InInstance));
+	pc->SkillStarted(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-void AProjectJQPlayerController::SkillOnGoing(const FInputActionInstance& InInstance)
+void AProjectJQPlayerController::SkillOnGoing(FInputActionValue InActionValue, float InElapsedTime,
+	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
 	if(pc == nullptr)
 		return;
 	
-	pc->SkillOnGoing(GetSkillInputKeyFromAction(InInstance));
+	pc->SkillOnGoing(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-void AProjectJQPlayerController::SkillCanceled(const FInputActionInstance& InInstance)
+void AProjectJQPlayerController::SkillCanceled(FInputActionValue InActionValue, float InElapsedTime,
+	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
 	if(pc == nullptr)
 		return;
 	
-	pc->SkillCanceled(GetSkillInputKeyFromAction(InInstance));
+	pc->SkillCanceled(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-void AProjectJQPlayerController::SkillCompleted(const FInputActionInstance& InInstance)
+void AProjectJQPlayerController::SkillCompleted(FInputActionValue InActionValue, float InElapsedTime,
+	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
 	if(pc == nullptr)
 		return;
 	
-	pc->SkillCompleted(GetSkillInputKeyFromAction(InInstance));
+	pc->SkillCompleted(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-const ESkillInputKey AProjectJQPlayerController::GetSkillInputKeyFromAction(const FInputActionInstance &inInstance) const
+const ESkillInputKey AProjectJQPlayerController::GetSkillInputKeyFromAction(const UInputAction* InSourceAction) const
 {
-	if (const UInputAction *inputAction = inInstance.GetSourceAction())
-	{
-		if (inputAction->GetName().Contains(TEXT("IA_SkillQ")))
-			return ESkillInputKey::Q;
+	if (InSourceAction->GetName().Contains(TEXT("IA_SkillQ")))
+		return ESkillInputKey::Q;
 		
-		else if (inputAction->GetName().Contains(TEXT("IA_SkillW")))
-			return ESkillInputKey::W;
+	else if (InSourceAction->GetName().Contains(TEXT("IA_SkillW")))
+		return ESkillInputKey::W;
 		
-		else if (inputAction->GetName().Contains(TEXT("IA_SkillE")))
-			return ESkillInputKey::E;
+	else if (InSourceAction->GetName().Contains(TEXT("IA_SkillE")))
+		return ESkillInputKey::E;
 		
-		else if (inputAction->GetName().Contains(TEXT("IA_SkillR")))
-			return ESkillInputKey::R;
+	else if (InSourceAction->GetName().Contains(TEXT("IA_SkillR")))
+		return ESkillInputKey::R;
 
-		else if (inputAction->GetName().Contains(TEXT("IA_BasicAttack")))
-			return ESkillInputKey::BasicAttack;
-	}
-	return ESkillInputKey::None;
+	else if (InSourceAction->GetName().Contains(TEXT("IA_BasicAttack")))
+		return ESkillInputKey::BasicAttack;
+	
+	else
+		return ESkillInputKey::None;
 }
 
 void AProjectJQPlayerController::OnOffInventory()
@@ -257,14 +284,100 @@ void AProjectJQPlayerController::OnOffInventory()
 		return;
 
 	UInventory* inven = comp->GetInventoryUI();
+	//인벤토리 UI Off
 	if(inven->GetVisibility() == ESlateVisibility::Visible)
 	{
 		inven->SetVisibility(ESlateVisibility::Collapsed);
 		inven->RemoveFromParent();
+		RestoreBindAction();
 	}
+	//인벤토리 UI On
 	else
 	{
 		inven->SetVisibility(ESlateVisibility::Visible);
 		inven->AddToViewport();
+		
+		JQUnbindAction(SetDestinationClickAction, ETriggerEvent::Started);
+		JQUnbindAction(SetDestinationClickAction, ETriggerEvent::Triggered);
+		JQUnbindAction(SetDestinationClickAction, ETriggerEvent::Completed);
+		JQUnbindAction(SetDestinationClickAction, ETriggerEvent::Canceled);
+
+		JQUnbindAction(SetDestinationTouchAction, ETriggerEvent::Started);
+		JQUnbindAction(SetDestinationTouchAction, ETriggerEvent::Triggered);
+		JQUnbindAction(SetDestinationTouchAction, ETriggerEvent::Completed);
+		JQUnbindAction(SetDestinationTouchAction, ETriggerEvent::Canceled);
+
+		JQUnbindAction(ZoomInAction, ETriggerEvent::Triggered);
+		JQUnbindAction(ZoomOutAction, ETriggerEvent::Triggered);
+
+		for(ESkillInputKey inputKeyType : TEnumRange<ESkillInputKey>())
+		{
+			if(inputKeyType == ESkillInputKey::None) continue;
+
+			JQUnbindAction(SkillAction[inputKeyType], ETriggerEvent::Started);
+			JQUnbindAction(SkillAction[inputKeyType], ETriggerEvent::Ongoing);
+			JQUnbindAction(SkillAction[inputKeyType], ETriggerEvent::Triggered);
+			JQUnbindAction(SkillAction[inputKeyType], ETriggerEvent::Completed);
+			JQUnbindAction(SkillAction[inputKeyType], ETriggerEvent::Canceled);
+		}
+	}
+}
+
+void AProjectJQPlayerController::JQBindAction(const UInputAction* InInputAction, ETriggerEvent InTriggerEvent, FName InFunctionName)
+{
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		BindActionInfo info;
+		info.IA = InInputAction;
+		info.TriggerEvent = InTriggerEvent;
+		info.FunctionName = InFunctionName;
+		info.Handle = EnhancedInputComponent->BindAction(InInputAction, InTriggerEvent, this, InFunctionName).GetHandle();
+		CurrentBindActionInfos.Add(info);
+	}
+}
+
+void AProjectJQPlayerController::JQUnbindAction(const UInputAction* InInputAction, ETriggerEvent InTriggerEvent)
+{
+	for(TArray<BindActionInfo>::TIterator iter(CurrentBindActionInfos.CreateIterator()); iter; ++iter)
+	{
+		if(iter->IA == InInputAction && iter->TriggerEvent == InTriggerEvent)
+		{
+			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+			{
+				if(!EnhancedInputComponent->RemoveBindingByHandle(iter->Handle))
+					EnhancedInputComponent->RemoveActionBindingForHandle(iter->Handle);
+			}
+			
+			iter.RemoveCurrent();
+		}
+	}
+}
+
+void AProjectJQPlayerController::SaveCurrentBindAction()
+{
+	SavedBindActionInfos.Add(CurrentBindActionInfos);
+}
+
+void AProjectJQPlayerController::RestoreBindAction()
+{
+	if(SavedBindActionInfos.IsEmpty())
+		return;
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		//기존 바인딩 해제
+		EnhancedInputComponent->ClearActionBindings();
+		CurrentBindActionInfos.Empty();
+
+		//저장된 바인딩액션 인포 중 가장 위의 데이터 복구
+		for(const BindActionInfo& info : SavedBindActionInfos[SavedBindActionInfos.Num() - 1])
+		{
+			JQBindAction(info.IA, info.TriggerEvent, info.FunctionName);
+		}
+	}
+	//루트 바인딩 액션 인포가 아니면 Pop
+	if(SavedBindActionInfos.Num() != 1)
+	{
+		SavedBindActionInfos.Pop();
 	}
 }

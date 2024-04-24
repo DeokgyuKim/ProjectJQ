@@ -3,6 +3,7 @@
 
 #include "InventoryComponent.h"
 
+#include "ProjectJQ/Character/CharacterBase.h"
 #include "ProjectJQ/Data/ItemDataTable.h"
 #include "ProjectJQ/Item/ItemActor.h"
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
@@ -64,6 +65,7 @@ void UInventoryComponent::BeginPlay()
 	}
 
 	InventoryUI = Cast<UInventory>(gss->FindWidgetBase(id));
+	InventoryUI->SetOwner(Cast<ACharacterBase>(GetOwner()));
 }
 
 // Called every frame
