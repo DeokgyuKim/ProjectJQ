@@ -65,25 +65,26 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
 	FVector ColliderBoxExtend = FVector::ZeroVector;
 
+	// 트리거 이벤트와 몽타주 섹션 이름을 담아두는 맵입니다.
+	TMap<ETriggerEvent, FSkillAnimMontageInfo> EventSkillsMap;
+
+	//충돌 판정을 어떤 걸로 할 건지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
+	EAttackRangeType AttackRangeType = EAttackRangeType::None;
+
 	/*
 	 공격 범위 길이입니다.
 	 box : 해당 변수를 사용하지 않음.
 	 sphere : 구의 반지름
 	 Projectile : 투사체 날아가는 거리
+	 arc : 호의 반지름
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
 	float Length;
 	
-	// 트리거 이벤트와 몽타주 섹션 이름을 담아두는 맵입니다.
-	TMap<ETriggerEvent, FSkillAnimMontageInfo> EventSkillsMap;
-
 	//투사체 BP를 저장하는 변수입니다.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
 	TSubclassOf<AJQProjectile> ProjectileObject;
-
-	//충돌 판정을 어떤 걸로 할 건지
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
-	EAttackRangeType AttackRangeType = EAttackRangeType::None;
 
 	//데칼 머테리얼, null이 아니면 키 Released 시에 스킬이 시전됩니다.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
@@ -91,6 +92,9 @@ public:
 
 	//데칼 액터 포인터
 	TObjectPtr<ADecalActor> DecalActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "JQ_Skill")
+	float ArcAngle;
 
 
 protected:

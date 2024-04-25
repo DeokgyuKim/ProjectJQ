@@ -11,6 +11,7 @@
 #include "../SubSystem/ObjectManagementGSS.h"
 #include "Components/DecalComponent.h"
 #include "Engine/DecalActor.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values for this component's properties
 USkillStampComponent::USkillStampComponent()
@@ -169,6 +170,7 @@ void USkillStampComponent::SkillStarted()
 		UDecalComponent* decalComponent = DecalActor->GetDecal();
 		
 		//데칼의 크기를 조정합니다.
+		//TODO : 호 형태 데칼 제작
 		switch (AttackRangeType)
 		{
 		case EAttackRangeType::Sphere:
@@ -176,6 +178,12 @@ void USkillStampComponent::SkillStarted()
 			break;
 		case EAttackRangeType::Projectile:
 			decalComponent->DecalSize = FVector(Length, Length, 300);
+			break;
+		case EAttackRangeType::Arc:
+			UMaterialInstanceDynamic* dynMaterial = UMaterialInstanceDynamic::Create(DecalMaterial, this);
+			dynMaterial->SetScalarParameterValue(FName("Angle"), ArcAngle);
+			DecalActor->SetDecalMaterial(dynMaterial);
+			decalComponent->DecalSize = FVector(300, Length * 2, Length * 2);
 			break;
 		}
 		return;
@@ -192,15 +200,22 @@ void USkillStampComponent::SkillTriggered()
 
 	if(DecalActor->IsValidLowLevel())
 	{
+		FVector location;
+		FRotator rotation;
 		switch (AttackRangeType)
 		{
 		case EAttackRangeType::Sphere:
 			DecalActor->SetActorLocation(OwnerPC->GetActorLocation());
 			break;
 		case EAttackRangeType::Projectile:
-			FVector location = (OwnerPC->GetActorLocation() + GetVector2DFromCharacterToMousePointer() * (OwnerPC->GetCapsuleComponent()->GetScaledCapsuleRadius() + Length));
-			FRotator rotation = GetVector2DFromCharacterToMousePointer().Rotation();
+			location = (OwnerPC->GetActorLocation() + GetVector2DFromCharacterToMousePointer() * (OwnerPC->GetCapsuleComponent()->GetScaledCapsuleRadius() + Length));
+			rotation = GetVector2DFromCharacterToMousePointer().Rotation();
 			DecalActor->SetActorLocationAndRotation(location, FRotator(90, rotation.Yaw + 90, 0));
+			break;
+		case EAttackRangeType::Arc:
+			location = OwnerPC->GetActorLocation();
+			rotation = GetVector2DFromCharacterToMousePointer().Rotation();
+			DecalActor->SetActorLocationAndRotation(location, FRotator(90, rotation.Yaw + 180, 0));
 			break;
 		}
 		return;
@@ -244,9 +259,13 @@ void USkillStampComponent::SkillCompleted()
 		DecalActor->Destroy();
 	}
 
-	for(const FSkillAnimMontageInfo& info : SkillAnimInfos)
-		if(OwnerPC.IsValid() && info.PlayTiming == ETriggerEvent::Completed)
-			OwnerPC->PlayCharacterAnimMontage(1.f, info.SectionName);
+	FSkillAnimMontageInfo* currentInfo = EventSkillsMap.Find(ETriggerEvent::Completed);
+	if(OwnerPC.IsValid() && currentInfo != nullptr)
+	{
+		SetCharacterRotationToMousePointer(GetVector2DFromCharacterToMousePointer());
+		FName playSection = *FString::Printf(TEXT("%s%d"), *currentInfo->SectionName.ToString(), Count);
+		OwnerPC->PlayCharacterAnimMontage(1.f, playSection);
+	}
 }
 
 FVector USkillStampComponent::GetWorldLocationAtMousePointer()
@@ -275,5 +294,3 @@ void USkillStampComponent::SetCharacterRotationToMousePointer(FVector InVectorTo
 	const FVector direction2D = FVector(InVectorToMouse.X, InVectorToMouse.Y, 0);
 	OwnerPC->SetActorRotation(direction2D.Rotation());
 }
-
-

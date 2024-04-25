@@ -76,5 +76,6 @@ enum class EAttackRangeType : uint8
 	None = 0,
 	Box			UMETA(ToolTip = "박스 형태 공격"),
 	Sphere		UMETA(ToolTip = "구 형태 공격"),
-	Projectile	UMETA(ToolTip = "투사체 공격")
+	Projectile	UMETA(ToolTip = "투사체 공격"),
+	Arc			UMETA(TooTip = "호 형태 공격")
 };
