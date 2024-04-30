@@ -49,14 +49,10 @@ public:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
-	
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* SetDestinationClickAction;
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* SetDestinationTouchAction;
+	/** Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* ZoomInAction;
@@ -83,17 +79,8 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-	/** Input handlers for SetDestination action. */
 	UFUNCTION()
-	void OnInputStarted();
-	UFUNCTION()
-	void OnSetDestinationTriggered();
-	UFUNCTION()
-	void OnSetDestinationReleased();
-	UFUNCTION()
-	void OnTouchTriggered();
-	UFUNCTION()
-	void OnTouchReleased();
+	void Move(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction);
 
 	/* Camera Zoom Action */
 	UFUNCTION()

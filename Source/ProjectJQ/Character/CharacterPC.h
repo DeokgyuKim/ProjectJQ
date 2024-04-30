@@ -45,6 +45,8 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 public:
+	void Move(const FInputActionValue& InValue);
+	
 	void SkillTriggered(ESkillInputKey InInputKey);
     void SkillStarted(ESkillInputKey InInputKey);
     void SkillOnGoing(ESkillInputKey InInputKey);

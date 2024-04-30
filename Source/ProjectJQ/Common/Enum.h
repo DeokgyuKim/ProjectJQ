@@ -49,7 +49,6 @@ enum class ESkillInputKey : uint8
 {
 	None = 0,
 	Q			UMETA(ToolTip = "스킬"),
-	W			UMETA(ToolTip = "스킬"),
 	E			UMETA(ToolTip = "스킬"),
 	R			UMETA(ToolTip = "스킬"),
 	BasicAttack	UMETA(ToolTip = "기본공격"),

@@ -54,40 +54,13 @@ void AProjectJQPlayerController::SetupInputComponent()
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		// Setup mouse input events
-		JQBindAction(SetDestinationClickAction, ETriggerEvent::Started, TEXT("OnInputStarted"));
-		JQBindAction(SetDestinationClickAction, ETriggerEvent::Triggered, TEXT("OnSetDestinationTriggered"));
-		JQBindAction(SetDestinationClickAction, ETriggerEvent::Completed, TEXT("OnSetDestinationReleased"));
-		JQBindAction(SetDestinationClickAction, ETriggerEvent::Canceled, TEXT("OnSetDestinationReleased"));
-		
-		//EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AProjectJQPlayerController::OnInputStarted);
-		//EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnSetDestinationTriggered);
-		//EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AProjectJQPlayerController::OnSetDestinationReleased);
-		//EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AProjectJQPlayerController::OnSetDestinationReleased);
-
-		// Setup touch input events
-		JQBindAction(SetDestinationTouchAction, ETriggerEvent::Started, TEXT("OnInputStarted"));
-		JQBindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, TEXT("OnTouchTriggered"));
-		JQBindAction(SetDestinationTouchAction, ETriggerEvent::Completed, TEXT("OnTouchReleased"));
-		JQBindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, TEXT("OnTouchReleased"));
-		
-		//EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AProjectJQPlayerController::OnInputStarted);
-		//EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnTouchTriggered);
-		//EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AProjectJQPlayerController::OnTouchReleased);
-		//EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AProjectJQPlayerController::OnTouchReleased);
+		JQBindAction(MoveAction, ETriggerEvent::Triggered, TEXT("Move"));
 
 		// Camera Zoom input events
 		JQBindAction(ZoomInAction, ETriggerEvent::Triggered, TEXT("OnZoomIn"));
 		JQBindAction(ZoomOutAction, ETriggerEvent::Triggered, TEXT("OnZoomOut"));
-		
-		//EnhancedInputComponent->BindAction(ZoomInAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomIn);
-		//EnhancedInputComponent->BindAction(ZoomOutAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnZoomOut);
 
 		JQBindAction(InventoryOnOff, ETriggerEvent::Triggered, TEXT("OnOffInventory"));
-		//EnhancedInputComponent->BindAction(InventoryOnOff, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::OnOffInventory);
-
-		// // Attack Input Events
-		// EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AProjectJQPlayerController::Attack);
 
 		for(ESkillInputKey inputKeyType : TEnumRange<ESkillInputKey>())
 		{
@@ -98,12 +71,6 @@ void AProjectJQPlayerController::SetupInputComponent()
 			JQBindAction(SkillAction[inputKeyType], ETriggerEvent::Triggered, TEXT("SkillTriggered"));
 			JQBindAction(SkillAction[inputKeyType], ETriggerEvent::Completed, TEXT("SkillCompleted"));
 			JQBindAction(SkillAction[inputKeyType], ETriggerEvent::Canceled, TEXT("SkillCanceled"));
-			
-			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Started, this, &AProjectJQPlayerController::SkillStarted);
-			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Ongoing, this, &AProjectJQPlayerController::SkillOnGoing);
-			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Triggered, this, &AProjectJQPlayerController::SkillTriggered);
-			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Completed, this, &AProjectJQPlayerController::SkillCompleted);
-			//EnhancedInputComponent->BindAction(SkillAction[inputKeyType], ETriggerEvent::Canceled, this, &AProjectJQPlayerController::SkillCanceled);
 		}
 	}
 	else
@@ -114,68 +81,13 @@ void AProjectJQPlayerController::SetupInputComponent()
 	SaveCurrentBindAction();
 }
 
-void AProjectJQPlayerController::OnInputStarted()
+void AProjectJQPlayerController::Move(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction)
 {
-	StopMovement();
-}
-
-// Triggered every frame when the input is held down
-void AProjectJQPlayerController::OnSetDestinationTriggered()
-{
-	// We flag that the input is being pressed
-	FollowTime += GetWorld()->GetDeltaSeconds();
-	
-	// We look for the location in the world where the player has pressed the input
-	FHitResult Hit;
-	bool bHitSuccessful = false;
-	if (bIsTouch)
+	ACharacterPC* PC = Cast<ACharacterPC>(GetPawn());
+	if(PC)
 	{
-		bHitSuccessful = GetHitResultUnderFinger(ETouchIndex::Touch1, ECollisionChannel::ECC_Visibility, true, Hit);
+		PC->Move(InActionValue);
 	}
-	else
-	{
-		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-	}
-
-	// If we hit a surface, cache the location
-	if (bHitSuccessful)
-	{
-		CachedDestination = Hit.Location;
-	}
-	
-	// Move towards mouse pointer or touch
-	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn != nullptr)
-	{
-		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
-	}
-}
-
-void AProjectJQPlayerController::OnSetDestinationReleased()
-{
-	// If it was a short press
-	if (FollowTime <= ShortPressThreshold)
-	{
-		// We move there and spawn some particles
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
-	}
-
-	FollowTime = 0.f;
-}
-
-// Triggered every frame when the input is held down
-void AProjectJQPlayerController::OnTouchTriggered()
-{
-	bIsTouch = true;
-	OnSetDestinationTriggered();
-}
-
-void AProjectJQPlayerController::OnTouchReleased()
-{
-	bIsTouch = false;
-	OnSetDestinationReleased();
 }
 
 void AProjectJQPlayerController::OnZoomIn()
@@ -261,9 +173,6 @@ const ESkillInputKey AProjectJQPlayerController::GetSkillInputKeyFromAction(cons
 	if (InSourceAction->GetName().Contains(TEXT("IA_SkillQ")))
 		return ESkillInputKey::Q;
 		
-	else if (InSourceAction->GetName().Contains(TEXT("IA_SkillW")))
-		return ESkillInputKey::W;
-		
 	else if (InSourceAction->GetName().Contains(TEXT("IA_SkillE")))
 		return ESkillInputKey::E;
 		
@@ -296,16 +205,8 @@ void AProjectJQPlayerController::OnOffInventory()
 	{
 		inven->SetVisibility(ESlateVisibility::Visible);
 		inven->AddToViewport();
-		
-		JQUnbindAction(SetDestinationClickAction, ETriggerEvent::Started);
-		JQUnbindAction(SetDestinationClickAction, ETriggerEvent::Triggered);
-		JQUnbindAction(SetDestinationClickAction, ETriggerEvent::Completed);
-		JQUnbindAction(SetDestinationClickAction, ETriggerEvent::Canceled);
 
-		JQUnbindAction(SetDestinationTouchAction, ETriggerEvent::Started);
-		JQUnbindAction(SetDestinationTouchAction, ETriggerEvent::Triggered);
-		JQUnbindAction(SetDestinationTouchAction, ETriggerEvent::Completed);
-		JQUnbindAction(SetDestinationTouchAction, ETriggerEvent::Canceled);
+		JQUnbindAction(MoveAction, ETriggerEvent::Triggered);
 
 		JQUnbindAction(ZoomInAction, ETriggerEvent::Triggered);
 		JQUnbindAction(ZoomOutAction, ETriggerEvent::Triggered);
