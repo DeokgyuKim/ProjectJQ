@@ -184,18 +184,4 @@ public:
 	virtual void ActiveBoxCollisionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 	virtual void ActiveSphereCollsionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 	virtual void ActiveProjectileAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
-public:
-	virtual void SkillStarted();
-	virtual void SkillTriggered();
-	virtual void SkillOnGoing();
-	virtual void SkillCanceled();
-	virtual void SkillCompleted();
-
-protected:
-	//카메라에서 마우스 커서로 레이를 쏴서 가장 처음 부딫힌 지점의 월드 좌표계를 구합니다.
-	FVector GetWorldLocationAtMousePointer();
-	//캐릭터에서 마우스 커서를 향하는 정규 벡터를 구합니다.
-	FVector GetVector2DFromCharacterToMousePointer();
-	//캐릭터를 마우스 방향으로 쳐다보게 합니다.
-	void SetCharacterRotationToMousePointer(FVector InVectorToMouse) const;
 };

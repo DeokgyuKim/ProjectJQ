@@ -7,7 +7,7 @@
 #include "InputActionValue.h"
 #include "CharacterPC.generated.h"
 
-class USkillStampComponent;
+class UPCSkillStampComponent;
 
 UCLASS(Blueprintable)
 class ACharacterPC : public ACharacterBase
@@ -23,13 +23,13 @@ class ACharacterPC : public ACharacterBase
 	class USpringArmComponent* CameraBoom;
 	
 	UPROPERTY(EditDefaultsOnly, Category="JQ_Skill")
-	TMap<ESkillInputKey, TSubclassOf<USkillStampComponent>> OwnSkills;
+	TMap<ESkillInputKey, TSubclassOf<UPCSkillStampComponent>> OwnSkills;
 
 	UPROPERTY()
-	TWeakObjectPtr<USkillStampComponent> CurrentSkill = nullptr;
+	TWeakObjectPtr<UPCSkillStampComponent> CurrentSkill = nullptr;
 
 	UPROPERTY()
-	TMap<ESkillInputKey, TObjectPtr<USkillStampComponent>> Skills;
+	TMap<ESkillInputKey, TObjectPtr<UPCSkillStampComponent>> Skills;
 
 
 public:
@@ -60,6 +60,6 @@ private:
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	USkillStampComponent* GetCurrentSkill(){return CurrentSkill.Get();}
+	UPCSkillStampComponent* GetCurrentSkill(){return CurrentSkill.Get();}
 };
 

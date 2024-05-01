@@ -14,7 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "../SubSystem/ObjectManagementGSS.h"
-#include "ProjectJQ/Component/SkillStampComponent.h"
+#include "ProjectJQ/Component/PCSkillStampComponent.h"
 
 ACharacterPC::ACharacterPC()
 {
@@ -62,7 +62,7 @@ void ACharacterPC::BeginPlay()
 
 	for(const TPair<ESkillInputKey, TSubclassOf<USkillStampComponent>>& skillStamp : OwnSkills)
 	{
-		USkillStampComponent* skillStampComp = NewObject<USkillStampComponent>(this, skillStamp.Value);
+		UPCSkillStampComponent* skillStampComp = NewObject<UPCSkillStampComponent>(this, skillStamp.Value);
 		skillStampComp->RegisterComponent();
 		if(skillStampComp->HasBeenInitialized() == false)
 			skillStampComp->InitializeComponent();
@@ -103,7 +103,7 @@ void ACharacterPC::Move(const FInputActionValue& InValue)
 
 void ACharacterPC::SkillTriggered(ESkillInputKey InInputKey)
 {
-	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	TObjectPtr<UPCSkillStampComponent>* findSkill = Skills.Find(InInputKey);
 	if(findSkill == nullptr || *findSkill == nullptr)
 		return;
 
@@ -113,7 +113,7 @@ void ACharacterPC::SkillTriggered(ESkillInputKey InInputKey)
 
 void ACharacterPC::SkillStarted(ESkillInputKey InInputKey)
 {
-	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	TObjectPtr<UPCSkillStampComponent>* findSkill = Skills.Find(InInputKey);
 	if(findSkill == nullptr || *findSkill == nullptr)
 		return;
 
@@ -123,7 +123,7 @@ void ACharacterPC::SkillStarted(ESkillInputKey InInputKey)
 
 void ACharacterPC::SkillOnGoing(ESkillInputKey InInputKey)
 {
-	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	TObjectPtr<UPCSkillStampComponent>* findSkill = Skills.Find(InInputKey);
 	if(findSkill == nullptr || *findSkill == nullptr)
 		return;
 
@@ -133,7 +133,7 @@ void ACharacterPC::SkillOnGoing(ESkillInputKey InInputKey)
 
 void ACharacterPC::SkillCanceled(ESkillInputKey InInputKey)
 {
-	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	TObjectPtr<UPCSkillStampComponent>* findSkill = Skills.Find(InInputKey);
 	if(findSkill == nullptr || *findSkill == nullptr)
 		return;
 
@@ -143,7 +143,7 @@ void ACharacterPC::SkillCanceled(ESkillInputKey InInputKey)
 
 void ACharacterPC::SkillCompleted(ESkillInputKey InInputKey)
 {
-	TObjectPtr<USkillStampComponent>* findSkill = Skills.Find(InInputKey);
+	TObjectPtr<UPCSkillStampComponent>* findSkill = Skills.Find(InInputKey);
 	if(findSkill == nullptr || *findSkill == nullptr)
 		return;
 
