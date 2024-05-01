@@ -151,11 +151,11 @@ void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurre
 	param.Rotation = rot;
 	param.CallbackSpawn = nullptr;
 	
-	AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileObject, param, GetOwner());
+	AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileAttackInfo.ProjectileObject, param, GetOwner());
 	
 	if(ProjectileActor)
 	{
-		ProjectileActor->Initialize(OwnerPC->GetActorForwardVector(), OwnerPC->GetController());
+		ProjectileActor->Initialize(OwnerPC->GetActorForwardVector(), OwnerPC->GetController(), ProjectileAttackInfo.Length);
 	}
 }
 
@@ -174,16 +174,16 @@ void USkillStampComponent::SkillStarted()
 		switch (AttackRangeType)
 		{
 		case EAttackRangeType::Sphere:
-			decalComponent->DecalSize = FVector(300, Length * 2, Length * 2);
+			decalComponent->DecalSize = FVector(300, SphereAttackInfo.SphereRadius * 2, SphereAttackInfo.SphereRadius * 2);
 			break;
 		case EAttackRangeType::Projectile:
-			decalComponent->DecalSize = FVector(Length, Length, 300);
+			decalComponent->DecalSize = FVector(ProjectileAttackInfo.Length / 2, ProjectileAttackInfo.Length / 2, 300);
 			break;
 		case EAttackRangeType::Arc:
 			UMaterialInstanceDynamic* dynMaterial = UMaterialInstanceDynamic::Create(DecalMaterial, this);
-			dynMaterial->SetScalarParameterValue(FName("Angle"), ArcAngle);
+			dynMaterial->SetScalarParameterValue(FName("Angle"), ArcAttackInfo.ArcAngle);
 			DecalActor->SetDecalMaterial(dynMaterial);
-			decalComponent->DecalSize = FVector(300, Length * 2, Length * 2);
+			decalComponent->DecalSize = FVector(300, ArcAttackInfo.Radius * 2, ArcAttackInfo.Radius * 2);
 			break;
 		}
 		return;
@@ -208,7 +208,7 @@ void USkillStampComponent::SkillTriggered()
 			DecalActor->SetActorLocation(OwnerPC->GetActorLocation());
 			break;
 		case EAttackRangeType::Projectile:
-			location = (OwnerPC->GetActorLocation() + GetVector2DFromCharacterToMousePointer() * (OwnerPC->GetCapsuleComponent()->GetScaledCapsuleRadius() + Length));
+			location = (OwnerPC->GetActorLocation() + GetVector2DFromCharacterToMousePointer() * (OwnerPC->GetCapsuleComponent()->GetScaledCapsuleRadius() + ProjectileAttackInfo.Length / 2));
 			rotation = GetVector2DFromCharacterToMousePointer().Rotation();
 			DecalActor->SetActorLocationAndRotation(location, FRotator(90, rotation.Yaw + 90, 0));
 			break;

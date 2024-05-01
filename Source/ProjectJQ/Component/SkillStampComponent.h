@@ -40,6 +40,65 @@ struct FSkillAnimMontageInfo
 	TObjectPtr<UNiagaraSystem> NiagaraSystem;
 };
 
+USTRUCT(BlueprintType)
+struct FBoxInfo
+{
+	GENERATED_BODY()
+
+	//공격 박스 크기
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "JQ_Skill")
+	FVector AttackBox;
+};
+
+USTRUCT(BlueprintType)
+struct FSphereInfo
+{
+	GENERATED_BODY()
+
+	//구의 반지름
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "JQ_Skill")
+	float SphereRadius;
+};
+
+USTRUCT(BlueprintType)
+struct FArcInfo
+{
+	GENERATED_BODY()
+
+	//호의 반지름
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "JQ_Skill")
+	float Radius;
+
+	//호의 각도
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "JQ_Skill")
+	float ArcAngle;
+};
+
+USTRUCT(BlueprintType)
+struct FProjectileInfo
+{
+	GENERATED_BODY()
+
+	//단발인지, 여러발 나가는지
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	bool IsSingleShot;
+
+	//여러발이면 몇 개가 발사되는지?
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	int NumOfProjectile;
+
+	//여러발이 어느 각도로 펼쳐 발사되는지?
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	int Angle;
+
+	//투사체의 발사 범위
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	float Length;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
+	TSubclassOf<AJQProjectile> ProjectileObject;
+};
+
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTJQ_API USkillStampComponent : public UActorComponent
 {
@@ -72,6 +131,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
 	EAttackRangeType AttackRangeType = EAttackRangeType::None;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	FBoxInfo BasicAttackInfo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	FSphereInfo SphereAttackInfo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	FArcInfo ArcAttackInfo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	FProjectileInfo ProjectileAttackInfo;
+
 	/*
 	 공격 범위 길이입니다.
 	 box : 해당 변수를 사용하지 않음.
@@ -79,12 +150,12 @@ public:
 	 Projectile : 투사체 날아가는 거리
 	 arc : 호의 반지름
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
-	float Length;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
+	// float Length;
 	
 	//투사체 BP를 저장하는 변수입니다.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
-	TSubclassOf<AJQProjectile> ProjectileObject;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
+	// TSubclassOf<AJQProjectile> ProjectileObject;
 
 	//데칼 머테리얼, null이 아니면 키 Released 시에 스킬이 시전됩니다.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
@@ -93,8 +164,8 @@ public:
 	//데칼 액터 포인터
 	TObjectPtr<ADecalActor> DecalActor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "JQ_Skill")
-	float ArcAngle;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "JQ_Skill")
+	// float ArcAngle;
 
 
 protected:

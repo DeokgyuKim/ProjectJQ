@@ -64,7 +64,7 @@ protected:
 	
 	AController* Attacker;
 public:
-	void Initialize(const FVector& ShootDirection, AController* Attacker);
+	void Initialize(const FVector& ShootDirection, AController* Attacker, float InMaxRange);
 
 	void SetAttacker(AController InController);
 protected:

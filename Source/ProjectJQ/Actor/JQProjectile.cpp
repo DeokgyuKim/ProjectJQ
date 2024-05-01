@@ -59,7 +59,7 @@ void AJQProjectile::BeginPlay()
 void AJQProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (FVector::Dist(StartLocation, GetActorLocation()) >= MaxRange)
 	{
 		UObjectManagementGSS* gss = GetOwner()->GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
@@ -70,10 +70,11 @@ void AJQProjectile::Tick(float DeltaTime)
 	PrevLocation = GetActorLocation();
 }
 
-void AJQProjectile::Initialize(const FVector& ShootDirection, AController* InAttacker)
+void AJQProjectile::Initialize(const FVector& ShootDirection, AController* InAttacker, float InMaxRange)
 {
 	StartLocation = PrevLocation = GetActorLocation();
 	ProjectileComponent->Velocity = ShootDirection * ProjectileComponent->InitialSpeed;
+	MaxRange = InMaxRange;
 	Attacker = InAttacker;
 }
 
