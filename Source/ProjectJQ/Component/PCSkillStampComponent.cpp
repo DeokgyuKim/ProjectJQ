@@ -55,14 +55,13 @@ void UPCSkillStampComponent::SkillStarted()
 {
 	LOG_SCREEN(FColor::White, TEXT("%s: SkillStarted"), *GetName());
 
-	if(DecalMaterial != nullptr)
+	if(DecalMaterial)
 	{
 		DecalActor = GetWorld()->SpawnActor<ADecalActor>(GetWorldLocationAtMousePointer(), FRotator::ZeroRotator);
 		DecalActor->SetDecalMaterial(DecalMaterial);
 		UDecalComponent* decalComponent = DecalActor->GetDecal();
 		
 		//데칼의 크기를 조정합니다.
-		//TODO : 호 형태 데칼 제작
 		switch (AttackRangeType)
 		{
 		case EAttackRangeType::Sphere:
@@ -80,17 +79,22 @@ void UPCSkillStampComponent::SkillStarted()
 		}
 		return;
 	}
-
-	for(const FSkillAnimMontageInfo& info : SkillAnimInfos)
-		if(OwnerPC.IsValid() && info.PlayTiming == ETriggerEvent::Started)
-			OwnerPC->PlayCharacterAnimMontage(1.f, info.SectionName);
+	
+	FSkillAnimMontageInfo* currentInfo = EventSkillsMap.Find(ETriggerEvent::Started);
+	if(OwnerPC.IsValid() && currentInfo != nullptr && OwnerPC->GetCanAttack() )
+	{
+		SetCharacterRotationToMousePointer(GetVector2DFromCharacterToMousePointer());
+		FName playSection = *FString::Printf(TEXT("%s%d"), *currentInfo->SectionName.ToString(), Count);
+		OwnerPC->PlayCharacterAnimMontage(1.f, playSection);
+		OwnerPC->SetCanAttack(false);
+	}
 }
 
 void UPCSkillStampComponent::SkillTriggered()
 {
 	LOG_SCREEN(FColor::White, TEXT("%s: SkillTriggerd"), *GetName());
 
-	if(DecalActor->IsValidLowLevel())
+	if(DecalMaterial != nullptr)
 	{
 		FVector location;
 		FRotator rotation;
@@ -113,50 +117,71 @@ void UPCSkillStampComponent::SkillTriggered()
 		return;
 	}
 
-	FSkillAnimMontageInfo* animInfo = EventSkillsMap.Find(ETriggerEvent::Triggered);
-	
-	if(animInfo == nullptr) return;
-	if(!OwnerPC.IsValid()) return;
-	if(Count > animInfo->ComboCount) return;
-	
-	FString inputSectionName = animInfo->SectionName.ToString();
-	FName NextSection = *FString::Printf(TEXT("%s%d"), *inputSectionName, Count);
-	OwnerPC->PlayCharacterAnimMontage(1.f, NextSection);
+	FSkillAnimMontageInfo* currentInfo = EventSkillsMap.Find(ETriggerEvent::Triggered);
+	if(OwnerPC.IsValid() && currentInfo != nullptr && OwnerPC->GetCanAttack())
+	{
+		SetCharacterRotationToMousePointer(GetVector2DFromCharacterToMousePointer());
+		FName playSection = *FString::Printf(TEXT("%s%d"), *currentInfo->SectionName.ToString(), Count);
+		OwnerPC->PlayCharacterAnimMontage(1.f, playSection);
+		OwnerPC->SetCanAttack(false);
+	}
+
+	// FSkillAnimMontageInfo* animInfo = EventSkillsMap.Find(ETriggerEvent::Triggered);
+	//
+	// if(animInfo == nullptr) return;
+	// if(!OwnerPC.IsValid()) return;
+	// if(Count > animInfo->ComboCount) return;
+	//
+	// FString inputSectionName = animInfo->SectionName.ToString();
+	// FName NextSection = *FString::Printf(TEXT("%s%d"), *inputSectionName, Count);
+	// OwnerPC->PlayCharacterAnimMontage(1.f, NextSection);
+	// OwnerPC->SetCanAttack(false);
 }
 
 void UPCSkillStampComponent::SkillOnGoing()
 {
 	LOG_SCREEN(FColor::White, TEXT("%s: SkillOnGoing"), *GetName());
 
-	for(const FSkillAnimMontageInfo& info : SkillAnimInfos)
-		if(OwnerPC.IsValid() && info.PlayTiming == ETriggerEvent::Ongoing)
-			OwnerPC->PlayCharacterAnimMontage(1.f, info.SectionName);
+	FSkillAnimMontageInfo* currentInfo = EventSkillsMap.Find(ETriggerEvent::Ongoing);
+	if(OwnerPC.IsValid() && currentInfo != nullptr && OwnerPC->GetCanAttack())
+	{
+		SetCharacterRotationToMousePointer(GetVector2DFromCharacterToMousePointer());
+		FName playSection = *FString::Printf(TEXT("%s%d"), *currentInfo->SectionName.ToString(), Count);
+		OwnerPC->PlayCharacterAnimMontage(1.f, playSection);
+		OwnerPC->SetCanAttack(false);
+	}
 }
 
 void UPCSkillStampComponent::SkillCanceled()
 {
 	LOG_SCREEN(FColor::White, TEXT("%s: SkillCanceled"), *GetName());
 
-	for(const FSkillAnimMontageInfo& info : SkillAnimInfos)
-		if(OwnerPC.IsValid() && info.PlayTiming == ETriggerEvent::Canceled)
-			OwnerPC->PlayCharacterAnimMontage(1.f, info.SectionName);
+	FSkillAnimMontageInfo* currentInfo = EventSkillsMap.Find(ETriggerEvent::Canceled);
+	if(OwnerPC.IsValid() && currentInfo != nullptr && OwnerPC->GetCanAttack())
+	{
+		SetCharacterRotationToMousePointer(GetVector2DFromCharacterToMousePointer());
+		FName playSection = *FString::Printf(TEXT("%s%d"), *currentInfo->SectionName.ToString(), Count);
+		OwnerPC->PlayCharacterAnimMontage(1.f, playSection);
+		OwnerPC->SetCanAttack(false);
+	}
 }
 
 void UPCSkillStampComponent::SkillCompleted()
 {
 	LOG_SCREEN(FColor::White, TEXT("%s: SkillCompleted"), *GetName());
-
-	if(DecalActor->IsValidLowLevel())
+	
+	if(DecalMaterial != nullptr)
 	{
 		DecalActor->Destroy();
 	}
-
+	
 	FSkillAnimMontageInfo* currentInfo = EventSkillsMap.Find(ETriggerEvent::Completed);
-	if(OwnerPC.IsValid() && currentInfo != nullptr)
+	if(OwnerPC.IsValid() && currentInfo != nullptr && OwnerPC->GetCanAttack())
 	{
 		SetCharacterRotationToMousePointer(GetVector2DFromCharacterToMousePointer());
 		FName playSection = *FString::Printf(TEXT("%s%d"), *currentInfo->SectionName.ToString(), Count);
 		OwnerPC->PlayCharacterAnimMontage(1.f, playSection);
+		OwnerPC->SetCanAttack(false);
 	}
 }
 

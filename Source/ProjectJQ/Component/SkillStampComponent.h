@@ -184,4 +184,5 @@ public:
 	virtual void ActiveBoxCollisionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 	virtual void ActiveSphereCollsionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 	virtual void ActiveProjectileAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
+	virtual void ActiveArcAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 };

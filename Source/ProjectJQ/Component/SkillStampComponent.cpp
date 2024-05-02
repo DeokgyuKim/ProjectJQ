@@ -90,9 +90,13 @@ void USkillStampComponent::_ActiveSkill(FName InAnimSectionName)
 	case EAttackRangeType::Projectile:
 		ActiveProjectileAttack(findInfo);
 		break;
+	case EAttackRangeType::Arc:
+		break;
 	case EAttackRangeType::None:
 		break;
 	}
+	
+	OwnerPC->SetCanAttack(true);
 }
 
 void USkillStampComponent::ActiveBoxCollisionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
@@ -136,7 +140,30 @@ void USkillStampComponent::ActiveBoxCollisionAttack(FSkillAnimMontageInfo* InCur
 
 void USkillStampComponent::ActiveSphereCollsionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
 {
-	return;
+	// TODO : 구 형태 공격 판정 범위 구현
+	FCollisionQueryParams param;
+	param.AddIgnoredActor(OwnerPC.Get());
+	TArray<FOverlapResult> overlapResults;
+	
+	
+	if(GetWorld()->OverlapMultiByChannel(overlapResults, OwnerPC->GetActorLocation(), FQuat::Identity, CCHANNEL_CharacterBase,
+		FCollisionShape::MakeSphere(SphereAttackInfo.SphereRadius), param))
+	{
+		for(const FOverlapResult& result : overlapResults)
+		{
+			ACharacterBase* target = Cast<ACharacterBase>(result.GetActor());
+			if(target == nullptr)
+				continue;
+
+			if(target->GetCharacterType() == TargetType)
+			{
+				FDamageEvent event;
+				target->TakeDamage(10.f, event, OwnerPC->GetController(), OwnerPC.Get());
+			}
+		}
+	}
+
+	
 }
 
 void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
@@ -157,4 +184,11 @@ void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurre
 	{
 		ProjectileActor->Initialize(OwnerPC->GetActorForwardVector(), OwnerPC->GetController(), ProjectileAttackInfo.Length);
 	}
+}
+
+void USkillStampComponent::ActiveArcAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
+{
+	//원기둥을 중심으로
+	
+	
 }

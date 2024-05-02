@@ -31,6 +31,9 @@ protected:
 	TObjectPtr<UAnimMontage> AnimMontage;
 
 	ECharacterType CharacterType = ECharacterType::None;
+
+	// true이면 공격 불가능 (ex. 스킬 애니메이션이 재생 중일 때에는 스킬 입력을 막는다)
+	bool CanAttack = true;
 public:
 	constexpr static float INVALID_ANIMMONTAGE = -1.f;
 public:
@@ -47,5 +50,8 @@ public:
 
 	//캐릭터 베이스에 등록한 AnimMontage를 재생합니다.
 	float PlayCharacterAnimMontage(float InPlayRate, FName InSectionName);
+
+	FORCEINLINE void SetCanAttack(bool InCanAttack) {CanAttack = InCanAttack;}
+	FORCEINLINE bool GetCanAttack() const {return CanAttack;}
 };
 
