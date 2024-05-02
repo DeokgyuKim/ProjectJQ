@@ -24,11 +24,11 @@ struct PROJECTJQ_API FItemDataTable : public FTableRowBase
 
 	//아이템 이미지
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UTexture> UIImage = nullptr;
+	UTexture2D* UIImage = nullptr;
 	
 	//월드에서 보여줄 스태틱 메쉬
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UStaticMesh> ItemMesh = nullptr;
+	UStaticMesh* ItemMesh = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool PresetGemstone = false;

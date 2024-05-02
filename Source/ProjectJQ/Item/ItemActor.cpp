@@ -5,7 +5,7 @@
 #include "../Data/ItemDataTable.h"
 #include "../Component/StatControlComponent.h"
 
-#include <Engine/Texture.h>
+#include <Engine/Texture2D.h>
 #include <Engine/StaticMesh.h>
 #include <Components/StaticMeshComponent.h>
 
@@ -38,15 +38,10 @@ void AItemActor::BeginPlay()
 	// 데이터 테이블 기반으로 아이템 정보 추가
 	ItemDescription = itemTable->ItemDescription;
 	ItemStat = itemTable->ItemStat;
-	UIImage = NewObject<UTexture>(itemTable->UIImage);
-	if(UIImage == nullptr)
-		return;
+	UIImage = itemTable->UIImage;
 
 	//스태틱 메시
-	ItemMesh = NewObject<UStaticMesh>(itemTable->ItemMesh);
-	if(ItemMesh == nullptr)
-		return;
-
+	ItemMesh = itemTable->ItemMesh;
 	StaticMeshComp->SetStaticMesh(ItemMesh);
 
 	//젬스톤 세팅
@@ -64,6 +59,8 @@ void AItemActor::BeginPlay()
 	}
 
 	//아이템 디테일 위젯 생성
+
+	/*
 	UUIManagementGSS* gss = GetGameInstance()->GetSubsystem<UUIManagementGSS>();
 	if(gss == nullptr)
 		return;
@@ -79,10 +76,12 @@ void AItemActor::BeginPlay()
 	ItemInfoDetailWidget = Cast<UItemDetail>(widget);
 	if(ItemInfoDetailWidget == nullptr)
 		return;
+	
 
 	//아이템 디테일 위젯에 정보 추가
 	for(const TPair<EStatControlType, double>& info : ItemStat)
 		ItemInfoDetailWidget->AddStatWidget(info.Key, info.Value);
+	*/
 	
 }
 

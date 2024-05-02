@@ -31,7 +31,7 @@ class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetIn
 	EGemStoneType Gemstones[3];
 
 	//아이템 이미지
-	TObjectPtr<UTexture> UIImage;
+	TObjectPtr<UTexture2D> UIImage;
 	
 	//인벤토리 등에서 사용할 아이템 정보 디테일 위젯
 	TObjectPtr<UItemDetail> ItemInfoDetailWidget;
@@ -52,6 +52,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+public:
+	UTexture2D* GetItemImage(){return UIImage;}
 
 public:
 	// 아이템 이름을 설정합니다.

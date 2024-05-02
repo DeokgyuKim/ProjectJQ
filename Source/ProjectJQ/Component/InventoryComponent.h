@@ -27,6 +27,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UInventory> InventoryUI;
+
+public:
+	static constexpr int32 TotalItemCount = 50;
 	
 public:	
 	// Sets default values for this component's properties
@@ -44,4 +47,6 @@ public:
 
 public:
 	UInventory* GetInventoryUI(){return InventoryUI;}
+
+	void SwapItem(int32 InFromIndex, int32 InToIndex);
 };

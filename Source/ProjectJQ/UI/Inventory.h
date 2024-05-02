@@ -6,6 +6,8 @@
 #include "UserWidgetBase.h"
 #include "Inventory.generated.h"
 
+class AItemActor;
+class UJQSlotPure;
 class UScrollBox;
 class ACharacterBase;
 class UButton;
@@ -55,9 +57,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UScrollBox* ItemScroll;
 
-	TArray<TWeakObjectPtr<UImage>> Image_Items;
-
-	static constexpr int32 InventoryCount = 50;
+	TArray<TWeakObjectPtr<UJQSlotPure>> ItemSlot;
 
 public:
 	virtual void OnCreated() override;
@@ -65,6 +65,8 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void SetOwner(TWeakObjectPtr<ACharacterBase> InCharacter);
+
+	void RefreshInventory(const TArray<TWeakObjectPtr<AItemActor>>& InItems);
 
 public:
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;

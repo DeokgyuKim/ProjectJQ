@@ -9,6 +9,7 @@
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 #include "ProjectJQ/SubSystem/UIManagementGSS.h"
 #include "ProjectJQ/UI/Inventory.h"
+#include "ProjectJQ/UI/JQSlotPure.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -26,46 +27,61 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UDataTable* table = LOAD_DATA_TABLE(Item);
-	if(table == nullptr)
-		return;
-
 	if(GetOwner() == nullptr)
 		return;
-
-	//PresetItemNames를 기반으로 미리 세팅된 아이템 생성
-	for(const FString& name : PresetItemNames)
-	{
-		FItemDataTable* data = table->FindRow<FItemDataTable>(*name, name);
-		if(data == nullptr)
-			continue;
-		
-		UObjectManagementGSS* gss = GetOwner()->GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
-		FSpawnParam spawnParam;
-		spawnParam.Location = FVector::ZeroVector;
-		spawnParam.Rotation = FRotator::ZeroRotator;
-		TWeakObjectPtr<AActor> ownerPtr = GetOwner();
-		spawnParam.CallbackSpawn = [ownerPtr, &name](AActor* InActor)
-		{
-			if(ownerPtr.IsValid())
-				Cast<AItemActor>(InActor)->SetItemOwner(ownerPtr);
-			Cast<AItemActor>(InActor)->SetItemName(name);
-		};
-		AItemActor* item = gss->CreateActor<AItemActor>(AItemActor::StaticClass(), spawnParam);
-		if(item != nullptr)
-			Items.Add(item);
-	}
-
-	UUIManagementGSS* gss = GetOwner()->GetGameInstance()->GetSubsystem<UUIManagementGSS>();
-	int id = gss->CreateWidgetBase(TEXT("WBP_Inventory"), GetOwner()->GetName() + TEXT("_WBP_Inventory"), GetOwner());
+	
+	UUIManagementGSS* uiGss = GetOwner()->GetGameInstance()->GetSubsystem<UUIManagementGSS>();
+	int id = uiGss->CreateWidgetBase(TEXT("WBP_Inventory"), GetOwner()->GetName() + TEXT("_WBP_Inventory"), GetOwner());
 	if(id == UUIManagementGSS::INVALID_UIID)
 	{
 		LOG_SCREEN(FColor::Red, TEXT("Inventory UI 생성 실패: %d"), id)
 		return;
 	}
 
-	InventoryUI = Cast<UInventory>(gss->FindWidgetBase(id));
+	InventoryUI = Cast<UInventory>(uiGss->FindWidgetBase(id));
 	InventoryUI->SetOwner(Cast<ACharacterBase>(GetOwner()));
+
+
+	UDataTable* table = LOAD_DATA_TABLE(Item);
+	if(table == nullptr)
+		return;
+
+	Items.SetNum(TotalItemCount);
+	
+	//PresetItemNames를 기반으로 미리 세팅된 아이템 생성
+	for(int i = 0; i < PresetItemNames.Num(); ++i)
+	{
+		FItemDataTable* data = table->FindRow<FItemDataTable>(*PresetItemNames[i], PresetItemNames[i]);
+		if(data == nullptr)
+			continue;
+		
+		UObjectManagementGSS* omGss = GetOwner()->GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
+		FSpawnParam spawnParam;
+		spawnParam.Location = FVector::ZeroVector;
+		spawnParam.Rotation = FRotator::ZeroRotator;
+		TWeakObjectPtr<AActor> ownerPtr = GetOwner();
+		FString name = PresetItemNames[i];
+		spawnParam.CallbackSpawn = [ownerPtr, name](AActor* InActor)
+		{
+			if(ownerPtr.IsValid())
+				Cast<AItemActor>(InActor)->SetItemOwner(ownerPtr);
+			Cast<AItemActor>(InActor)->SetItemName(name);
+		};
+		AItemActor* item = omGss->CreateActor<AItemActor>(AItemActor::StaticClass(), spawnParam);
+		if(item != nullptr)
+		{
+			Items[i] = item;
+			//FString slotName = FString::Printf(TEXT("ItemSlot_%d"), i);
+			//UWidget* widget = (*InventoryUI)[*slotName];
+			//if(UJQSlotPure* slot = Cast<UJQSlotPure>(widget))
+			//	slot->SetItem(item->GetItemImage());
+		}
+		
+		if(i >= 50)
+			break;
+	}
+
+	InventoryUI->RefreshInventory(Items);
 }
 
 // Called every frame
@@ -82,8 +98,18 @@ void UInventoryComponent::BeginDestroy()
 
 	for(TWeakObjectPtr<AItemActor>& item : Items)
 	{
-		item->SetActorHiddenInGame(false);
+		//item->SetActorHiddenInGame(false);
 		
-		item->SetActorLocation(GetOwner()->GetActorLocation());
+		//item->SetActorLocation(GetOwner()->GetActorLocation());
 	}
+}
+
+void UInventoryComponent::SwapItem(int32 InFromIndex, int32 InToIndex)
+{
+	TWeakObjectPtr<AItemActor> toItem = Items[InToIndex];
+
+	Items[InToIndex] = Items[InFromIndex];
+	Items[InFromIndex] = toItem;
+
+	InventoryUI->RefreshInventory(Items);
 }
