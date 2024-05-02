@@ -57,6 +57,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UScrollBox* ItemScroll;
 
+	//아이템 슬롯 UI
 	TArray<TWeakObjectPtr<UJQSlotPure>> ItemSlot;
 
 public:
@@ -66,6 +67,7 @@ public:
 
 	void SetOwner(TWeakObjectPtr<ACharacterBase> InCharacter);
 
+	//인벤토리 UI를 넘겨받은 InItems로 리프레시 합니다.
 	void RefreshInventory(const TArray<TWeakObjectPtr<AItemActor>>& InItems);
 
 public:
