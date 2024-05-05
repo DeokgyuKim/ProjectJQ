@@ -143,20 +143,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
 	FProjectileInfo ProjectileAttackInfo;
 
-	/*
-	 공격 범위 길이입니다.
-	 box : 해당 변수를 사용하지 않음.
-	 sphere : 구의 반지름
-	 Projectile : 투사체 날아가는 거리
-	 arc : 호의 반지름
-	 */
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
-	// float Length;
-	
-	//투사체 BP를 저장하는 변수입니다.
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
-	// TSubclassOf<AJQProjectile> ProjectileObject;
-
 	//데칼 머테리얼, null이 아니면 키 Released 시에 스킬이 시전됩니다.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="JQ_Skill")
 	TObjectPtr<UMaterialInterface> DecalMaterial;
@@ -164,8 +150,6 @@ public:
 	//데칼 액터 포인터
 	TObjectPtr<ADecalActor> DecalActor;
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "JQ_Skill")
-	// float ArcAngle;
 
 
 protected:
@@ -185,4 +169,6 @@ public:
 	virtual void ActiveSphereCollsionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 	virtual void ActiveProjectileAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
 	virtual void ActiveArcAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo);
+
+	FVector RotateVectorFromYaw(FVector InVector, float Degree);
 };

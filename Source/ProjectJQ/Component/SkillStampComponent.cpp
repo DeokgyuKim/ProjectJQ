@@ -140,7 +140,6 @@ void USkillStampComponent::ActiveBoxCollisionAttack(FSkillAnimMontageInfo* InCur
 
 void USkillStampComponent::ActiveSphereCollsionAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
 {
-	// TODO : 구 형태 공격 판정 범위 구현
 	FCollisionQueryParams param;
 	param.AddIgnoredActor(OwnerPC.Get());
 	TArray<FOverlapResult> overlapResults;
@@ -177,18 +176,72 @@ void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurre
 	param.Location = pos;
 	param.Rotation = rot;
 	param.CallbackSpawn = nullptr;
-	
-	AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileAttackInfo.ProjectileObject, param, GetOwner());
-	
-	if(ProjectileActor)
+	if(ProjectileAttackInfo.IsSingleShot)
 	{
-		ProjectileActor->Initialize(OwnerPC->GetActorForwardVector(), OwnerPC->GetController(), ProjectileAttackInfo.Length);
+		AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileAttackInfo.ProjectileObject, param, GetOwner());
+	
+		if(ProjectileActor)
+		{
+			ProjectileActor->Initialize(OwnerPC->GetActorForwardVector(), OwnerPC->GetController(), ProjectileAttackInfo.Length);
+		}
+	}
+	else
+	{
+		float angleBetweenProjectile = ProjectileAttackInfo.Angle / (ProjectileAttackInfo.NumOfProjectile - 1);
+		FVector startVector = RotateVectorFromYaw(OwnerPC->GetActorForwardVector(), -ProjectileAttackInfo.Angle / 2);
+		for(int i = 0; i < ProjectileAttackInfo.NumOfProjectile; ++i)
+		{
+			AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileAttackInfo.ProjectileObject, param, GetOwner());
+	
+			if(ProjectileActor)
+			{
+				ProjectileActor->Initialize(RotateVectorFromYaw(startVector, i * angleBetweenProjectile), OwnerPC->GetController(), ProjectileAttackInfo.Length);
+			}
+		}
 	}
 }
 
 void USkillStampComponent::ActiveArcAttack(FSkillAnimMontageInfo* InCurrentPlayAnimMontageInfo)
 {
-	//원기둥을 중심으로
+	FCollisionQueryParams param;
+	param.AddIgnoredActor(OwnerPC.Get());
+	TArray<FOverlapResult> overlapResults;
 	
 	
+	if(GetWorld()->OverlapMultiByChannel(overlapResults, OwnerPC->GetActorLocation(), FQuat::Identity, CCHANNEL_CharacterBase,
+		FCollisionShape::MakeSphere(SphereAttackInfo.SphereRadius), param))
+	{
+		for(const FOverlapResult& result : overlapResults)
+		{
+			ACharacterBase* target = Cast<ACharacterBase>(result.GetActor());
+			if(target == nullptr)
+				continue;
+
+			if(target->GetCharacterType() == TargetType)
+			{
+				FVector dirToActor = (target->GetActorLocation() - OwnerPC->GetActorLocation()).GetSafeNormal2D();
+				float degree = FMath::RadiansToDegrees(acosf(FVector::DotProduct(OwnerPC->GetActorForwardVector(), dirToActor)));
+				if(degree <= ArcAttackInfo.ArcAngle / 2)
+				{
+					FDamageEvent event;
+					target->TakeDamage(10.f, event, OwnerPC->GetController(), OwnerPC.Get());
+				}
+			}
+		}
+	}
+}
+
+FVector USkillStampComponent::RotateVectorFromYaw(FVector InVector, float Degree)
+{
+	FVector result;
+	float Radian = FMath::DegreesToRadians(Degree);
+
+	float CosTheta = FMath::Cos(Radian);
+	float SinTheta = FMath::Sin(Radian);
+
+	result.X = InVector.X * CosTheta - InVector.Y * SinTheta;
+	result.Y = InVector.X * SinTheta + InVector.Y * CosTheta;
+	result.Z = 0;
+	
+	return result.GetSafeNormal();
 }
