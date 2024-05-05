@@ -11,7 +11,6 @@
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "JQCheatManager.h"
-#include "ProjectJQ/Component/AttackComponent.h"
 #include "ProjectJQ/Component/InventoryComponent.h"
 #include "ProjectJQ/SubSystem/UIManagementGSS.h"
 #include "ProjectJQ/UI/Inventory.h"
@@ -105,16 +104,6 @@ void AProjectJQPlayerController::OnZoomOut()
 	if(PC)
 	{
 		PC->GetCameraBoom()->TargetArmLength += ZoomValue;
-	}
-}
-
-void AProjectJQPlayerController::Attack()
-{
-	ACharacterBase* PC = Cast<ACharacterBase>(GetPawn());
-	if(PC)
-	{
-		UAttackComponent* AttackComponent = PC->GetComponentByClass<UAttackComponent>();
-		AttackComponent->ProcessComboCommand();
 	}
 }
 

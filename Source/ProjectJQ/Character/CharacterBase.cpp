@@ -3,7 +3,6 @@
 #include "CharacterBase.h"
 #include "../Component/StatControlComponent.h"
 #include "../Component/DecoratorComponent.h"
-#include "../Component/AttackComponent.h"
 
 #include <Animation/AnimInstance.h>
 #include <Components/SkeletalMeshComponent.h>
@@ -18,7 +17,6 @@ ACharacterBase::ACharacterBase()
 
 	StatControlComponent = CreateDefaultSubobject<UStatControlComponent>("StatControl");
 	DecoratorComponent = CreateDefaultSubobject<UDecoratorComponent>("Decorator");
-	AttackComponent = CreateDefaultSubobject<UAttackComponent>("Attack");
 }
 
 void ACharacterBase::Tick(float DeltaSeconds)

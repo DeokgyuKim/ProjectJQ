@@ -10,7 +10,6 @@
 
 class UDecoratorComponent;
 class UStatControlComponent;
-class UAttackComponent;
 class UAnimMontage;
 
 UCLASS(Blueprintable)
@@ -23,9 +22,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadwrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UDecoratorComponent> DecoratorComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadwrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAttackComponent> AttackComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category="JQ_Animation")
 	TObjectPtr<UAnimMontage> AnimMontage;

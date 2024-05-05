@@ -87,11 +87,7 @@ protected:
 	void OnZoomIn();
 	UFUNCTION()
 	void OnZoomOut();
-
-	/* Attack Action */
-	UFUNCTION()
-	void Attack();
-
+	
 	/* Skill Action*/
 	UFUNCTION()
 	void SkillTriggered(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction);
