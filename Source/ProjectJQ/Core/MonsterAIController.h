@@ -23,6 +23,12 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
+protected:
+	void OnRepeatTimer();
+
+	FTimerHandle RepeatTimerHandle;
+	float RepeatInterval = 5.0f;
 
 public:
 	// Called every frame
@@ -30,4 +36,7 @@ public:
 
 	//Ai를 실행합니다.
 	void RunAi(APawn* inPawn, bool inForced = false);
+
+	// 소유한 Actor Getter
+	class ACharacterMonster* GetMonster();
 };

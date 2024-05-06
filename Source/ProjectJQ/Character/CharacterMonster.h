@@ -15,6 +15,17 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<AAIController> AIController;
 
+	// 몬스터 능력
+	UPROPERTY()
+	TMap<FName, TObjectPtr<class USkillStampComponent>> SkillStampComponents;
+
+	// 공격 범위
+	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = "JQSD_Range", meta = (AllowPrivateAccess = "true"))
+	float AttackRange = 50.f;
+
+	// 추적할 플레이어
+	UPROPERTY()
+	TWeakObjectPtr<APawn> TargetPC = nullptr;
 public:
 	ACharacterMonster();
 
@@ -23,5 +34,8 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	void SetAIController(TWeakObjectPtr<AAIController> InAIController);
+	void OnFindRepeatTimer();
+
+	void SetTarget(TWeakObjectPtr<ACharacterBase> InPCTarget) { TargetPC = InPCTarget; }
 };
 

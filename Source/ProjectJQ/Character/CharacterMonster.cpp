@@ -5,6 +5,13 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
+#include "NavigationSystem.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "TimerManager.h"
+
+#include "AIController.h"
+
+
 ACharacterMonster::ACharacterMonster()
 {
 	// Activate ticking in order to update the cursor every frame.
@@ -30,4 +37,27 @@ void ACharacterMonster::SetAIController(TWeakObjectPtr<AAIController> InAIContro
 	if(InAIController == nullptr)
 		return;
 	AIController = InAIController;
+}
+
+void ACharacterMonster::OnFindRepeatTimer()
+{
+    if (!AIController.IsValid())
+        return;
+
+    APawn* pawn = AIController->GetPawn();
+    if (nullptr == pawn)
+        return;
+
+    // 월드상 네비메쉬를 얻어옴
+    UNavigationSystemV1* navSystem = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+    if (nullptr == navSystem)
+        return;
+
+    FNavLocation nextLocation;
+    if (navSystem->GetRandomPointInNavigableRadius(pawn->GetActorLocation(), 300.f, nextLocation))
+    {
+        // 도착지점 이동
+        UAIBlueprintHelperLibrary::SimpleMoveToLocation(AIController.Get(), nextLocation.Location);
+        UE_LOG(LogTemp, Warning, TEXT("Next Loction : %s"), *nextLocation.Location.ToString());
+    }
 }
