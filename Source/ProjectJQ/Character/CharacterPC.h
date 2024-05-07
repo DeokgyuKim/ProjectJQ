@@ -54,10 +54,6 @@ public:
     void SkillCanceled(ESkillInputKey InInputKey);
     void SkillCompleted(ESkillInputKey InInputKey);
 	
-private:
-	//마우스 피킹한 지점을 향해 회전합니다.
-	void RotateTowardsPickedPoint();
-	
 public:
 	UFUNCTION(BlueprintCallable)
 	UPCSkillStampComponent* GetCurrentSkill(){return CurrentSkill.Get();}

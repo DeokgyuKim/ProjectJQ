@@ -66,8 +66,8 @@ void UInventoryItemSector::RefreshInventory(const TArray<TWeakObjectPtr<AItemAct
 	for(int i = 0; i < InItems.Num(); ++i)
 	{
 		if(InItems[i] == nullptr)
-				ItemSlot[i]->SetItem(nullptr);
+			ItemSlot[i]->SetItem();
 		else
-				ItemSlot[i]->SetItem(InItems[i]->GetItemImage());
+			ItemSlot[i]->SetItem(InItems[i]->GetObjectId());
 	}
 }

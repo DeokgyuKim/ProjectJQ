@@ -9,6 +9,7 @@
 class UImage;
 class UBorder;
 class UCanvasPanel;
+class USlotDragDropOper;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FButtonDownDelegate);
 
@@ -21,6 +22,7 @@ class PROJECTJQ_API UJQSlotPure : public UUserWidgetBase
 	GENERATED_BODY()
 	
 protected:
+	////UI//////////////////////////////////////////////////////////////////////
 	//캔버스 패널 UI
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UCanvasPanel* CanvasPanel = nullptr;
@@ -32,11 +34,8 @@ protected:
 	//아이템 이미지 UI
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UImage* ItemImage = nullptr;
-
-	//아이템 텍스쳐
-	UPROPERTY()
-	UTexture2D* ItemTexture = nullptr;
-
+	
+	////Setting//////////////////////////////////////////////////////////////////////
 	//기본 텍스쳐
 	UPROPERTY(EditAnywhere)
 	UTexture2D* BasicTexture = nullptr;
@@ -49,12 +48,19 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int32 SlotIndex = 0;
 	
+	////Info//////////////////////////////////////////////////////////////////////
+	//아이템 Id
+	UPROPERTY()
+	int32 ItemId = -9999;
+
+protected:
+	virtual bool IsCanSwap(USlotDragDropOper* InSlotOper){return true;}
+	
 public:
 	virtual void OnCreated() override;
 
 public:
-	void SetItem(UTexture2D* InItemImage);
-	UTexture2D* GetItemTexture2D(){return ItemTexture;}
+	void SetItem(int32 InItemID = -9999);
 	int32 GetSlotIndex(){return SlotIndex;}
 
 public:

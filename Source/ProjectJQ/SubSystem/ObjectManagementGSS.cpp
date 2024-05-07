@@ -47,15 +47,16 @@ void UObjectManagementGSS::Initialize(FSubsystemCollectionBase& Collection)
 		}
 	}
 
-	FFstreamManager::OpenDataBinaryCustom(GetWorld()->GetMapName() + TEXT("_ObjectPoolingLog.bin"), std::ios::trunc);
+	//FFstreamManager::OpenDataBinaryCustom(GetWorld()->GetMapName() + TEXT("_ObjectPoolingLog.bin"), std::ios::trunc);
 
-	World->GetTimerManager().SetTimer(WritePoolingObjectHandle, this, &UObjectManagementGSS::WritePoolingObjectCount, 1.f, true);
+	//World->GetTimerManager().SetTimer(WritePoolingObjectHandle, this, &UObjectManagementGSS::WritePoolingObjectCount, 1.f, true);
 }
 
 void UObjectManagementGSS::Deinitialize()
 {
 	Super::Deinitialize();
 
+	/*
 	FFstreamManager::CloseDataBinaryCustom();
 
 	for(const TPair<FString, TMap<UClass*, FPoolingInfo>>& mapPoolingInfo : PoolingObjectInfo)
@@ -67,16 +68,17 @@ void UObjectManagementGSS::Deinitialize()
 		}
 		FFstreamManager::WriteDataBinary(mapPoolingInfo.Key + TEXT("_ObjectPooling.bin"), outData);
 	}
+	*/
 }
 
 void UObjectManagementGSS::WritePoolingObjectCount()
 {
 	TMap<UClass*, int32> actorCount;
-	for(TWeakObjectPtr<AActor> actor : ManagementTargets)
+	for(TPair<int32, TWeakObjectPtr<AActor>> actor : ManagementTargets)
 	{
-		if(actor->GetClass()->ImplementsInterface(UObjectPoolingInterface::StaticClass()))
+		if(actor.Value->GetClass()->ImplementsInterface(UObjectPoolingInterface::StaticClass()))
 		{
-			actorCount.FindOrAdd(actor->GetClass())++;
+			actorCount.FindOrAdd(actor.Value->GetClass())++;
 		}
 	}
 	
@@ -101,43 +103,62 @@ void UObjectManagementGSS::WritePoolingObjectCount()
 void UObjectManagementGSS::DestroyActor(AActor* InActor)
 {
 	//넘겨받은 액터 포인터가 존재하는 지 확인합니다.
-	auto findIndex = ManagementTargets.Find(InActor);
-	if(findIndex == INDEX_NONE)
+	int32 objectId = -1;
+	if(InActor->GetClass()->ImplementsInterface(UObjectManagementTargetInterface::StaticClass()))
+		objectId = Cast<IObjectManagementTargetInterface>(InActor)->GetObjectId();
+	else
 		return;
 
-	if(InActor->GetClass()->ImplementsInterface(UObjectPoolingInterface::StaticClass()))
+	TWeakObjectPtr<AActor>* destroyActor = ManagementTargets.Find(objectId);
+	if(destroyActor == nullptr)
+		return;
+	
+	if(destroyActor->IsValid())
 	{
-		//PoolingObject에 추가합니다.
-		Cast<IObjectPoolingInterface>(InActor)->Release();
-		PoolingObject.FindOrAdd(InActor->GetClass()).Add(InActor);
-		InActor->SetActorHiddenInGame(true);
-	}
-	else
-	{
-		//액터를 Detroy합니다.
-		InActor->SetActorHiddenInGame(true);
-		InActor->Destroy();
+		if(InActor->GetClass()->ImplementsInterface(UObjectPoolingInterface::StaticClass()))
+		{
+			//PoolingObject에 추가합니다.
+			Cast<IObjectPoolingInterface>(InActor)->Release();
+			PoolingObject.FindOrAdd(InActor->GetClass()).Add(InActor);
+			InActor->SetActorHiddenInGame(true);
+		}
+		else
+		{
+			//액터를 Detroy합니다.
+			InActor->SetActorHiddenInGame(true);
+			InActor->Destroy();
+		}
 	}
 	
 	//오브젝트를 관리하는 맵에서 삭제합니다.
-	ManagementTargets.RemoveAt(findIndex);
+	ManagementTargets.Remove(objectId);
 }
 
 int32 UObjectManagementGSS::AddActor(AActor* InActor)
 {
-	auto findActor = ManagementTargets.Find(InActor);
-	if(findActor != INDEX_NONE)
+	for(const TPair<int32, TWeakObjectPtr<AActor>>& target : ManagementTargets)
 	{
-		LOG_SCREEN(FColor::Yellow, TEXT("%s is Already Add In ManagementTargets"), *InActor->GetName())
-		return INVALID_OBJECTID;
+		if(target.Value == InActor)
+		{
+			LOG_SCREEN(FColor::Yellow, TEXT("%s is Already Add In ManagementTargets"), *InActor->GetName())
+			return INVALID_OBJECTID;
+		}
 	}
-
+	
 	//오브젝트ID 등록
 	int32 objId = ObjectIdGenerator.GenerateID();
 	SetObjectId(InActor, objId);
 
-	ManagementTargets.Add(InActor);
+	ManagementTargets.Add(objId, InActor);
 	return objId;
+}
+
+AActor* UObjectManagementGSS::FindActor(int32 InActorId)
+{
+	TWeakObjectPtr<AActor>* find = ManagementTargets.Find(InActorId);
+	if(find)
+		return find->Get();
+	return nullptr;
 }
 
 void UObjectManagementGSS::ReAllocatePoolingObject(FString InWorldName)

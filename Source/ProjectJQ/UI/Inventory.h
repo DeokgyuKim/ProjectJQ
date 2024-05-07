@@ -8,7 +8,7 @@
 
 class UInventoryItemSector;
 class AItemActor;
-class UJQSlotPure;
+class UJQEquipSlot;
 class UScrollBox;
 class ACharacterBase;
 class UButton;
@@ -24,24 +24,27 @@ class PROJECTJQ_API UInventory : public UUserWidgetBase
 
 protected:
 	TWeakObjectPtr<ACharacterBase> OwnerCharacter;
+
+	UPROPERTY()
+	TMap<EEquipItemUIType, UJQEquipSlot*> EquipSlot;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UImage* Image_Helmet;
+	UJQEquipSlot* Slot_Helmet;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UImage* Image_Armor;
+	UJQEquipSlot* Slot_Armor;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UImage* Image_RWeapon;
+	UJQEquipSlot* Slot_RWeapon;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UImage* Image_LWeapon;
+	UJQEquipSlot* Slot_LWeapon;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UImage* Image_Shoes;
+	UJQEquipSlot* Slot_Shoes;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UImage* Image_Necklace;
+	UJQEquipSlot* Slot_Necklace;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UButton* Button_Sort_KindOrder;
@@ -66,5 +69,5 @@ public:
 	void SetOwner(TWeakObjectPtr<ACharacterBase> InCharacter);
 
 	//인벤토리 UI를 넘겨받은 InItems로 리프레시 합니다.
-	void RefreshInventory(const TArray<TWeakObjectPtr<AItemActor>>& InItems);
+	void RefreshInventory(const TMap<EEquipItemUIType, TWeakObjectPtr<AItemActor>> InEquipItems, const TArray<TWeakObjectPtr<AItemActor>>& InItems);
 };

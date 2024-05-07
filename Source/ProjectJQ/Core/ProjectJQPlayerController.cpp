@@ -2,8 +2,6 @@
 
 #include "ProjectJQPlayerController.h"
 #include "GameFramework/Pawn.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "NiagaraFunctionLibrary.h"
 #include "../Character/CharacterPC.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
@@ -43,6 +41,13 @@ void AProjectJQPlayerController::BeginPlay()
 	{
 		gss->SetController(this);
 	}
+}
+
+void AProjectJQPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	RotateTowardsPickedPoint();
 }
 
 void AProjectJQPlayerController::SetupInputComponent()
@@ -270,4 +275,25 @@ void AProjectJQPlayerController::RestoreBindAction()
 	{
 		SavedBindActionInfos.Pop();
 	}
+}
+
+void AProjectJQPlayerController::RotateTowardsPickedPoint()
+{
+	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
+	if(pc == nullptr)
+		return;
+	
+	FHitResult hit;
+	
+	GetHitResultUnderCursor(ECC_Visibility, false, hit);
+
+	FVector underCursor = hit.Location;
+	underCursor.Z = 0.0;
+
+	FVector playerPosition = pc->GetActorLocation();
+	playerPosition.Z = 0.0f;
+
+	FRotator rotation = (underCursor - playerPosition).Rotation();
+
+	pc->SetActorRotation(rotation);
 }

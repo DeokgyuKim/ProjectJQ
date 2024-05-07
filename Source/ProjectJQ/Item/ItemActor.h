@@ -39,6 +39,9 @@ class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetIn
 	//월드에서 보여줄 스태틱 메쉬
 	TObjectPtr<UStaticMesh> ItemMesh;
 
+	//장비 아이템의 타입
+	EEquipItemType EquipItemType;
+
 	UPROPERTY()
 	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
 public:	
@@ -54,6 +57,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 public:
 	UTexture2D* GetItemImage(){return UIImage;}
+
+	EEquipItemType GetEquipItemType(){return EquipItemType;}
 
 public:
 	// 아이템 이름을 설정합니다.

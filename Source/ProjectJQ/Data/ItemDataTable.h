@@ -17,6 +17,10 @@ struct PROJECTJQ_API FItemDataTable : public FTableRowBase
 	//아이템 설명
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString ItemDescription = TEXT("");
+	
+	//장비 아이템의 타입
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EEquipItemType EquipItemType = EEquipItemType::Weapon;
 
 	//아이템 스탯
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

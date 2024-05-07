@@ -13,6 +13,8 @@
 #include "Components/Image.h"
 #include "GameFramework/Pawn.h"
 #include "ProjectJQ/Component/InventoryComponent.h"
+#include "ProjectJQ/Item/ItemActor.h"
+#include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 
 void UJQSlotPure::OnCreated()
 {
@@ -22,14 +24,27 @@ void UJQSlotPure::OnCreated()
 	ItemImage->SetOpacity(0.f);
 }
 
-void UJQSlotPure::SetItem(UTexture2D* InItemImage)
+void UJQSlotPure::SetItem(int32 InItemID)
 {
-	ItemTexture = InItemImage;
-	if(InItemImage == nullptr)
-		ItemImage->SetOpacity(0.f);		
-	else
+	UObjectManagementGSS* gss = GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
+	if(!gss)
+		return;
+
+	ItemId = InItemID;
+	AItemActor* item = Cast<AItemActor>(gss->FindActor(InItemID));
+
+	if(item)
+	{
+		UTexture2D* texture = item->GetItemImage();
 		ItemImage->SetOpacity(1.f);
-	ItemImage->SetBrushFromTexture(InItemImage);
+		ItemImage->SetBrushFromTexture(texture);
+	}
+	else
+	{
+		ItemImage->SetOpacity(0.f);
+		ItemImage->SetBrushFromTexture(nullptr);
+	}
+	
 }
 
 void UJQSlotPure::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -59,7 +74,8 @@ FReply UJQSlotPure::NativeOnMouseButtonDown(const FGeometry& InGeometry, const F
 
 	if(InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton) == true)
 	{
-		reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+		if(ItemId >= 0)
+			reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
 	}
 	
 	return reply.NativeReply;
@@ -74,9 +90,6 @@ FReply UJQSlotPure::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPo
 void UJQSlotPure::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
 	UDragDropOperation*& OutOperation)
 {
-	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
-	//LOG_SCREEN(FColor::White, TEXT("DragDetected Key: %s"), *InMouseEvent.GetEffectingButton().ToString())
-
 	if(OutOperation == nullptr)
 	{
 		LOG_SCREEN(FColor::White, TEXT("DragStart : %i"), GetSlotIndex())
@@ -84,8 +97,11 @@ void UJQSlotPure::NativeOnDragDetected(const FGeometry& InGeometry, const FPoint
 		USlotDragDropOper* oper = NewObject<USlotDragDropOper>();
 		OutOperation = oper;
 		oper->SlotIndex = SlotIndex;
+		oper->ItemId = ItemId;
 		oper->DefaultDragVisual = ItemImage;
 	}
+	
+	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 }
 
 bool UJQSlotPure::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
@@ -95,12 +111,17 @@ bool UJQSlotPure::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 
 	if(USlotDragDropOper* slotOper = Cast<USlotDragDropOper>(InOperation))
 	{
-		LOG_SCREEN(FColor::White, TEXT("DragComplete : %d"), GetSlotIndex())
-		if(UInventoryComponent* inventoryComp = Cast<UInventoryComponent>(GetOwningPlayerPawn()->GetComponentByClass(UInventoryComponent::StaticClass())))
+		if(IsCanSwap(slotOper))
 		{
-			inventoryComp->SwapItem(slotOper->SlotIndex, SlotIndex);
-			return true;
+			LOG_SCREEN(FColor::White, TEXT("DragComplete : %d"), GetSlotIndex())
+			if(UInventoryComponent* inventoryComp = Cast<UInventoryComponent>(GetOwningPlayerPawn()->GetComponentByClass(UInventoryComponent::StaticClass())))
+			{
+				inventoryComp->SwapItem(slotOper->SlotIndex, SlotIndex);
+				return true;
+			}
 		}
+		else
+			return true;
 	}
 	
 	LOG_SCREEN(FColor::White, TEXT("DragFailed : %d"), GetSlotIndex())

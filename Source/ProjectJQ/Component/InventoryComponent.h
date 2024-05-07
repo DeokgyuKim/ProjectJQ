@@ -17,6 +17,9 @@ protected:
 	//미리 들고있을 아이템을 설정합니다. Item 데이터 테이블을 바탕으로 만들어집니다.
 	UPROPERTY(EditDefaultsOnly, Category="JQ_Item")
 	TArray<FString> PresetItemNames;
+
+	//장비 중인 아이템
+	TMap<EEquipItemUIType, TWeakObjectPtr<AItemActor>> EquipItems;
 	
 	//인벤토리 아이템
 	TArray<TWeakObjectPtr<AItemActor>> Items;

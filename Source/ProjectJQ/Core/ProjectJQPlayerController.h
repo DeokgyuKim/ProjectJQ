@@ -79,6 +79,8 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	UFUNCTION()
 	void Move(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction);
 
@@ -113,6 +115,9 @@ protected:
 	void SaveCurrentBindAction();
 
 	void RestoreBindAction();
+
+	//마우스 피킹한 지점을 향해 회전합니다.
+	void RotateTowardsPickedPoint();
 
 private:
 	FVector CachedDestination;

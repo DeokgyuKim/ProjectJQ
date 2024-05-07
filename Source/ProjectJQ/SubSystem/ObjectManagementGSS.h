@@ -35,7 +35,7 @@ class PROJECTJQ_API UObjectManagementGSS : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 protected:
-	TArray<TWeakObjectPtr<AActor>>				ManagementTargets;
+	TMap<int32, TWeakObjectPtr<AActor>>			ManagementTargets;
 	FIdGenerator<int32>							ObjectIdGenerator;
 	TWeakObjectPtr<UWorld>						World;
 	TWeakObjectPtr<AProjectJQPlayerController>	Controller;
@@ -67,6 +67,8 @@ public:
 
 	int32 AddActor(AActor* InActor);
 
+	AActor* FindActor(int32 InActorId);
+
 	//InPredicate에 부합하는 액터를 반환합니다. 가장 먼저 부합하는 액터를 부합합니다.
 	template<typename T>
 	T* FindActorByPredicate(const std::function<bool(AActor*)>& InPredicate);
@@ -94,6 +96,7 @@ T* UObjectManagementGSS::CreateActor(UClass* InClass, const FSpawnParam& InSpawn
 
 
 	AActor* actor = nullptr;
+	int32 objId = -1;
 	if(InClass->ImplementsInterface(UObjectPoolingInterface::StaticClass()) && PoolingObject.Find(InClass) != nullptr)
 	{
 		actor = *PoolingObject.Find(InClass)->CreateIterator();
@@ -107,7 +110,7 @@ T* UObjectManagementGSS::CreateActor(UClass* InClass, const FSpawnParam& InSpawn
 		InSpawnParam.CallbackSpawn(actor);
 
 		//오브젝트ID 등록
-		int32 objId = ObjectIdGenerator.GenerateID();
+		objId = ObjectIdGenerator.GenerateID();
 		SetObjectId(actor, objId);
 
 		Cast<IObjectPoolingInterface>(actor)->Initialize();
@@ -131,14 +134,14 @@ T* UObjectManagementGSS::CreateActor(UClass* InClass, const FSpawnParam& InSpawn
 			InSpawnParam.CallbackSpawn(actor);
 		
 		//오브젝트ID 등록
-		int32 objId = ObjectIdGenerator.GenerateID();
+		objId = ObjectIdGenerator.GenerateID();
 		SetObjectId(actor, objId);
 		
 		//스폰 마무리
 		actor->FinishSpawning(spawnTransform);
 	}
 	
-	ManagementTargets.Add(actor);
+	ManagementTargets.Add(objId, actor);
 
 	return Cast<T>(actor);
 }
@@ -146,11 +149,11 @@ T* UObjectManagementGSS::CreateActor(UClass* InClass, const FSpawnParam& InSpawn
 template <typename T>
 T* UObjectManagementGSS::FindActorByPredicate(const std::function<bool(AActor*)>& InPredicate)
 {
-	for(const TWeakObjectPtr<AActor>& target : ManagementTargets)
+	for(const TPair<int32, TWeakObjectPtr<AActor>>& target : ManagementTargets)
 	{
 		T* castTarget = Cast<T>(target);
 		
-		if(castTarget != nullptr && InPredicate(target.Get()))
+		if(castTarget != nullptr && InPredicate(target.Value.Get()))
 			return castTarget;
 	}
 
@@ -161,11 +164,11 @@ template <typename T>
 void UObjectManagementGSS::FindActorArrayByPredicate(TArray<TWeakObjectPtr<T>>& OutActors,
 	const std::function<bool(AActor*)>& InPredicate)
 {
-	for(const TWeakObjectPtr<AActor>& target : ManagementTargets)
+	for(const TPair<int32, TWeakObjectPtr<AActor>>& target : ManagementTargets)
 	{
 		T* castTarget = Cast<T>(target);
 		
-		if(castTarget != nullptr && InPredicate(target.Get()))
+		if(castTarget != nullptr && InPredicate(target.Value.Get()))
 			OutActors.Add(castTarget);
 	}
 }

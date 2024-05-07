@@ -37,6 +37,7 @@ void AItemActor::BeginPlay()
 
 	// 데이터 테이블 기반으로 아이템 정보 추가
 	ItemDescription = itemTable->ItemDescription;
+	EquipItemType = itemTable->EquipItemType;
 	ItemStat = itemTable->ItemStat;
 	UIImage = itemTable->UIImage;
 

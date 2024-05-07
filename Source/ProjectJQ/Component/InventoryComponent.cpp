@@ -80,8 +80,11 @@ void UInventoryComponent::BeginPlay()
 		if(i >= 50)
 			break;
 	}
+	
+	for(EEquipItemUIType itemType : TEnumRange<EEquipItemUIType>())
+			EquipItems.FindOrAdd(itemType) = nullptr;
 
-	InventoryUI->RefreshInventory(Items);
+	InventoryUI->RefreshInventory(EquipItems, Items);
 }
 
 // Called every frame
@@ -106,10 +109,46 @@ void UInventoryComponent::BeginDestroy()
 
 void UInventoryComponent::SwapItem(int32 InFromIndex, int32 InToIndex)
 {
-	TWeakObjectPtr<AItemActor> toItem = Items[InToIndex];
+	//교체할 아이템
+	TWeakObjectPtr<AItemActor> fromItem = nullptr;
+	if(InFromIndex >= TotalItemCount)
+	{
+		fromItem = EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)];
+	}
+	else
+		fromItem = Items[InFromIndex];
+	
+	TWeakObjectPtr<AItemActor> toItem = nullptr;
+	if(InToIndex >= TotalItemCount)
+	{
+		toItem = EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)];
+	}
+	else
+		toItem = Items[InToIndex];
 
-	Items[InToIndex] = Items[InFromIndex];
-	Items[InFromIndex] = toItem;
+	//교체할 슬롯
+	if(InFromIndex >= TotalItemCount)
+	{
+		if(EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)].IsValid())
+			EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)]->OnUnPossess(GetOwner());
+		EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)] = toItem;
+		if(EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)].IsValid())
+			EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)]->OnPossess(GetOwner());
+	}
+	else
+		Items[InFromIndex] = toItem;
 
-	InventoryUI->RefreshInventory(Items);
+	if(InToIndex >= TotalItemCount)
+	{
+		if(EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)].IsValid())
+			EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)]->OnUnPossess(GetOwner());
+		EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)] = fromItem;
+		if(EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)].IsValid())
+			EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)]->OnPossess(GetOwner());
+	}
+	else
+		Items[InToIndex] = fromItem;
+	
+
+	InventoryUI->RefreshInventory(EquipItems, Items);
 }

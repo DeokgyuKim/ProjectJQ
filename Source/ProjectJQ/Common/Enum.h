@@ -76,5 +76,32 @@ enum class EAttackRangeType : uint8
 	Box			UMETA(ToolTip = "박스 형태 공격"),
 	Sphere		UMETA(ToolTip = "구 형태 공격"),
 	Projectile	UMETA(ToolTip = "투사체 공격"),
-	Arc			UMETA(TooTip = "호 형태 공격")
+	Arc			UMETA(ToolTip = "호 형태 공격")
 };
+
+//장비 아이템 타입
+UENUM(BlueprintType)
+enum class EEquipItemType : uint8
+{
+	Helmet = 0	UMETA(ToolTip = "투구"),
+	Armor		UMETA(ToolTip = "갑옷"),
+	Weapon		UMETA(ToolTip = "무기"),
+	Shoes		UMETA(ToolTip = "신발"),
+	Necklace	UMETA(ToolTip = "목걸이"),
+	Count
+};
+ENUM_RANGE_BY_COUNT(EEquipItemType, EEquipItemType::Count);
+
+//장비 아이템 UI 타입
+UENUM(BlueprintType)
+enum class EEquipItemUIType : uint8
+{
+	Helmet = 0	UMETA(ToolTip = "투구"),
+	Armor		UMETA(ToolTip = "갑옷"),
+	RWeapon		UMETA(ToolTip = "왼쪽손 무기"),
+	LWeapon		UMETA(ToolTip = "오른쪽손 무기"),
+	Shoes		UMETA(ToolTip = "신발"),
+	Necklace	UMETA(ToolTip = "목걸이"),
+	Count
+};
+ENUM_RANGE_BY_COUNT(EEquipItemUIType, EEquipItemUIType::Count);

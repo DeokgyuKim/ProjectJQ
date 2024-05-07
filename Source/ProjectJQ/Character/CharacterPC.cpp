@@ -74,8 +74,6 @@ void ACharacterPC::BeginPlay()
 void ACharacterPC::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-
-	RotateTowardsPickedPoint();
 }
 
 void ACharacterPC::Move(const FInputActionValue& InValue)
@@ -149,23 +147,4 @@ void ACharacterPC::SkillCompleted(ESkillInputKey InInputKey)
 
 	(*findSkill)->SkillCompleted();
 	CurrentSkill = *findSkill;
-}
-
-void ACharacterPC::RotateTowardsPickedPoint()
-{
-	FHitResult hit;
-	if(APlayerController* controller = Cast<APlayerController>(GetController()))
-	{
-		controller->GetHitResultUnderCursor(ECC_Visibility, false, hit);
-
-		FVector underCursor = hit.Location;
-		underCursor.Z = 0.0;
-
-		FVector playerPosition = GetActorLocation();
-		playerPosition.Z = 0.0f;
-
-		FRotator rotation = (underCursor - playerPosition).Rotation();
-
-		SetActorRotation(rotation);
-	}
 }
