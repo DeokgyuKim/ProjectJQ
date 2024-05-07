@@ -3,6 +3,7 @@
 
 #include "Inventory.h"
 
+#include "InventoryItemSector.h"
 #include "JQSlotPure.h"
 #include "Blueprint/SlateBlueprintLibrary.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
@@ -18,28 +19,7 @@ void UInventory::OnCreated()
 {
 	Super::OnCreated();
 
-	ItemSlot.Reserve(UInventoryComponent::TotalItemCount);
-	for(int i = 0; i < UInventoryComponent::TotalItemCount; ++i)
-	{
-		FString slotName = FString::Printf(TEXT("ItemSlot_%d"), i);
-		UWidget* widget = (*this)[*slotName];
-		
-		if(widget == nullptr)
-		{
-			LOG_SCREEN(FColor::Red,TEXT("%s에 해당하는 UIWidget이 없습니다."), *slotName)
-			return;
-		}
-
-		UJQSlotPure* slot = Cast<UJQSlotPure>(widget);
-		if(slot == nullptr)
-		{
-			LOG_SCREEN(FColor::Red,TEXT("%s에 해당하는 UIWidget이 UButton이 아닙니다."), *slotName)
-			return;
-		}
-
-		ItemSlot.Add(slot);
-		slot->OnCreated();
-	}
+	ItemSector->OnCreated();
 }
 
 void UInventory::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -60,18 +40,5 @@ void UInventory::RefreshInventory(const TArray<TWeakObjectPtr<AItemActor>>& InIt
 		LOG_SCREEN(FColor::Red, TEXT("UInventory::RefreshInventory 아이템 소지 개수를 초과했습니다. %s"), *GetName())
 		return;
 	}
-	for(int i = 0; i < InItems.Num(); ++i)
-	{
-		if(InItems[i] == nullptr)
-			ItemSlot[i]->SetItem(nullptr);
-		else
-			ItemSlot[i]->SetItem(InItems[i]->GetItemImage());
-	}
-}
-
-FReply UInventory::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	FKey key = InMouseEvent.GetEffectingButton();
-	//LOG_SCREEN(FColor::White, TEXT("%s"), *key.ToString())
-	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	ItemSector->RefreshInventory(InItems);
 }

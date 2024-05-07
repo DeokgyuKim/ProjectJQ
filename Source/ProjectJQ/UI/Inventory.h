@@ -6,6 +6,7 @@
 #include "UserWidgetBase.h"
 #include "Inventory.generated.h"
 
+class UInventoryItemSector;
 class AItemActor;
 class UJQSlotPure;
 class UScrollBox;
@@ -55,10 +56,7 @@ protected:
 	UButton* Button_Exit;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UScrollBox* ItemScroll;
-
-	//아이템 슬롯 UI
-	TArray<TWeakObjectPtr<UJQSlotPure>> ItemSlot;
+	UInventoryItemSector* ItemSector;
 
 public:
 	virtual void OnCreated() override;
@@ -69,7 +67,4 @@ public:
 
 	//인벤토리 UI를 넘겨받은 InItems로 리프레시 합니다.
 	void RefreshInventory(const TArray<TWeakObjectPtr<AItemActor>>& InItems);
-
-public:
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 };
