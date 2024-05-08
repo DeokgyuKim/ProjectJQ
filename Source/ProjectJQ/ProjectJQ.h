@@ -26,6 +26,12 @@
 #include "Common/Util/UtilPath.h"
 #include "Common/Util/UtilEffect.h"
 
+// 월드를 반환한다.
+UWorld* JQGetWorld( UObject* InObject = nullptr );
+
+// 게임 인스턴스를 반환한다.
+UGameInstance* JQGetGameInstance( UWorld* InWorld = nullptr );
+
 DECLARE_LOG_CATEGORY_EXTERN(LogProjectJQ, Log, All);
 
 

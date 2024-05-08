@@ -9,6 +9,7 @@
 
 #include "ObjectManagementGSS.generated.h"
 
+class ACharacterPC;
 class AProjectJQPlayerController;
 class AProjectJQCharacter;
 
@@ -68,6 +69,8 @@ public:
 	int32 AddActor(AActor* InActor);
 
 	AActor* FindActor(int32 InActorId);
+
+	TArray<ACharacterPC*> GetPlayers();
 
 	//InPredicate에 부합하는 액터를 반환합니다. 가장 먼저 부합하는 액터를 부합합니다.
 	template<typename T>

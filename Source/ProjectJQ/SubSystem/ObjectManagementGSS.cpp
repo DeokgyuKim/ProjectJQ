@@ -9,6 +9,8 @@
 #include <GameFramework/Character.h>
 #include <TimerManager.h>
 
+#include "ProjectJQ/Character/CharacterPC.h"
+
 
 void UObjectManagementGSS::SetObjectId(AActor* InActor, int32 InObjectId)
 {
@@ -159,6 +161,19 @@ AActor* UObjectManagementGSS::FindActor(int32 InActorId)
 	if(find)
 		return find->Get();
 	return nullptr;
+}
+
+TArray<ACharacterPC*> UObjectManagementGSS::GetPlayers()
+{
+	TArray<ACharacterPC*> outPlayers;
+	
+	for(const TPair<int32, TWeakObjectPtr<AActor>>& target : ManagementTargets)
+	{
+		if(ACharacterPC* pc = Cast<ACharacterPC>(target.Value))
+			outPlayers.Add(pc);
+	}
+
+	return outPlayers;
 }
 
 void UObjectManagementGSS::ReAllocatePoolingObject(FString InWorldName)

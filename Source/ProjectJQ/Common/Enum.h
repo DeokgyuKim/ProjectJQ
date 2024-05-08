@@ -105,3 +105,12 @@ enum class EEquipItemUIType : uint8
 	Count
 };
 ENUM_RANGE_BY_COUNT(EEquipItemUIType, EEquipItemUIType::Count);
+
+//몬스터 레이어 스폰 조건 타입
+UENUM(BlueprintType)
+enum class EMonsterSpawnerLayerConditionType : uint8
+{
+	None = 0,
+	PlayerInRange = 1			UMETA(ToolTip = "플레이어가 스폰 범위 내에 들어왔을 때"),
+	PreLayerMonsterAllDead = 2	UMETA(ToolTip = "이전 레이어의 몬스터가 모두 죽었을 때")
+};
