@@ -30,18 +30,6 @@ void UInventoryComponent::BeginPlay()
 	if(GetOwner() == nullptr)
 		return;
 	
-	UUIManagementGSS* uiGss = GetOwner()->GetGameInstance()->GetSubsystem<UUIManagementGSS>();
-	int id = uiGss->CreateWidgetBase(TEXT("WBP_Inventory"), GetOwner()->GetName() + TEXT("_WBP_Inventory"), GetOwner());
-	if(id == UUIManagementGSS::INVALID_UIID)
-	{
-		LOG_SCREEN(FColor::Red, TEXT("Inventory UI 생성 실패: %d"), id)
-		return;
-	}
-
-	InventoryUI = Cast<UInventory>(uiGss->FindWidgetBase(id));
-	InventoryUI->SetOwner(Cast<ACharacterBase>(GetOwner()));
-
-
 	UDataTable* table = LOAD_DATA_TABLE(Item);
 	if(table == nullptr)
 		return;
@@ -69,22 +57,35 @@ void UInventoryComponent::BeginPlay()
 		};
 		AItemActor* item = omGss->CreateActor<AItemActor>(AItemActor::StaticClass(), spawnParam);
 		if(item != nullptr)
-		{
 			Items[i] = item;
-			//FString slotName = FString::Printf(TEXT("ItemSlot_%d"), i);
-			//UWidget* widget = (*InventoryUI)[*slotName];
-			//if(UJQSlotPure* slot = Cast<UJQSlotPure>(widget))
-			//	slot->SetItem(item->GetItemImage());
-		}
 		
 		if(i >= 50)
 			break;
 	}
-	
 	for(EEquipItemUIType itemType : TEnumRange<EEquipItemUIType>())
-			EquipItems.FindOrAdd(itemType) = nullptr;
+		EquipItems.FindOrAdd(itemType) = nullptr;
 
-	InventoryUI->RefreshInventory(EquipItems, Items);
+	ACharacterBase* charBase = Cast<ACharacterBase>(GetOwner());
+
+	//인벤토리 UI는 플레이어만 생성
+	if(charBase->GetCharacterType() == ECharacterType::Player)
+	{
+		UUIManagementGSS* uiGss = GetOwner()->GetGameInstance()->GetSubsystem<UUIManagementGSS>();
+		int id = uiGss->CreateWidgetBase(TEXT("WBP_Inventory"), GetOwner()->GetName() + TEXT("_WBP_Inventory"), GetOwner());
+		if(id == UUIManagementGSS::INVALID_UIID)
+		{
+			LOG_SCREEN(FColor::Red, TEXT("Inventory UI 생성 실패: %d"), id)
+			return;
+		}
+
+		InventoryUI = Cast<UInventory>(uiGss->FindWidgetBase(id));
+		InventoryUI->SetOwner(Cast<ACharacterBase>(GetOwner()));
+		
+		InventoryUI->RefreshInventory(EquipItems, Items);
+	}
+	
+	if(charBase)
+		charBase->GetDelegateDeadCharacter().AddUObject(this, &UInventoryComponent::Dead);
 }
 
 // Called every frame
@@ -98,13 +99,26 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 void UInventoryComponent::BeginDestroy()
 {
 	Super::BeginDestroy();
+}
+
+void UInventoryComponent::Dead()
+{
+	ACharacterBase* character = Cast<ACharacterBase>(GetOwner());
+	if(!character)
+		return;
+
+	if(character->GetCharacterType() == ECharacterType::Player)
+		return;
 
 	for(TWeakObjectPtr<AItemActor>& item : Items)
 	{
-		//item->SetActorHiddenInGame(false);
-		
-		//item->SetActorLocation(GetOwner()->GetActorLocation());
+		if(item.IsValid())
+		{
+			item->SetActorHiddenInGame(false);
+			item->SetActorLocation(GetOwner()->GetActorLocation());
+		}
 	}
+	Items.Empty();
 }
 
 void UInventoryComponent::SwapItem(int32 InFromIndex, int32 InToIndex)

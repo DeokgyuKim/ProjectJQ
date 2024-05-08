@@ -48,6 +48,8 @@ public:
 
 	virtual void BeginDestroy() override;
 
+	void Dead();
+
 public:
 	UInventory* GetInventoryUI(){return InventoryUI;}
 

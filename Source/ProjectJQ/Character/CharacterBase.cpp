@@ -8,6 +8,7 @@
 #include <Components/SkeletalMeshComponent.h>
 
 #include "Animation/AnimMontage.h"
+#include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -24,8 +25,23 @@ void ACharacterBase::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
+void ACharacterBase::CallBackDeadCharacter()
+{
+	if(DelegateDeadCharacter.IsBound())
+		DelegateDeadCharacter.Broadcast();
+
+	/*
+	if(CharacterType == ECharacterType::Monster)
+	{
+		UObjectManagementGSS* gss = GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
+		if(gss)
+			gss->DestroyActor(this);
+	}
+	*/
+}
+
 float ACharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+                                 AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	float CurrentHp = StatControlComponent->GetStat(EStatControlType::Hp);

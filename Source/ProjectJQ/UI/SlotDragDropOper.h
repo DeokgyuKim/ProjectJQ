@@ -16,4 +16,7 @@ class PROJECTJQ_API USlotDragDropOper : public UDragDropOperation
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 SlotIndex;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 ItemId;
 };

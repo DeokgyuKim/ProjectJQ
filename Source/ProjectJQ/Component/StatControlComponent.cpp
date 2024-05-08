@@ -78,6 +78,14 @@ void UStatControlComponent::ChangeStatDelegateFunction(TWeakObjectPtr<AActor> In
 		movementComponent->MaxWalkSpeed = InValue;
 		movementComponent->MaxWalkSpeedCrouched = InValue / 2;
 	}
+	else if(InStatType == EStatControlType::Hp)
+	{
+		if(InValue <= 0.0)
+		{
+			ACharacterBase* charBase = Cast<ACharacterBase>(InActor);
+			charBase->CallBackDeadCharacter();
+		}
+	}
 }
 
 void UStatControlComponent::SetStat(EStatControlType InStatType, double InValue)
