@@ -78,6 +78,8 @@ void UBTService_DetectEnemy::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		if(targets.IsEmpty())
 		{
 			DrawDebugSphere(world, center, range, 16, FColor::Red, false, 0.2f);
+
+			OwnerComp.GetAIOwner()->StopMovement();
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMonsterAIController::TargetKey, nullptr);
 			return;
 		}

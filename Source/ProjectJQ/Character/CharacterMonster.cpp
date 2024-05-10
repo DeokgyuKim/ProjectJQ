@@ -41,6 +41,8 @@ void ACharacterMonster::SetAIController(TWeakObjectPtr<AAIController> InAIContro
 
 void ACharacterMonster::OnFindRepeatTimer()
 {
+    return;
+
     if (!AIController.IsValid())
         return;
 

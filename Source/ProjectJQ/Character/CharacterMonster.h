@@ -21,11 +21,11 @@ protected:
 
 	// 공격 범위
 	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = "JQSD_Range", meta = (AllowPrivateAccess = "true"))
-	float AttackRange = 50.f;
+	float AttackRange = 100.f;
 
 	// 추적할 플레이어
 	UPROPERTY()
-	TWeakObjectPtr<APawn> TargetPC = nullptr;
+	TWeakObjectPtr<ACharacterBase> TargetCharacter = nullptr;
 public:
 	ACharacterMonster();
 
@@ -36,6 +36,7 @@ public:
 	void SetAIController(TWeakObjectPtr<AAIController> InAIController);
 	void OnFindRepeatTimer();
 
-	void SetTarget(TWeakObjectPtr<ACharacterBase> InPCTarget) { TargetPC = InPCTarget; }
+	void SetTarget(TWeakObjectPtr<ACharacterBase> InPCTarget) { TargetCharacter = InPCTarget; }
+	float GetAttackRange() const { return AttackRange; }
 };
 
