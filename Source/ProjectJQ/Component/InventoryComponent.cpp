@@ -57,7 +57,10 @@ void UInventoryComponent::BeginPlay()
 		};
 		AItemActor* item = omGss->CreateActor<AItemActor>(AItemActor::StaticClass(), spawnParam);
 		if(item != nullptr)
+		{
+			item->SetItemLocateType(EItemLocateType::Inventroy);
 			Items[i] = item;
+		}
 		
 		if(i >= 50)
 			break;
@@ -113,12 +116,23 @@ void UInventoryComponent::Dead()
 	for(TWeakObjectPtr<AItemActor>& item : Items)
 	{
 		if(item.IsValid())
-		{
-			item->SetActorHiddenInGame(false);
-			item->SetActorLocation(GetOwner()->GetActorLocation());
-		}
+			item->SetItemLocateType(EItemLocateType::World, GetOwner()->GetActorLocation());
 	}
 	Items.Empty();
+}
+
+void UInventoryComponent::AcquireItem(TWeakObjectPtr<AItemActor> InItem)
+{
+	for(int i = 0; i < Items.Num(); ++i)
+	{
+		if(Items[i] == nullptr)
+		{
+			InItem->SetItemLocateType(EItemLocateType::Inventroy);
+			Items[i] = InItem;
+			InventoryUI->RefreshInventory(EquipItems, Items);
+			break;
+		}
+	}
 }
 
 void UInventoryComponent::SwapItem(int32 InFromIndex, int32 InToIndex)

@@ -42,6 +42,9 @@ class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetIn
 	//장비 아이템의 타입
 	EEquipItemType EquipItemType;
 
+	//아이템이 속해있는 타입
+	EItemLocateType ItemLocateType;
+
 	UPROPERTY()
 	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
 public:	
@@ -61,16 +64,21 @@ public:
 	EEquipItemType GetEquipItemType(){return EquipItemType;}
 
 public:
-	// 아이템 이름을 설정합니다.
-	virtual void Initialize(FString InItemName){ItemName = InItemName;}
-
 	// 아이템을 착용할 때 호출합니다.
 	virtual void OnPossess(AActor* InOwner);
 
 	// 아이템을 해제할 때 호출합니다.
 	virtual void OnUnPossess(AActor* InOwner);
 
-	void SetItemName(FString InItemName) {ItemName = InItemName;}
+	// 아이템 이름을 설정합니다.
+	virtual void SetItemName(FString InItemName) {ItemName = InItemName;}
 
 	void SetItemOwner(TWeakObjectPtr<AActor> InItemOwner) {ItemOwner = InItemOwner;}
+
+	/*
+	아이템이 속해있는 위치를 변경합니다.
+	InItemLocateType이 World이면 액터를 보이게하고, InLocation의 위치로 옮깁니다.
+	InItemLocateType이 Inventory라면 액터를 숨기고, -9999, -9999, -9999로 옮깁니다.
+	*/
+	void SetItemLocateType(EItemLocateType InItemLocateType, FVector InLocation = FVector::ZeroVector);
 };

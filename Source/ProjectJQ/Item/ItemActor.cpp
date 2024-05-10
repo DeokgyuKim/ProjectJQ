@@ -9,6 +9,9 @@
 #include <Engine/StaticMesh.h>
 #include <Components/StaticMeshComponent.h>
 
+#include "ProjectJQ/Character/CharacterPC.h"
+#include "ProjectJQ/Component/InventoryComponent.h"
+#include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 #include "ProjectJQ/SubSystem/UIManagementGSS.h"
 #include "ProjectJQ/UI/ItemDetail.h"
 
@@ -91,6 +94,32 @@ void AItemActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(ItemLocateType == EItemLocateType::World)
+	{
+		if(UObjectManagementGSS* gss = GetGameInstance()->GetSubsystem<UObjectManagementGSS>())
+		{
+			TArray<ACharacterPC*> pcs = gss->GetPlayers();
+			if(pcs.IsEmpty())
+				return;
+
+			//플레이어중 아이템과 가까운 순으로 정렬
+			FVector itemLoc = GetActorLocation();
+			pcs.Sort([itemLoc](ACharacterPC& lhs, ACharacterPC& rhs)
+			{
+				return FVector::Distance(itemLoc, lhs.GetActorLocation()) < FVector::Distance(itemLoc, rhs.GetActorLocation());
+			});
+
+			//제일 가까운 플레이어의 거리가 100이하라면 아이템 획득
+			if(FVector::Distance(pcs[0]->GetActorLocation(), itemLoc) < 100)
+			{
+				if(UInventoryComponent* comp = Cast<UInventoryComponent>(pcs[0]->GetComponentByClass(UInventoryComponent::StaticClass())))
+				{
+					comp->AcquireItem(this);
+					return;
+				}
+			}
+		}
+	}
 }
 
 void AItemActor::OnPossess(AActor* InOwner)
@@ -127,3 +156,23 @@ void AItemActor::OnUnPossess(AActor* InOwner)
 		statComp->SetStat(statValue.Key, statComp->GetStat(statValue.Key) - statValue.Value);
 }
 
+void AItemActor::SetItemLocateType(EItemLocateType InItemLocateType, FVector InLocation)
+{
+	if(ItemLocateType == InItemLocateType)
+		return;
+
+	ItemLocateType = InItemLocateType;
+	switch (ItemLocateType)
+	{
+	case EItemLocateType::Inventroy:
+		SetActorHiddenInGame(true);
+		SetActorLocation(FVector(-9999.0, -9999.0, -9999.0));
+		break;
+	case EItemLocateType::World:
+		SetActorHiddenInGame(false);
+		SetActorLocation(InLocation);
+		break;
+	default:
+		break;
+	}
+}

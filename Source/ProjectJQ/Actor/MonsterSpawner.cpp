@@ -65,6 +65,22 @@ void AMonsterSpawner::BeginPlay()
 	Super::BeginPlay();
 
 	Algo::Reverse(SpawnLayers);
+
+	for(FSpawnerLayer& layer : SpawnLayers)
+	{
+		for(TWeakObjectPtr<ACharacterBase>& toolChar : layer.ToolCharacters)
+		{
+			FToolActorInfo info;
+			info.Transform = toolChar->GetActorTransform();
+			info.CharacterBPName = toolChar->GetClass()->GetName();
+			info.CharacterBPName.RemoveAt(info.CharacterBPName.Len() - 2, 2);
+			layer.ActorInfos.Add(info);
+			toolChar->SetActorHiddenInGame(true);
+			toolChar->Destroy();
+		}
+		layer.ToolCharacters.Empty();
+	}
+
 }
 
 bool AMonsterSpawner::LayerConditionPlayerInRange()
@@ -121,7 +137,7 @@ void AMonsterSpawner::Tick(float DeltaTime)
 		//스폰 조건에 해당한다면 레이어에 등록된 몬스터 스폰
 		if(condition)
 		{
-			for(FToolActorInfo info : layer.ActorInfos)
+			for(const FToolActorInfo& info : layer.ActorInfos)
 			{
 				UReferencePathGSS* uiGss = GetGameInstance()->GetSubsystem<UReferencePathGSS>();
 				if(!uiGss)

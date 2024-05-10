@@ -50,6 +50,8 @@ public:
 
 	void Dead();
 
+	void AcquireItem(TWeakObjectPtr<AItemActor> InItem);
+
 public:
 	UInventory* GetInventoryUI(){return InventoryUI;}
 

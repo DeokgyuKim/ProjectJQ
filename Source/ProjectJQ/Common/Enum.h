@@ -114,3 +114,11 @@ enum class EMonsterSpawnerLayerConditionType : uint8
 	PlayerInRange = 1			UMETA(ToolTip = "플레이어가 스폰 범위 내에 들어왔을 때"),
 	PreLayerMonsterAllDead = 2	UMETA(ToolTip = "이전 레이어의 몬스터가 모두 죽었을 때")
 };
+
+//아이템 존재 위치
+UENUM(BlueprintType)
+enum class EItemLocateType : uint8
+{
+	World = 0	UMETA(ToolTip = "월드에 존재, 스태틱 메시가 보이고 Location이 명확함"),
+	Inventroy	UMETA(ToolTip = "인벤토리에 존재, 스태틱 메시가 숨겨져있고 Location이 불명확함")
+};
