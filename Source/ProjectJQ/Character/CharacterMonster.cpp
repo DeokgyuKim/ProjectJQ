@@ -63,3 +63,8 @@ void ACharacterMonster::OnFindRepeatTimer()
         UE_LOG(LogTemp, Warning, TEXT("Next Loction : %s"), *nextLocation.Location.ToString());
     }
 }
+
+void ACharacterMonster::MoveTo()
+{
+
+}

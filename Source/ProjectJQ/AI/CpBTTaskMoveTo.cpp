@@ -35,17 +35,16 @@ EBTNodeResult::Type UCpBTTaskMoveTo::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 	FVector monsterPos = monster->GetActorLocation();
 	FVector playerPos = player->GetActorLocation();
 
-	// monsterPos.Z = 0.f;
-	// playerPos.Z = 0.f;
+	float attackRange = monster->GetAttackRange();
 
 	float length = FVector::Distance(monsterPos, playerPos);
-	if (length * 0.5f < 100.f)
+	if (length * 0.5f < attackRange)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(FName("Can Attack"), true);
 		return EBTNodeResult::Failed;
 	}
 
-	EPathFollowingRequestResult::Type result = aiController->MoveToActor(player, 100.f, true);
+	EPathFollowingRequestResult::Type result = aiController->MoveToActor(player, attackRange, true);
 	if (result == EPathFollowingRequestResult::Type::Failed)
 	{
 		return EBTNodeResult::Failed;

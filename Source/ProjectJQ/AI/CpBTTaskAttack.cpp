@@ -17,8 +17,8 @@ EBTNodeResult::Type UCpBTTaskAttack::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 {
 	EBTNodeResult::Type result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	ACharacterMonster* rontrollingPawn = Cast<ACharacterMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == rontrollingPawn)
+	ACharacterMonster* rontrollingMonster = Cast<ACharacterMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == rontrollingMonster)
 	{
 		return EBTNodeResult::Failed;
 	}
@@ -29,7 +29,7 @@ EBTNodeResult::Type UCpBTTaskAttack::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		return EBTNodeResult::Failed;
 	}
 
-	if (FVector::Distance(rontrollingPawn->GetActorLocation(), Target->GetActorLocation()) * 0.5f > 100.f)
+	if (FVector::Distance(rontrollingMonster->GetActorLocation(), Target->GetActorLocation()) * 0.5f > rontrollingMonster->GetAttackRange())
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(FName("Can Attack"), false);
 		return EBTNodeResult::Failed;

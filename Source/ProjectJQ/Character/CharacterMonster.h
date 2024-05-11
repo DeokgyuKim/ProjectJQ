@@ -38,5 +38,7 @@ public:
 
 	void SetTarget(TWeakObjectPtr<ACharacterBase> InPCTarget) { TargetCharacter = InPCTarget; }
 	float GetAttackRange() const { return AttackRange; }
+
+	virtual void MoveTo();
 };
 
