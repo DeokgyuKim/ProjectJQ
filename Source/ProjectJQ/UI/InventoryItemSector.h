@@ -47,8 +47,16 @@ public:
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-	void SetOwner(TWeakObjectPtr<ACharacterBase> InCharacter);
-
 	//인벤토리 UI를 넘겨받은 InItems로 리프레시 합니다.
 	void RefreshInventory(const TArray<TWeakObjectPtr<AItemActor>>& InItems);
+
+	//종류별 아이템 정렬
+	UFUNCTION()
+	void OnClick_KindOrder();
+	//가치 순 아이템 정렬
+	UFUNCTION()
+	void OnClick_ValueOrder();
+	//획득 순 아이템 정렬
+	UFUNCTION()
+	void OnClick_GetOrder();
 };

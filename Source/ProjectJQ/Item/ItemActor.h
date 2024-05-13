@@ -18,11 +18,17 @@ class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetIn
 	//아이템 소유 액터
 	TWeakObjectPtr<AActor> ItemOwner;
 
+	//획득 시간
+	FDateTime AcquireTime;
+
 	//아이템 이름
 	FString ItemName;
 	
 	//아이템 설명
 	FString ItemDescription;
+
+	//아이템 가치
+	int32 ItemValue;
 
 	//아이템 스탯
 	TMap<EStatControlType, double> ItemStat;
@@ -38,6 +44,8 @@ class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetIn
 
 	//월드에서 보여줄 스태틱 메쉬
 	TObjectPtr<UStaticMesh> ItemMesh;
+
+	EItemType ItemType;
 
 	//장비 아이템의 타입
 	EEquipItemType EquipItemType;
@@ -62,6 +70,12 @@ public:
 	UTexture2D* GetItemImage(){return UIImage;}
 
 	EEquipItemType GetEquipItemType(){return EquipItemType;}
+
+	EItemType GetItemType(){return ItemType;}
+
+	int32 GetItemValue(){return ItemValue;}
+
+	const FDateTime& GetAcquireTime(){return AcquireTime;}
 
 public:
 	// 아이템을 착용할 때 호출합니다.

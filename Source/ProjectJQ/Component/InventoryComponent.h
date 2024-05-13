@@ -57,4 +57,13 @@ public:
 
 	//인벤토리의 아이템이 스왑되었을 때 호출됩니다. 넘겨받은 두 인덱스에 해당하는 아이템 정보를 스왑합니다.
 	void SwapItem(int32 InFromIndex, int32 InToIndex);
+
+	//종류별 아이템 정렬
+	void OrderByKindOrder();
+
+	//가치 순 아이템 정렬
+	void OrderByValueOrder();
+
+	//획득 순 아이템 정렬
+	void OrderByGetOrder();
 };

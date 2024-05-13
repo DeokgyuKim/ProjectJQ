@@ -39,8 +39,11 @@ void AItemActor::BeginPlay()
 		return;
 
 	// 데이터 테이블 기반으로 아이템 정보 추가
+	AcquireTime = FDateTime::Now();
 	ItemDescription = itemTable->ItemDescription;
+	ItemType = itemTable->ItemType;
 	EquipItemType = itemTable->EquipItemType;
+	ItemValue = itemTable->ItemValue;
 	ItemStat = itemTable->ItemStat;
 	UIImage = itemTable->UIImage;
 

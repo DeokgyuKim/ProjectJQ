@@ -45,15 +45,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UJQEquipSlot* Slot_Necklace;
-
-	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UButton* Button_Sort_KindOrder;
-	
-	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UButton* Button_Sort_ValueOrder;
-	
-	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UButton* Button_Sort_GetOrder;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UButton* Button_Exit;

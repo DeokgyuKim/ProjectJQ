@@ -79,6 +79,15 @@ enum class EAttackRangeType : uint8
 	Arc			UMETA(ToolTip = "호 형태 공격")
 };
 
+//아이템 타입
+UENUM(BlueprintType)
+enum class EItemType : uint8
+{
+	Equip = 0	UMETA(ToolTip = "장비"),
+	Gemstone	UMETA(ToolTip = "젬스톤"),
+	Quest		UMETA(ToolTip = "퀘스트"),
+};
+
 //장비 아이템 타입
 UENUM(BlueprintType)
 enum class EEquipItemType : uint8

@@ -40,17 +40,17 @@ void UInventoryItemSector::OnCreated()
 		ItemSlot.Add(slot);
 		slot->OnCreated();
 	}
+
+	OwnerCharacter = Cast<ACharacterBase>(GetOwningPlayer()->GetCharacter());
+	
+	Button_Sort_KindOrder->OnClicked.AddDynamic(this, &UInventoryItemSector::OnClick_KindOrder);
+	Button_Sort_ValueOrder->OnClicked.AddDynamic(this, &UInventoryItemSector::OnClick_ValueOrder);
+	Button_Sort_GetOrder->OnClicked.AddDynamic(this, &UInventoryItemSector::OnClick_GetOrder);
 }
 
 void UInventoryItemSector::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-}
-
-void UInventoryItemSector::SetOwner(TWeakObjectPtr<ACharacterBase> InCharacter)
-{
-	if(InCharacter.IsValid())
-		OwnerCharacter = InCharacter;
 }
 
 void UInventoryItemSector::RefreshInventory(const TArray<TWeakObjectPtr<AItemActor>>& InItems)
@@ -69,5 +69,29 @@ void UInventoryItemSector::RefreshInventory(const TArray<TWeakObjectPtr<AItemAct
 			ItemSlot[i]->SetItem();
 		else
 			ItemSlot[i]->SetItem(InItems[i]->GetObjectId());
+	}
+}
+
+void UInventoryItemSector::OnClick_KindOrder()
+{
+	if(UInventoryComponent* inven = Cast<UInventoryComponent>(OwnerCharacter->GetComponentByClass(UInventoryComponent::StaticClass())))
+	{
+		inven->OrderByKindOrder();
+	}
+}
+
+void UInventoryItemSector::OnClick_ValueOrder()
+{
+	if(UInventoryComponent* inven = Cast<UInventoryComponent>(OwnerCharacter->GetComponentByClass(UInventoryComponent::StaticClass())))
+	{
+		inven->OrderByValueOrder();
+	}
+}
+
+void UInventoryItemSector::OnClick_GetOrder()
+{
+	if(UInventoryComponent* inven = Cast<UInventoryComponent>(OwnerCharacter->GetComponentByClass(UInventoryComponent::StaticClass())))
+	{
+		inven->OrderByGetOrder();
 	}
 }

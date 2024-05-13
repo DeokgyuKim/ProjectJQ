@@ -180,3 +180,54 @@ void UInventoryComponent::SwapItem(int32 InFromIndex, int32 InToIndex)
 
 	InventoryUI->RefreshInventory(EquipItems, Items);
 }
+
+void UInventoryComponent::OrderByKindOrder()
+{
+	Items.Sort([](const TWeakObjectPtr<AItemActor>& lhs, const TWeakObjectPtr<AItemActor>& rhs)
+	{
+		if(!lhs.IsValid())
+			return false;
+		if(!rhs.IsValid())
+			return true;
+		
+		if(lhs->GetItemType() == rhs->GetItemType())
+		{
+			if(lhs->GetItemType() == EItemType::Equip)
+				return lhs->GetEquipItemType() < rhs->GetEquipItemType();
+			return false;
+		}
+		return lhs->GetItemType() < rhs->GetItemType();
+	});
+
+	InventoryUI->RefreshInventory(EquipItems, Items);
+}
+
+void UInventoryComponent::OrderByValueOrder()
+{
+	Items.Sort([](const TWeakObjectPtr<AItemActor>& lhs, const TWeakObjectPtr<AItemActor>& rhs)
+	{
+		if(!lhs.IsValid())
+			return false;
+		if(!rhs.IsValid())
+			return true;
+
+		return lhs->GetItemValue() > rhs->GetItemValue();
+	});
+
+	InventoryUI->RefreshInventory(EquipItems, Items);
+}
+
+void UInventoryComponent::OrderByGetOrder()
+{
+	Items.Sort([](const TWeakObjectPtr<AItemActor>& lhs, const TWeakObjectPtr<AItemActor>& rhs)
+	{
+		if(!lhs.IsValid())
+			return false;
+		if(!rhs.IsValid())
+			return true;
+
+		return lhs->GetAcquireTime() > rhs->GetAcquireTime();
+	});
+
+	InventoryUI->RefreshInventory(EquipItems, Items);
+}
