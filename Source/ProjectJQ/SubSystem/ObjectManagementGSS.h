@@ -9,6 +9,7 @@
 
 #include "ObjectManagementGSS.generated.h"
 
+class AItemActor;
 class ACharacterPC;
 class AProjectJQPlayerController;
 class AProjectJQCharacter;
@@ -62,6 +63,8 @@ public:
 	//액터를 생성합니다. ObjectManagementTargetInterface를 상속받지 않은 클래스는 생성하지 않습니다.
 	template<typename T>
 	T* CreateActor(UClass* InClass, const FSpawnParam& InSpawnParam, AActor* InOwner = nullptr);
+
+	AItemActor* CreateItem(EItemType InItemType, const FSpawnParam& InSpawnParam, AActor* InOwner = nullptr);
 
 	//액터의 포인터를 받아 액터를 파괴합니다.
 	void DestroyActor(AActor* InActor);

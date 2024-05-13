@@ -14,7 +14,7 @@ UCLASS()
 class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetInterface
 {
 	GENERATED_BODY()
-
+protected:
 	//아이템 소유 액터
 	TWeakObjectPtr<AActor> ItemOwner;
 
@@ -30,12 +30,6 @@ class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetIn
 	//아이템 가치
 	int32 ItemValue;
 
-	//아이템 스탯
-	TMap<EStatControlType, double> ItemStat;
-
-	//젬스톤
-	EGemStoneType Gemstones[3];
-
 	//아이템 이미지
 	TObjectPtr<UTexture2D> UIImage;
 	
@@ -46,9 +40,6 @@ class PROJECTJQ_API AItemActor : public AActor, public IObjectManagementTargetIn
 	TObjectPtr<UStaticMesh> ItemMesh;
 
 	EItemType ItemType;
-
-	//장비 아이템의 타입
-	EEquipItemType EquipItemType;
 
 	//아이템이 속해있는 타입
 	EItemLocateType ItemLocateType;
@@ -69,8 +60,6 @@ public:
 public:
 	UTexture2D* GetItemImage(){return UIImage;}
 
-	EEquipItemType GetEquipItemType(){return EquipItemType;}
-
 	EItemType GetItemType(){return ItemType;}
 
 	int32 GetItemValue(){return ItemValue;}
@@ -78,12 +67,6 @@ public:
 	const FDateTime& GetAcquireTime(){return AcquireTime;}
 
 public:
-	// 아이템을 착용할 때 호출합니다.
-	virtual void OnPossess(AActor* InOwner);
-
-	// 아이템을 해제할 때 호출합니다.
-	virtual void OnUnPossess(AActor* InOwner);
-
 	// 아이템 이름을 설정합니다.
 	virtual void SetItemName(FString InItemName) {ItemName = InItemName;}
 

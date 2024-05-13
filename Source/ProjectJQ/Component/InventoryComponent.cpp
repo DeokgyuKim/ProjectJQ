@@ -5,6 +5,7 @@
 
 #include "ProjectJQ/Character/CharacterBase.h"
 #include "ProjectJQ/Data/ItemDataTable.h"
+#include "ProjectJQ/Item/EquipItem.h"
 #include "ProjectJQ/Item/ItemActor.h"
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 #include "ProjectJQ/SubSystem/UIManagementGSS.h"
@@ -49,13 +50,14 @@ void UInventoryComponent::BeginPlay()
 		spawnParam.Rotation = FRotator::ZeroRotator;
 		TWeakObjectPtr<AActor> ownerPtr = GetOwner();
 		FString name = PresetItemNames[i];
+		
 		spawnParam.CallbackSpawn = [ownerPtr, name](AActor* InActor)
 		{
 			if(ownerPtr.IsValid())
 				Cast<AItemActor>(InActor)->SetItemOwner(ownerPtr);
 			Cast<AItemActor>(InActor)->SetItemName(name);
 		};
-		AItemActor* item = omGss->CreateActor<AItemActor>(AItemActor::StaticClass(), spawnParam);
+		AItemActor* item = omGss->CreateItem(data->ItemType, spawnParam, GetOwner());
 		if(item != nullptr)
 		{
 			item->SetItemLocateType(EItemLocateType::Inventroy);
@@ -158,10 +160,10 @@ void UInventoryComponent::SwapItem(int32 InFromIndex, int32 InToIndex)
 	if(InFromIndex >= TotalItemCount)
 	{
 		if(EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)].IsValid())
-			EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)]->OnUnPossess(GetOwner());
+			Cast<AEquipItem>(EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)])->OnUnPossess(GetOwner());
 		EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)] = toItem;
 		if(EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)].IsValid())
-			EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)]->OnPossess(GetOwner());
+			Cast<AEquipItem>(EquipItems[static_cast<EEquipItemUIType>(InFromIndex - TotalItemCount)])->OnPossess(GetOwner());
 	}
 	else
 		Items[InFromIndex] = toItem;
@@ -169,10 +171,10 @@ void UInventoryComponent::SwapItem(int32 InFromIndex, int32 InToIndex)
 	if(InToIndex >= TotalItemCount)
 	{
 		if(EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)].IsValid())
-			EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)]->OnUnPossess(GetOwner());
+			Cast<AEquipItem>(EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)])->OnUnPossess(GetOwner());
 		EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)] = fromItem;
 		if(EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)].IsValid())
-			EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)]->OnPossess(GetOwner());
+			Cast<AEquipItem>(EquipItems[static_cast<EEquipItemUIType>(InToIndex - TotalItemCount)])->OnPossess(GetOwner());
 	}
 	else
 		Items[InToIndex] = fromItem;
@@ -193,7 +195,7 @@ void UInventoryComponent::OrderByKindOrder()
 		if(lhs->GetItemType() == rhs->GetItemType())
 		{
 			if(lhs->GetItemType() == EItemType::Equip)
-				return lhs->GetEquipItemType() < rhs->GetEquipItemType();
+				return Cast<AEquipItem>(lhs)->GetEquipItemType() < Cast<AEquipItem>(rhs)->GetEquipItemType();
 			return false;
 		}
 		return lhs->GetItemType() < rhs->GetItemType();

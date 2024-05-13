@@ -4,12 +4,14 @@
 #include "ObjectManagementGSS.h"
 #include "../Core/ProjectJQPlayerController.h"
 #include "../Manager/FstreamManager.h"
+#include "../Character/CharacterPC.h"
+#include "../Item/EquipItem.h"
+#include "../Item/GemstoneItem.h"
+#include "../Item/QuestItem.h"
 
 #include <Components/CapsuleComponent.h>
 #include <GameFramework/Character.h>
-#include <TimerManager.h>
 
-#include "ProjectJQ/Character/CharacterPC.h"
 
 
 void UObjectManagementGSS::SetObjectId(AActor* InActor, int32 InObjectId)
@@ -100,6 +102,26 @@ void UObjectManagementGSS::WritePoolingObjectCount()
 	}
 
 	FFstreamManager::WriteDataBinaryCustom(outData, TEXT("|"));
+}
+
+AItemActor* UObjectManagementGSS::CreateItem(EItemType InItemType, const FSpawnParam& InSpawnParam, AActor* InOwner)
+{
+	AItemActor* item = nullptr;
+	switch (InItemType)
+	{
+	case EItemType::Equip:
+		item = CreateActor<AItemActor>(AEquipItem::StaticClass(), InSpawnParam, InOwner);
+		break;
+	case EItemType::Gemstone:
+		item = CreateActor<AItemActor>(AGemstoneItem::StaticClass(), InSpawnParam, InOwner);
+		break;
+	case EItemType::Quest:
+		item = CreateActor<AItemActor>(AQuestItem::StaticClass(), InSpawnParam, InOwner);
+		break;
+	default:
+		break;
+	}
+	return item;
 }
 
 void UObjectManagementGSS::DestroyActor(AActor* InActor)

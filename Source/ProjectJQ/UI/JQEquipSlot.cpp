@@ -13,6 +13,7 @@
 #include "Components/Image.h"
 #include "GameFramework/Pawn.h"
 #include "ProjectJQ/Component/InventoryComponent.h"
+#include "ProjectJQ/Item/EquipItem.h"
 #include "ProjectJQ/Item/ItemActor.h"
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 
@@ -28,7 +29,7 @@ bool UJQEquipSlot::IsCanSwap(USlotDragDropOper* InSlotOper)
 	if(!gss)
 		return false;
 
-	AItemActor* item = Cast<AItemActor>(gss->FindActor(InSlotOper->ItemId));
+	AEquipItem* item = Cast<AEquipItem>(gss->FindActor(InSlotOper->ItemId));
 	if(item)
 		if(EquipItemType == item->GetEquipItemType())
 			condition = true;
