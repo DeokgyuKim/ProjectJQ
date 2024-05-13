@@ -8,7 +8,7 @@
 
 class ACharacterMonster;
 class ACharacterBase;
-class UBoxComponent;
+class ASpawnerBoxCollision;
 
 USTRUCT()
 struct FToolActorInfo
@@ -29,6 +29,9 @@ struct FSpawnerLayer
 	//툴 캐릭터
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<TWeakObjectPtr<ACharacterBase>> ToolCharacters;
+
+	UPROPERTY(EditInstanceOnly)
+	bool VisibleLayer = true;
 #endif
 
 	//해당 레이어 몬스터 스폰조건
@@ -59,7 +62,7 @@ protected:
 #endif
 	
 	UPROPERTY(EditInstanceOnly, Category="JQ_Tool")
-	double Range = 1000.0;
+	TWeakObjectPtr<ASpawnerBoxCollision> SpawnerBoxCollision = nullptr;
 
 	UPROPERTY(EditInstanceOnly, Category="JQ_Tool")
 	TArray<FSpawnerLayer> SpawnLayers;

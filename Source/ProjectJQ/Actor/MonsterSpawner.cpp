@@ -3,7 +3,9 @@
 
 #include "MonsterSpawner.h"
 
+#include "SpawnerBoxCollision.h"
 #include "Components/BoxComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "ProjectJQ/Character/CharacterBase.h"
@@ -48,15 +50,19 @@ AMonsterSpawner::AMonsterSpawner()
 void AMonsterSpawner::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	
+#if WITH_EDITOR
 	for(FSpawnerLayer& layer : SpawnLayers)
 	{
 		layer.Owner = this;
+		for(TWeakObjectPtr<ACharacterBase>& monster : layer.ToolCharacters)
+				monster->GetMesh()->SetVisibility(layer.VisibleLayer);
+		
 		layer.ToolCharacters.RemoveAll([](TWeakObjectPtr<ACharacterBase> tool)
 		{
 			return !tool.IsValid();
 		});
 	}
+#endif
 }
 
 // Called when the game starts or when spawned
@@ -66,6 +72,7 @@ void AMonsterSpawner::BeginPlay()
 
 	Algo::Reverse(SpawnLayers);
 
+#if WITH_EDITOR
 	for(FSpawnerLayer& layer : SpawnLayers)
 	{
 		for(TWeakObjectPtr<ACharacterBase>& toolChar : layer.ToolCharacters)
@@ -80,22 +87,12 @@ void AMonsterSpawner::BeginPlay()
 		}
 		layer.ToolCharacters.Empty();
 	}
-
+#endif
 }
 
 bool AMonsterSpawner::LayerConditionPlayerInRange()
 {
-	if(UObjectManagementGSS* gss = GetGameInstance()->GetSubsystem<UObjectManagementGSS>())
-	{
-		TArray<ACharacterPC*> pcs = gss->GetPlayers();
-		for(const ACharacterPC* pc : pcs)
-		{
-			if(FVector::Distance(pc->GetActorLocation(), GetActorLocation()) <= Range)
-				return true;
-		}
-	}
-	
-	return false;
+	return SpawnerBoxCollision.IsValid() && SpawnerBoxCollision->IsPlayerInBoxComponent();
 }
 
 bool AMonsterSpawner::LayerConditionPreLayerMonsterAllDead()
