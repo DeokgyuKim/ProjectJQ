@@ -12,7 +12,7 @@ class UBorder;
 class UCanvasPanel;
 class USlotDragDropOper;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FButtonDownDelegate);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FDelegateRightButtonDown, UJQSlotPure*, int32)
 
 /**
  * 
@@ -54,6 +54,9 @@ protected:
 	UPROPERTY()
 	int32 ItemId = -9999;
 
+	////Delegate//////////////////////////////////////////////////////////////////////
+	FDelegateRightButtonDown DelegateRightButtonDown;
+
 protected:
 	virtual bool IsCanSwap(USlotDragDropOper* InSlotOper){return true;}
 	
@@ -63,6 +66,8 @@ public:
 public:
 	void SetItem(int32 InItemID = -9999);
 	int32 GetSlotIndex(){return SlotIndex;}
+
+	virtual void RightButtonClicked();
 
 public:
 	//마우스가 위젯 내부로 들어오면 호출됩니다. 호버링 텍스쳐를 적용합니다.
@@ -82,4 +87,6 @@ public:
 
 	//드롭이 되었을 때 드롭 위치의 슬롯에서 호출됩니다. NativeOnDragDetected에서 넘겨준 OutOperation이 InOperation으로 들어옵니다. 아이템 정보를 뒤바꿔주고, 인벤토리를 리프레시합니다.
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+	
+	void BindUFunctionOnDelegateRightButtonDown(UUserWidgetBase* InWidget, FName InFunctionName);
 };

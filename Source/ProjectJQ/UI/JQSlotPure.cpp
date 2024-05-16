@@ -54,6 +54,12 @@ void UJQSlotPure::SetItem(int32 InItemID)
 	
 }
 
+void UJQSlotPure::RightButtonClicked()
+{
+	if(DelegateRightButtonDown.IsBound())
+		DelegateRightButtonDown.Broadcast(this, ItemId);
+}
+
 void UJQSlotPure::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
@@ -83,6 +89,10 @@ FReply UJQSlotPure::NativeOnMouseButtonDown(const FGeometry& InGeometry, const F
 	{
 		if(ItemId >= 0)
 			reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+	}
+	else if(InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton) == true)
+	{
+		RightButtonClicked();
 	}
 	
 	return reply.NativeReply;
@@ -133,4 +143,15 @@ bool UJQSlotPure::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 	
 	LOG_SCREEN(FColor::White, TEXT("DragFailed : %d"), GetSlotIndex())
 	return false;
+}
+
+void UJQSlotPure::BindUFunctionOnDelegateRightButtonDown(UUserWidgetBase* InWidget, FName InFunctionName)
+{
+	if(DelegateRightButtonDown.IsBound())
+		DelegateRightButtonDown.Clear();
+
+	if(!InWidget)
+		return;
+	
+	DelegateRightButtonDown.AddUFunction(InWidget, InFunctionName);
 }

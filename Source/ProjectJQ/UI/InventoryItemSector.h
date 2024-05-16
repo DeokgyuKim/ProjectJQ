@@ -59,4 +59,6 @@ public:
 	//획득 순 아이템 정렬
 	UFUNCTION()
 	void OnClick_GetOrder();
+	
+	TArray<TWeakObjectPtr<UJQSlotPure>>& GetItemSlots() {return ItemSlot;}
 };

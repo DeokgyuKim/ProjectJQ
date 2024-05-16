@@ -6,6 +6,8 @@
 #include "UserWidgetBase.h"
 #include "Inventory.generated.h"
 
+class UJQSlotPure;
+class UCpButtonList;
 class UInventoryItemSector;
 class AItemActor;
 class UJQEquipSlot;
@@ -23,34 +25,41 @@ class PROJECTJQ_API UInventory : public UUserWidgetBase
 	GENERATED_BODY()
 
 protected:
-	TWeakObjectPtr<ACharacterBase> OwnerCharacter;
+	TWeakObjectPtr<ACharacterBase> OwnerCharacter = nullptr;
 
 	UPROPERTY()
 	TMap<EEquipItemUIType, UJQEquipSlot*> EquipSlot;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_Helmet;
+	UJQEquipSlot* Slot_Helmet = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_Armor;
+	UJQEquipSlot* Slot_Armor = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_RWeapon;
+	UJQEquipSlot* Slot_RWeapon = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_LWeapon;
+	UJQEquipSlot* Slot_LWeapon = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_Shoes;
+	UJQEquipSlot* Slot_Shoes = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_Necklace;
+	UJQEquipSlot* Slot_Necklace = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UButton* Button_Exit;
+	UButton* Button_Exit = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UInventoryItemSector* ItemSector;
+	UInventoryItemSector* ItemSector = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
+	UCpButtonList* SlotButtonList = nullptr;
+
+	TArray<FString> SlotButtonListTexts;
+
+	TWeakObjectPtr<AItemActor> ClickedItem = nullptr;
 
 public:
 	virtual void OnCreated() override;
@@ -61,4 +70,11 @@ public:
 
 	//인벤토리 UI를 넘겨받은 InItems로 리프레시 합니다.
 	void RefreshInventory(const TMap<EEquipItemUIType, TWeakObjectPtr<AItemActor>> InEquipItems, const TArray<TWeakObjectPtr<AItemActor>>& InItems);
+
+	UFUNCTION()
+	void RightButtonClickedSlot(UJQSlotPure* InSlot, int32 InItemID);
+
+	UFUNCTION()
+	void OnClickedSlotButtonList(int32 InButtonIndex);
+	
 };
