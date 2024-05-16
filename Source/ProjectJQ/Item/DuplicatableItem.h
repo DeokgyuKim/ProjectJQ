@@ -23,4 +23,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void AcquireDuplicateItem(TWeakObjectPtr<ADuplicatableItem> InDuplicateItem);
+
+	int32 GetDuplicateCount() {return DuplicateCount;}
 };

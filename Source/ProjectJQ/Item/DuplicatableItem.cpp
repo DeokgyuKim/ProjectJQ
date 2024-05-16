@@ -3,6 +3,7 @@
 
 #include "DuplicatableItem.h"
 #include "../Data/ItemDataTable.h"
+#include "../SubSystem/ObjectManagementGSS.h"
 
 // Sets default values
 ADuplicatableItem::ADuplicatableItem()
@@ -30,4 +31,18 @@ void ADuplicatableItem::BeginPlay()
 void ADuplicatableItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ADuplicatableItem::AcquireDuplicateItem(TWeakObjectPtr<ADuplicatableItem> InDuplicateItem)
+{
+	if(ItemName != InDuplicateItem->GetItemName())
+		return;
+
+	UObjectManagementGSS* omGss = GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
+	if(!omGss)
+		return;
+
+	DuplicateCount += InDuplicateItem->GetDuplicateCount();
+	omGss->DestroyActor(InDuplicateItem.Get());
+	AcquireTime = FDateTime::Now();
 }

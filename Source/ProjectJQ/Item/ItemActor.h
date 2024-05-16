@@ -58,6 +58,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 public:
+	FString GetItemName(){return ItemName;}
+	
 	UTexture2D* GetItemImage(){return UIImage;}
 
 	EItemType GetItemType(){return ItemType;}

@@ -6,6 +6,7 @@
 #include "UserWidgetBase.h"
 #include "JQSlotPure.generated.h"
 
+class UItemSmallIcon;
 class UImage;
 class UBorder;
 class UCanvasPanel;
@@ -31,9 +32,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UBorder* Background = nullptr;
 
-	//아이템 이미지 UI
+	//아이템 스몰 아이콘
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UImage* ItemImage = nullptr;
+	UItemSmallIcon* ItemSmallIcon = nullptr;
 	
 	////Setting//////////////////////////////////////////////////////////////////////
 	//기본 텍스쳐

@@ -5,6 +5,7 @@
 
 #include "Inventory.h"
 #include "SlotDragDropOper.h"
+#include "ItemSmallIcon.h"
 #include "Blueprint/DragDropOperation.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/WidgetTree.h"
@@ -13,6 +14,7 @@
 #include "Components/Image.h"
 #include "GameFramework/Pawn.h"
 #include "ProjectJQ/Component/InventoryComponent.h"
+#include "ProjectJQ/Item/DuplicatableItem.h"
 #include "ProjectJQ/Item/ItemActor.h"
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 
@@ -21,7 +23,7 @@ void UJQSlotPure::OnCreated()
 	Super::OnCreated();
 	if(BasicTexture)
 		Background->SetBrushFromTexture(BasicTexture);
-	ItemImage->SetOpacity(0.f);
+	ItemSmallIcon->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UJQSlotPure::SetItem(int32 InItemID)
@@ -36,13 +38,18 @@ void UJQSlotPure::SetItem(int32 InItemID)
 	if(item)
 	{
 		UTexture2D* texture = item->GetItemImage();
-		ItemImage->SetOpacity(1.f);
-		ItemImage->SetBrushFromTexture(texture);
+		ItemSmallIcon->SetVisibility(ESlateVisibility::Visible);
+		ItemSmallIcon->SetImage(texture);
+		if(ADuplicatableItem* dupItem = Cast<ADuplicatableItem>(item))
+			ItemSmallIcon->SetItemCount(dupItem->GetDuplicateCount());
+		else
+			ItemSmallIcon->SetItemCount();
 	}
 	else
 	{
-		ItemImage->SetOpacity(0.f);
-		ItemImage->SetBrushFromTexture(nullptr);
+		ItemSmallIcon->SetVisibility(ESlateVisibility::Hidden);
+		ItemSmallIcon->SetImage(nullptr);
+		ItemSmallIcon->SetItemCount();
 	}
 	
 }
@@ -98,7 +105,7 @@ void UJQSlotPure::NativeOnDragDetected(const FGeometry& InGeometry, const FPoint
 		OutOperation = oper;
 		oper->SlotIndex = SlotIndex;
 		oper->ItemId = ItemId;
-		oper->DefaultDragVisual = ItemImage;
+		oper->DefaultDragVisual = ItemSmallIcon->GetImage();
 	}
 	
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);

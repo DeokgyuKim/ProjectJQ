@@ -5,6 +5,7 @@
 
 #include "ProjectJQ/Character/CharacterBase.h"
 #include "ProjectJQ/Data/ItemDataTable.h"
+#include "ProjectJQ/Item/DuplicatableItem.h"
 #include "ProjectJQ/Item/EquipItem.h"
 #include "ProjectJQ/Item/ItemActor.h"
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
@@ -125,16 +126,35 @@ void UInventoryComponent::Dead()
 
 void UInventoryComponent::AcquireItem(TWeakObjectPtr<AItemActor> InItem)
 {
-	for(int i = 0; i < Items.Num(); ++i)
+	FString itemName = InItem->GetItemName();
+	TWeakObjectPtr<AItemActor>* item = Items.FindByPredicate([itemName](const TWeakObjectPtr<AItemActor>& lhs)
 	{
-		if(Items[i] == nullptr)
+		if(ADuplicatableItem* dupItem = Cast<ADuplicatableItem>(lhs))
 		{
-			InItem->SetItemLocateType(EItemLocateType::Inventroy);
-			Items[i] = InItem;
-			InventoryUI->RefreshInventory(EquipItems, Items);
-			break;
+			return dupItem->GetItemName() == itemName;
+		}
+		return false;
+	});
+	
+	if(item && item->IsValid())
+	{
+		if(ADuplicatableItem* dupItem = Cast<ADuplicatableItem>(*item))
+			if(ADuplicatableItem* inDupItem = Cast<ADuplicatableItem>(InItem))
+				dupItem->AcquireDuplicateItem(inDupItem);
+	}
+	else
+	{
+		for(int i = 0; i < Items.Num(); ++i)
+		{
+			if(Items[i] == nullptr)
+			{
+				Items[i] = InItem;
+				InItem->SetItemLocateType(EItemLocateType::Inventroy);
+				break;
+			}
 		}
 	}
+	InventoryUI->RefreshInventory(EquipItems, Items);
 }
 
 void UInventoryComponent::SwapItem(int32 InFromIndex, int32 InToIndex)
