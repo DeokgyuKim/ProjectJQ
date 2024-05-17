@@ -9,6 +9,12 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "TimerManager.h"
 
+#include "..//Component/SkillStampComponent.h"
+#include "..//Component/StatControlComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "..//Animation/CpMonsterAnimInstance.h"
+#include "Animation/AnimMontage.h"
+
 #include "AIController.h"
 
 
@@ -25,6 +31,43 @@ ACharacterMonster::ACharacterMonster()
 
 	//매시는 충돌에서 제외한다.
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+
+    // AnimInstance
+    static ConstructorHelpers::FClassFinder<UAnimInstance> animinstanceclassref(TEXT("/Game/ProjectJQ/Blueprints/Animation/ABP_NPC_Super.ABP_NPC_Super_C"));
+    if (animinstanceclassref.Class)
+    {
+        GetMesh()->SetAnimInstanceClass(animinstanceclassref.Class);
+    }
+
+    // AnimMontage
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> attack_Montage(
+        TEXT
+        ("/Game/ProjectJQ/Blueprints/Animation/AM_MonsterAttack.AM_MonsterAttack")
+    );
+    if (attack_Montage.Succeeded())
+    {
+        AnimMontage = attack_Montage.Object;
+    }
+
+#pragma region Attack SkillStampCompnent
+    if (USkillStampComponent* comp = CreateDefaultSubobject<USkillStampComponent>("AttackCompnent"))
+    {
+        SkillStampComponents.Emplace("Attack", comp);
+
+        comp->TargetType = ECharacterType::Player;
+        comp->ColliderBoxExtend = FVector::ZeroVector;
+        comp->AttackRangeType = EAttackRangeType::Box;
+
+        //comp->SkillAnimInfos;
+        //comp->EventSkillsMap
+
+        FBoxInfo boxInfo;
+        boxInfo.AttackBox = FVector(50.f);
+        comp->BasicAttackInfo = boxInfo;
+    }
+#pragma endregion
+
+
 }
 
 void ACharacterMonster::Tick(float DeltaSeconds)
@@ -41,6 +84,7 @@ void ACharacterMonster::SetAIController(TWeakObjectPtr<AAIController> InAIContro
 
 void ACharacterMonster::OnFindRepeatTimer()
 {
+    // 지금은 사용중이 아닙니다
     return;
 
     if (!AIController.IsValid())
@@ -64,7 +108,47 @@ void ACharacterMonster::OnFindRepeatTimer()
     }
 }
 
-void ACharacterMonster::MoveTo()
+void ACharacterMonster::BindAttackFinishDelegate(const FMonsterAttackFinished& InDelegate)
 {
+    OnAttackFinished = InDelegate;
+}
 
+EPathFollowingRequestResult::Type ACharacterMonster::MoveToTarget(APawn* InTarget, float InRadius, bool InOverlapStop)
+{
+    EPathFollowingRequestResult::Type result = AIController->MoveToActor(InTarget, InRadius, InOverlapStop);
+
+    return result;
+}
+
+void ACharacterMonster::Attack(const FName& InSkillComponentKey)
+{
+    if (USkillStampComponent* comp = *SkillStampComponents.Find(InSkillComponentKey))
+    {
+        if (nullptr == AnimMontage)
+            return;
+
+        if (GetMesh()->GetAnimInstance()->GetCurrentActiveMontage() == AnimMontage)
+        {
+            if(GetMesh()->GetAnimInstance()->Montage_IsActive(AnimMontage))
+                return;
+        }
+
+        float duration = PlayAnimMontage(AnimMontage, 1.0f);
+
+        // 애니메이션을 끝나는 시점 호출
+         FOnMontageEnded attackEnd;
+         attackEnd.BindUFunction(this, TEXT("AttackFinish"));
+         GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(attackEnd, AnimMontage);
+
+
+         comp->Activate();
+    }
+}
+
+void ACharacterMonster::AttackFinish()
+{
+    // Attack 종료시 델리게이트호출
+    OnAttackFinished.ExecuteIfBound();
+
+    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Monster Atatck Finish"));
 }

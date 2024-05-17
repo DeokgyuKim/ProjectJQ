@@ -44,7 +44,7 @@ EBTNodeResult::Type UCpBTTaskMoveTo::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		return EBTNodeResult::Failed;
 	}
 
-	EPathFollowingRequestResult::Type result = aiController->MoveToActor(player, attackRange, true);
+	EPathFollowingRequestResult::Type result = monster->MoveToTarget(player, attackRange, true);
 	if (result == EPathFollowingRequestResult::Type::Failed)
 	{
 		return EBTNodeResult::Failed;

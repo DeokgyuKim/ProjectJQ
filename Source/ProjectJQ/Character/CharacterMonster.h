@@ -4,7 +4,11 @@
 
 #include <CoreMinimal.h>
 #include "CharacterNPC.h"
+#include "Navigation/PathFollowingComponent.h"
+#include "BehaviorTree/BehaviorTreeTypes.h"
 #include "CharacterMonster.generated.h"
+
+DECLARE_DELEGATE(FMonsterAttackFinished);
 
 class AAIController;
 UCLASS(Blueprintable)
@@ -26,6 +30,9 @@ protected:
 	// 추적할 플레이어
 	UPROPERTY()
 	TWeakObjectPtr<ACharacterBase> TargetCharacter = nullptr;
+
+	// 공격 종료시 호출 될 델리게이트
+	FMonsterAttackFinished OnAttackFinished;
 public:
 	ACharacterMonster();
 
@@ -39,6 +46,14 @@ public:
 	void SetTarget(TWeakObjectPtr<ACharacterBase> InPCTarget) { TargetCharacter = InPCTarget; }
 	float GetAttackRange() const { return AttackRange; }
 
-	virtual void MoveTo();
+	void BindAttackFinishDelegate(const FMonsterAttackFinished& InDelegate);
+
+	virtual EPathFollowingRequestResult::Type MoveToTarget(APawn* InTarget, float InRadius, bool InOverlapStop = false);
+
+	UFUNCTION()
+	void Attack(const FName& InSkillComponentKey);
+
+	UFUNCTION()
+	virtual void AttackFinish();
 };
 

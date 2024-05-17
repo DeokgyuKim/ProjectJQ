@@ -6,6 +6,7 @@
 #include "..//Character/CharacterPC.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "..//Core/MonsterAIController.h"
+#include "..//Component/SkillStampComponent.h"
 
 #include "../Common/Macro.h"
 
@@ -17,25 +18,35 @@ EBTNodeResult::Type UCpBTTaskAttack::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 {
 	EBTNodeResult::Type result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	ACharacterMonster* rontrollingMonster = Cast<ACharacterMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == rontrollingMonster)
+	ACharacterMonster* monster = Cast<ACharacterMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == monster)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	ACharacterPC* Target = Cast<ACharacterPC>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
-	if (nullptr == Target)
+	ACharacterPC* target = Cast<ACharacterPC>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
+	if (nullptr == target)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	if (FVector::Distance(rontrollingMonster->GetActorLocation(), Target->GetActorLocation()) * 0.5f > rontrollingMonster->GetAttackRange())
+	if (FVector::Distance(monster->GetActorLocation(), target->GetActorLocation()) * 0.5f > monster->GetAttackRange())
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(FName("Can Attack"), false);
 		return EBTNodeResult::Failed;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Monster Atatck"));
+	FMonsterAttackFinished onAttackFinished;
+	onAttackFinished.BindLambda([&]()
+		{
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
+	);
+	monster->BindAttackFinishDelegate(onAttackFinished);
 
-	return EBTNodeResult::Succeeded;
+	OwnerComp.GetAIOwner()->StopMovement();
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Monster Atatck"));
+	monster->Attack("Attack");
+
+	return EBTNodeResult::InProgress;
 }
