@@ -6,7 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
-#include "../Actor/JQProjectile.h"
+#include "../Actor/CpProjectile.h"
 #include "../Character/CharacterPC.h"
 #include "../SubSystem/ObjectManagementGSS.h"
 #include "Components/DecalComponent.h"
@@ -178,7 +178,7 @@ void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurre
 	param.CallbackSpawn = nullptr;
 	if(ProjectileAttackInfo.IsSingleShot)
 	{
-		AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileAttackInfo.ProjectileObject, param, GetOwner());
+		ACpProjectile* ProjectileActor = gss->CreateActor<ACpProjectile>(ProjectileAttackInfo.ProjectileObject, param, GetOwner());
 	
 		if(ProjectileActor)
 		{
@@ -191,7 +191,7 @@ void USkillStampComponent::ActiveProjectileAttack(FSkillAnimMontageInfo* InCurre
 		FVector startVector = RotateVectorFromYaw(OwnerPC->GetActorForwardVector(), -ProjectileAttackInfo.Angle / 2);
 		for(int i = 0; i < ProjectileAttackInfo.NumOfProjectile; ++i)
 		{
-			AJQProjectile* ProjectileActor = gss->CreateActor<AJQProjectile>(ProjectileAttackInfo.ProjectileObject, param, GetOwner());
+			ACpProjectile* ProjectileActor = gss->CreateActor<ACpProjectile>(ProjectileAttackInfo.ProjectileObject, param, GetOwner());
 	
 			if(ProjectileActor)
 			{

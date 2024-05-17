@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "ProjectJQPlayerController.h"
+#include "ProjectCpPlayerController.h"
 #include "GameFramework/Pawn.h"
 #include "../Character/CharacterPC.h"
 #include "Engine/World.h"
@@ -15,7 +15,7 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-AProjectJQPlayerController::AProjectJQPlayerController()
+AProjectCpPlayerController::AProjectCpPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
@@ -25,7 +25,7 @@ AProjectJQPlayerController::AProjectJQPlayerController()
 	CheatClass = UJQCheatManager::StaticClass();
 }
 
-void AProjectJQPlayerController::BeginPlay()
+void AProjectCpPlayerController::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
@@ -43,14 +43,14 @@ void AProjectJQPlayerController::BeginPlay()
 	}
 }
 
-void AProjectJQPlayerController::Tick(float DeltaSeconds)
+void AProjectCpPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
 	RotateTowardsPickedPoint();
 }
 
-void AProjectJQPlayerController::SetupInputComponent()
+void AProjectCpPlayerController::SetupInputComponent()
 {
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
@@ -85,7 +85,7 @@ void AProjectJQPlayerController::SetupInputComponent()
 	SaveCurrentBindAction();
 }
 
-void AProjectJQPlayerController::Move(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction)
+void AProjectCpPlayerController::Move(FInputActionValue InActionValue, float InElapsedTime, float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* PC = Cast<ACharacterPC>(GetPawn());
 	if(PC)
@@ -94,7 +94,7 @@ void AProjectJQPlayerController::Move(FInputActionValue InActionValue, float InE
 	}
 }
 
-void AProjectJQPlayerController::OnZoomIn()
+void AProjectCpPlayerController::OnZoomIn()
 {
 	ACharacterPC* PC = Cast<ACharacterPC>(GetPawn());
 	if(PC)
@@ -103,7 +103,7 @@ void AProjectJQPlayerController::OnZoomIn()
 	}
 }
 
-void AProjectJQPlayerController::OnZoomOut()
+void AProjectCpPlayerController::OnZoomOut()
 {
 	ACharacterPC* PC = Cast<ACharacterPC>(GetPawn());
 	if(PC)
@@ -112,7 +112,7 @@ void AProjectJQPlayerController::OnZoomOut()
 	}
 }
 
-void AProjectJQPlayerController::SkillTriggered(FInputActionValue InActionValue, float InElapsedTime,
+void AProjectCpPlayerController::SkillTriggered(FInputActionValue InActionValue, float InElapsedTime,
 	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
@@ -122,7 +122,7 @@ void AProjectJQPlayerController::SkillTriggered(FInputActionValue InActionValue,
 	pc->SkillTriggered(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-void AProjectJQPlayerController::SkillStarted(FInputActionValue InActionValue, float InElapsedTime,
+void AProjectCpPlayerController::SkillStarted(FInputActionValue InActionValue, float InElapsedTime,
 	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
@@ -132,7 +132,7 @@ void AProjectJQPlayerController::SkillStarted(FInputActionValue InActionValue, f
 	pc->SkillStarted(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-void AProjectJQPlayerController::SkillOnGoing(FInputActionValue InActionValue, float InElapsedTime,
+void AProjectCpPlayerController::SkillOnGoing(FInputActionValue InActionValue, float InElapsedTime,
 	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
@@ -142,7 +142,7 @@ void AProjectJQPlayerController::SkillOnGoing(FInputActionValue InActionValue, f
 	pc->SkillOnGoing(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-void AProjectJQPlayerController::SkillCanceled(FInputActionValue InActionValue, float InElapsedTime,
+void AProjectCpPlayerController::SkillCanceled(FInputActionValue InActionValue, float InElapsedTime,
 	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
@@ -152,7 +152,7 @@ void AProjectJQPlayerController::SkillCanceled(FInputActionValue InActionValue, 
 	pc->SkillCanceled(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-void AProjectJQPlayerController::SkillCompleted(FInputActionValue InActionValue, float InElapsedTime,
+void AProjectCpPlayerController::SkillCompleted(FInputActionValue InActionValue, float InElapsedTime,
 	float InTriggeredTime, const UInputAction* InSourceAction)
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
@@ -162,7 +162,7 @@ void AProjectJQPlayerController::SkillCompleted(FInputActionValue InActionValue,
 	pc->SkillCompleted(GetSkillInputKeyFromAction(InSourceAction));
 }
 
-const ESkillInputKey AProjectJQPlayerController::GetSkillInputKeyFromAction(const UInputAction* InSourceAction) const
+const ESkillInputKey AProjectCpPlayerController::GetSkillInputKeyFromAction(const UInputAction* InSourceAction) const
 {
 	if (InSourceAction->GetName().Contains(TEXT("IA_SkillQ")))
 		return ESkillInputKey::Q;
@@ -180,7 +180,7 @@ const ESkillInputKey AProjectJQPlayerController::GetSkillInputKeyFromAction(cons
 		return ESkillInputKey::None;
 }
 
-void AProjectJQPlayerController::OnOffInventory()
+void AProjectCpPlayerController::OnOffInventory()
 {
 	UInventoryComponent* comp = Cast<UInventoryComponent>(GetPawn()->GetComponentByClass(UInventoryComponent::StaticClass()));
 	if(comp == nullptr)
@@ -218,7 +218,7 @@ void AProjectJQPlayerController::OnOffInventory()
 	}
 }
 
-void AProjectJQPlayerController::JQBindAction(const UInputAction* InInputAction, ETriggerEvent InTriggerEvent, FName InFunctionName)
+void AProjectCpPlayerController::JQBindAction(const UInputAction* InInputAction, ETriggerEvent InTriggerEvent, FName InFunctionName)
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
@@ -231,7 +231,7 @@ void AProjectJQPlayerController::JQBindAction(const UInputAction* InInputAction,
 	}
 }
 
-void AProjectJQPlayerController::JQUnbindAction(const UInputAction* InInputAction, ETriggerEvent InTriggerEvent)
+void AProjectCpPlayerController::JQUnbindAction(const UInputAction* InInputAction, ETriggerEvent InTriggerEvent)
 {
 	for(TArray<BindActionInfo>::TIterator iter(CurrentBindActionInfos.CreateIterator()); iter; ++iter)
 	{
@@ -248,12 +248,12 @@ void AProjectJQPlayerController::JQUnbindAction(const UInputAction* InInputActio
 	}
 }
 
-void AProjectJQPlayerController::SaveCurrentBindAction()
+void AProjectCpPlayerController::SaveCurrentBindAction()
 {
 	SavedBindActionInfos.Add(CurrentBindActionInfos);
 }
 
-void AProjectJQPlayerController::RestoreBindAction()
+void AProjectCpPlayerController::RestoreBindAction()
 {
 	if(SavedBindActionInfos.IsEmpty())
 		return;
@@ -277,7 +277,7 @@ void AProjectJQPlayerController::RestoreBindAction()
 	}
 }
 
-void AProjectJQPlayerController::RotateTowardsPickedPoint()
+void AProjectCpPlayerController::RotateTowardsPickedPoint()
 {
 	ACharacterPC* pc = Cast<ACharacterPC>(GetCharacter());
 	if(pc == nullptr)

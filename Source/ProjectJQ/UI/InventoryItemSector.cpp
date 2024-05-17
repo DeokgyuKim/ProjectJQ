@@ -3,7 +3,7 @@
 
 #include "InventoryItemSector.h"
 
-#include "JQSlotPure.h"
+#include "CpSlotPure.h"
 #include "Blueprint/SlateBlueprintLibrary.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/Button.h"
@@ -30,7 +30,7 @@ void UInventoryItemSector::OnCreated()
 			return;
 		}
 
-		UJQSlotPure* slot = Cast<UJQSlotPure>(widget);
+		UCpSlotPure* slot = Cast<UCpSlotPure>(widget);
 		if(slot == nullptr)
 		{
 			LOG_SCREEN(FColor::Red,TEXT("%s에 해당하는 UIWidget이 UButton이 아닙니다."), *slotName)

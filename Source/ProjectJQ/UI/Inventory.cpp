@@ -5,7 +5,7 @@
 
 #include "CpButtonList.h"
 #include "InventoryItemSector.h"
-#include "JQSlotPure.h"
+#include "CpSlotPure.h"
 #include "Blueprint/SlateBlueprintLibrary.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/Button.h"
@@ -15,7 +15,7 @@
 #include "ProjectJQ/Character/CharacterBase.h"
 #include "ProjectJQ/Component/InventoryComponent.h"
 #include "ProjectJQ/Item/ItemActor.h"
-#include "JQEquipSlot.h"
+#include "CpEquipSlot.h"
 #include "../SubSystem/ObjectManagementGSS.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Framework/Application/SlateApplication.h"
@@ -39,8 +39,8 @@ void UInventory::OnCreated()
 	}
 
 	ItemSector->OnCreated();
-	TArray<TWeakObjectPtr<UJQSlotPure>>& slots = ItemSector->GetItemSlots();
-	for(TWeakObjectPtr<UJQSlotPure>& slot : slots)
+	TArray<TWeakObjectPtr<UCpSlotPure>>& slots = ItemSector->GetItemSlots();
+	for(TWeakObjectPtr<UCpSlotPure>& slot : slots)
 	{
 		slot->BindUFunctionOnDelegateRightButtonDown(this, FName(TEXT("RightButtonClickedSlot")));
 	}
@@ -79,7 +79,7 @@ void UInventory::RefreshInventory(const TMap<EEquipItemUIType, TWeakObjectPtr<AI
 	ItemSector->RefreshInventory(InItems);
 }
 
-void UInventory::RightButtonClickedSlot(UJQSlotPure* InSlot, int32 InItemID)
+void UInventory::RightButtonClickedSlot(UCpSlotPure* InSlot, int32 InItemID)
 {
 	SlotButtonList->SetVisibility(ESlateVisibility::Visible);
 	
@@ -97,7 +97,7 @@ void UInventory::RightButtonClickedSlot(UJQSlotPure* InSlot, int32 InItemID)
 	ClickedItem = item;
 
 	SlotButtonListTexts.Empty();
-	if(Cast<UJQEquipSlot>(InSlot))		//슬롯이 장비 아이템인 경우
+	if(Cast<UCpEquipSlot>(InSlot))		//슬롯이 장비 아이템인 경우
 	{
 		switch (item->GetItemType())	//아이템의 타입
 		{

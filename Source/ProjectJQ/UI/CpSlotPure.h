@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UserWidgetBase.h"
-#include "JQSlotPure.generated.h"
+#include "CpSlotPure.generated.h"
 
 class UItemSmallIcon;
 class UImage;
@@ -12,13 +12,13 @@ class UBorder;
 class UCanvasPanel;
 class USlotDragDropOper;
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FDelegateRightButtonDown, UJQSlotPure*, int32)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FDelegateRightButtonDown, UCpSlotPure*, int32)
 
 /**
  * 
  */
 UCLASS()
-class PROJECTJQ_API UJQSlotPure : public UUserWidgetBase
+class PROJECTJQ_API UCpSlotPure : public UUserWidgetBase
 {
 	GENERATED_BODY()
 	

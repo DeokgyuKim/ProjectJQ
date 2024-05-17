@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ProjectJQ/Animation/JQAnimInstance.h"
+#include "CpAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UJQAnimInstance::UJQAnimInstance()
+UCpAnimInstance::UCpAnimInstance()
 {
 	MovingThreshold = 3.0f;
 	JumpingThreshold = 100.0f;
 }
 
-void UJQAnimInstance::NativeInitializeAnimation()
+void UCpAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
@@ -22,7 +22,7 @@ void UJQAnimInstance::NativeInitializeAnimation()
 	}
 }
 
-void UJQAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+void UCpAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 	if(Movement)

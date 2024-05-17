@@ -7,7 +7,7 @@
 #include "InventoryItemSector.generated.h"
 
 class AItemActor;
-class UJQSlotPure;
+class UCpSlotPure;
 class UScrollBox;
 class ACharacterBase;
 class UButton;
@@ -40,7 +40,7 @@ protected:
 	UScrollBox* ItemScroll;
 
 	//아이템 슬롯 UI
-	TArray<TWeakObjectPtr<UJQSlotPure>> ItemSlot;
+	TArray<TWeakObjectPtr<UCpSlotPure>> ItemSlot;
 
 public:
 	virtual void OnCreated() override;
@@ -60,5 +60,5 @@ public:
 	UFUNCTION()
 	void OnClick_GetOrder();
 	
-	TArray<TWeakObjectPtr<UJQSlotPure>>& GetItemSlots() {return ItemSlot;}
+	TArray<TWeakObjectPtr<UCpSlotPure>>& GetItemSlots() {return ItemSlot;}
 };

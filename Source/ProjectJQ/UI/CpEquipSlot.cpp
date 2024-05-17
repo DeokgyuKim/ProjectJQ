@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JQEquipSlot.h"
+#include "CpEquipSlot.h"
 
 #include "Inventory.h"
 #include "SlotDragDropOper.h"
@@ -17,7 +17,7 @@
 #include "ProjectJQ/Item/ItemActor.h"
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 
-bool UJQEquipSlot::IsCanSwap(USlotDragDropOper* InSlotOper)
+bool UCpEquipSlot::IsCanSwap(USlotDragDropOper* InSlotOper)
 {
 	//상위 객체의 조건에 해당하는 가?
 	bool precondition = Super::IsCanSwap(InSlotOper);
@@ -37,7 +37,7 @@ bool UJQEquipSlot::IsCanSwap(USlotDragDropOper* InSlotOper)
 	return precondition && condition;
 }
 
-void UJQEquipSlot::OnCreated()
+void UCpEquipSlot::OnCreated()
 {
 	Super::OnCreated();
 }

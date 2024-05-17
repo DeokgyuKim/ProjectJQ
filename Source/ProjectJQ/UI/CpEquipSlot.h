@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "JQSlotPure.h"
-#include "JQEquipSlot.generated.h"
+#include "CpSlotPure.h"
+#include "CpEquipSlot.generated.h"
 
 class UImage;
 class UBorder;
@@ -14,7 +14,7 @@ class UCanvasPanel;
  * 
  */
 UCLASS()
-class PROJECTJQ_API UJQEquipSlot : public UJQSlotPure
+class PROJECTJQ_API UCpEquipSlot : public UCpSlotPure
 {
 	GENERATED_BODY()
 	

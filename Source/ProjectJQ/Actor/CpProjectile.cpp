@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JQProjectile.h"
+#include "CpProjectile.h"
 #include "NiagaraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
@@ -12,7 +12,7 @@
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 
 // Sets default values
-AJQProjectile::AJQProjectile()
+ACpProjectile::ACpProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -43,12 +43,12 @@ AJQProjectile::AJQProjectile()
 	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionBox->SetCollisionResponseToAllChannels(ECR_Overlap);
 	CollisionBox->SetGenerateOverlapEvents(true);
-	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AJQProjectile::OnOverlapBegin);
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ACpProjectile::OnOverlapBegin);
 	
 }
 
 // Called when the game starts or when spawned
-void AJQProjectile::BeginPlay()
+void ACpProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	EmitterComponent->Activate();
@@ -56,7 +56,7 @@ void AJQProjectile::BeginPlay()
 }
 
 // Called every frame
-void AJQProjectile::Tick(float DeltaTime)
+void ACpProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
@@ -70,7 +70,7 @@ void AJQProjectile::Tick(float DeltaTime)
 	PrevLocation = GetActorLocation();
 }
 
-void AJQProjectile::Initialize(const FVector& ShootDirection, AController* InAttacker, float InMaxRange)
+void ACpProjectile::Initialize(const FVector& ShootDirection, AController* InAttacker, float InMaxRange)
 {
 	StartLocation = PrevLocation = GetActorLocation();
 	ProjectileComponent->Velocity = ShootDirection * ProjectileComponent->InitialSpeed;
@@ -78,7 +78,7 @@ void AJQProjectile::Initialize(const FVector& ShootDirection, AController* InAtt
 	Attacker = InAttacker;
 }
 
-void AJQProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ACpProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ACharacterMonster* monster = Cast<ACharacterMonster>(OtherActor);

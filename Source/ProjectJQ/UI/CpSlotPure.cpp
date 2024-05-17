@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JQSlotPure.h"
+#include "CpSlotPure.h"
 
 #include "Inventory.h"
 #include "SlotDragDropOper.h"
@@ -18,7 +18,7 @@
 #include "ProjectJQ/Item/ItemActor.h"
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 
-void UJQSlotPure::OnCreated()
+void UCpSlotPure::OnCreated()
 {
 	Super::OnCreated();
 	if(BasicTexture)
@@ -26,7 +26,7 @@ void UJQSlotPure::OnCreated()
 	ItemSmallIcon->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UJQSlotPure::SetItem(int32 InItemID)
+void UCpSlotPure::SetItem(int32 InItemID)
 {
 	UObjectManagementGSS* gss = GetGameInstance()->GetSubsystem<UObjectManagementGSS>();
 	if(!gss)
@@ -54,13 +54,13 @@ void UJQSlotPure::SetItem(int32 InItemID)
 	
 }
 
-void UJQSlotPure::RightButtonClicked()
+void UCpSlotPure::RightButtonClicked()
 {
 	if(DelegateRightButtonDown.IsBound())
 		DelegateRightButtonDown.Broadcast(this, ItemId);
 }
 
-void UJQSlotPure::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+void UCpSlotPure::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
 	//LOG_SCREEN(FColor::White, TEXT("Mouse Enter %s"), *InMouseEvent.GetEffectingButton().ToString())
@@ -69,7 +69,7 @@ void UJQSlotPure::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointer
 		Background->SetBrushFromTexture(HoveringTexture);
 }
 
-void UJQSlotPure::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
+void UCpSlotPure::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseLeave(InMouseEvent);
 	//LOG_SCREEN(FColor::White, TEXT("Mouse Leave %s"), *InMouseEvent.GetEffectingButton().ToString())
@@ -78,7 +78,7 @@ void UJQSlotPure::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 		Background->SetBrushFromTexture(BasicTexture);
 }
 
-FReply UJQSlotPure::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+FReply UCpSlotPure::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	//LOG_SCREEN(FColor::White, TEXT("Mouse Button %s Down"), *InMouseEvent.GetEffectingButton().ToString())
 
@@ -98,13 +98,13 @@ FReply UJQSlotPure::NativeOnMouseButtonDown(const FGeometry& InGeometry, const F
 	return reply.NativeReply;
 }
 
-FReply UJQSlotPure::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+FReply UCpSlotPure::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	//LOG_SCREEN(FColor::White, TEXT("Mouse Button %s Up"), *InMouseEvent.GetEffectingButton().ToString())
 	return Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
 }
 
-void UJQSlotPure::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
+void UCpSlotPure::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
 	UDragDropOperation*& OutOperation)
 {
 	if(OutOperation == nullptr)
@@ -121,7 +121,7 @@ void UJQSlotPure::NativeOnDragDetected(const FGeometry& InGeometry, const FPoint
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 }
 
-bool UJQSlotPure::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+bool UCpSlotPure::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 	UDragDropOperation* InOperation)
 {
 	Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
@@ -145,7 +145,7 @@ bool UJQSlotPure::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 	return false;
 }
 
-void UJQSlotPure::BindUFunctionOnDelegateRightButtonDown(UUserWidgetBase* InWidget, FName InFunctionName)
+void UCpSlotPure::BindUFunctionOnDelegateRightButtonDown(UUserWidgetBase* InWidget, FName InFunctionName)
 {
 	if(DelegateRightButtonDown.IsBound())
 		DelegateRightButtonDown.Clear();

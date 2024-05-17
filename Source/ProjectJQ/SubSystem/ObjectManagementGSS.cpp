@@ -2,7 +2,7 @@
 
 
 #include "ObjectManagementGSS.h"
-#include "../Core/ProjectJQPlayerController.h"
+#include "../Core/ProjectCpPlayerController.h"
 #include "../Manager/FstreamManager.h"
 #include "../Character/CharacterPC.h"
 #include "../Item/EquipItem.h"
@@ -44,9 +44,9 @@ void UObjectManagementGSS::Initialize(FSubsystemCollectionBase& Collection)
 	//Player Controller를 찾습니다.
 	for(FConstPlayerControllerIterator iter = World->GetPlayerControllerIterator(); iter; ++iter)
 	{
-		if(iter->IsValid() && Cast<AProjectJQPlayerController>(iter->Get()) != nullptr)
+		if(iter->IsValid() && Cast<AProjectCpPlayerController>(iter->Get()) != nullptr)
 		{
-			Controller = Cast<AProjectJQPlayerController>(iter->Get());
+			Controller = Cast<AProjectCpPlayerController>(iter->Get());
 			break;
 		}
 	}

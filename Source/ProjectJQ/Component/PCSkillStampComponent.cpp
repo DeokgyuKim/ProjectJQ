@@ -6,7 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
-#include "../Actor/JQProjectile.h"
+#include "../Actor/CpProjectile.h"
 #include "../Character/CharacterPC.h"
 #include "../SubSystem/ObjectManagementGSS.h"
 #include "Components/DecalComponent.h"

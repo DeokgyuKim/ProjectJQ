@@ -11,7 +11,6 @@
 #include "ProjectJQ/SubSystem/ObjectManagementGSS.h"
 #include "ProjectJQ/SubSystem/UIManagementGSS.h"
 #include "ProjectJQ/UI/Inventory.h"
-#include "ProjectJQ/UI/JQSlotPure.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()

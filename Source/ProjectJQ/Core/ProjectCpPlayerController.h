@@ -7,7 +7,7 @@
 #include <GameFramework/PlayerController.h>
 
 #include "InputAction.h"
-#include "ProjectJQPlayerController.generated.h"
+#include "ProjectCpPlayerController.generated.h"
 
 enum class ETriggerEvent : uint8;
 class UInputAction;
@@ -31,12 +31,12 @@ class UInputAction;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
-class AProjectJQPlayerController : public APlayerController
+class AProjectCpPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
-	AProjectJQPlayerController();
+	AProjectCpPlayerController();
 
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)

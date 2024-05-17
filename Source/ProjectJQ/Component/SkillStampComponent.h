@@ -7,7 +7,7 @@
 #include "SkillStampComponent.generated.h"
 
 class ACharacterPC;
-class AJQProjectile;
+class ACpProjectile;
 class UMaterialInterface;
 class ADecalActor;
 enum class ETriggerEvent : uint8;
@@ -96,7 +96,7 @@ struct FProjectileInfo
 	float Length;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JQ_Skill")
-	TSubclassOf<AJQProjectile> ProjectileObject;
+	TSubclassOf<ACpProjectile> ProjectileObject;
 };
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))

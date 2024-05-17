@@ -6,11 +6,10 @@
 #include "UserWidgetBase.h"
 #include "Inventory.generated.h"
 
-class UJQSlotPure;
 class UCpButtonList;
 class UInventoryItemSector;
 class AItemActor;
-class UJQEquipSlot;
+class UCpEquipSlot;
 class UScrollBox;
 class ACharacterBase;
 class UButton;
@@ -28,25 +27,25 @@ protected:
 	TWeakObjectPtr<ACharacterBase> OwnerCharacter = nullptr;
 
 	UPROPERTY()
-	TMap<EEquipItemUIType, UJQEquipSlot*> EquipSlot;
+	TMap<EEquipItemUIType, UCpEquipSlot*> EquipSlot;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_Helmet = nullptr;
+	UCpEquipSlot* Slot_Helmet = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_Armor = nullptr;
+	UCpEquipSlot* Slot_Armor = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_RWeapon = nullptr;
+	UCpEquipSlot* Slot_RWeapon = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_LWeapon = nullptr;
+	UCpEquipSlot* Slot_LWeapon = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_Shoes = nullptr;
+	UCpEquipSlot* Slot_Shoes = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
-	UJQEquipSlot* Slot_Necklace = nullptr;
+	UCpEquipSlot* Slot_Necklace = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidgetOptional))
 	UButton* Button_Exit = nullptr;
@@ -72,7 +71,7 @@ public:
 	void RefreshInventory(const TMap<EEquipItemUIType, TWeakObjectPtr<AItemActor>> InEquipItems, const TArray<TWeakObjectPtr<AItemActor>>& InItems);
 
 	UFUNCTION()
-	void RightButtonClickedSlot(UJQSlotPure* InSlot, int32 InItemID);
+	void RightButtonClickedSlot(UCpSlotPure* InSlot, int32 InItemID);
 
 	UFUNCTION()
 	void OnClickedSlotButtonList(int32 InButtonIndex);

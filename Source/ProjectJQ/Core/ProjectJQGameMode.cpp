@@ -1,14 +1,14 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "ProjectJQGameMode.h"
-#include "ProjectJQPlayerController.h"
+#include "ProjectCpPlayerController.h"
 #include "../Character/CharacterPC.h"
 #include "UObject/ConstructorHelpers.h"
 
 AProjectJQGameMode::AProjectJQGameMode()
 {
 	// use our custom PlayerController class
-	PlayerControllerClass = AProjectJQPlayerController::StaticClass();
+	PlayerControllerClass = AProjectCpPlayerController::StaticClass();
 
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ProjectJQ/Blueprints/Character/BP_TopDownCharacter"));

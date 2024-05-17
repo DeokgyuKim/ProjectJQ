@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "JQAnimInstance.generated.h"
+#include "CpAnimInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTJQ_API UJQAnimInstance : public UAnimInstance
+class PROJECTJQ_API UCpAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 public:
-	UJQAnimInstance();
+	UCpAnimInstance();
 
 protected:
 	virtual void NativeInitializeAnimation() override;

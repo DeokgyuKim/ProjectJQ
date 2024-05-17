@@ -11,8 +11,7 @@
 
 class AItemActor;
 class ACharacterPC;
-class AProjectJQPlayerController;
-class AProjectJQCharacter;
+class AProjectCpPlayerController;
 
 struct FSpawnParam
 {
@@ -40,7 +39,7 @@ protected:
 	TMap<int32, TWeakObjectPtr<AActor>>			ManagementTargets;
 	FIdGenerator<int32>							ObjectIdGenerator;
 	TWeakObjectPtr<UWorld>						World;
-	TWeakObjectPtr<AProjectJQPlayerController>	Controller;
+	TWeakObjectPtr<AProjectCpPlayerController>	Controller;
 
 	TMap<UClass*, TArray<AActor*>>				PoolingObject;
 	TMap<FString, TMap<UClass*, FPoolingInfo>>	PoolingObjectInfo;
