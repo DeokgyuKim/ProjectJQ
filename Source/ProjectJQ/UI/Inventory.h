@@ -64,6 +64,9 @@ public:
 	virtual void OnCreated() override;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	
+	//마우스 버튼이 눌리면 호출됩니다.
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
 	void SetOwner(TWeakObjectPtr<ACharacterBase> InCharacter);
 

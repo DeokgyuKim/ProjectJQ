@@ -54,6 +54,20 @@ void UInventory::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
+FReply UInventory::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	FEventReply reply;
+	reply.NativeReply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+
+	if(InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton) == true)
+	{
+		SlotButtonList->SetVisibility(ESlateVisibility::Collapsed);
+		ClickedItem = nullptr;
+	}
+	
+	return reply.NativeReply;
+}
+
 void UInventory::SetOwner(TWeakObjectPtr<ACharacterBase> InCharacter)
 {
 	if(InCharacter.IsValid())
@@ -150,9 +164,20 @@ void UInventory::RightButtonClickedSlot(UCpSlotPure* InSlot, int32 InItemID)
 	
 	SlotButtonList->SetPositionInViewport(pos);
 	*/
+
+	FVector2D pos2D = InSlot->GetCachedGeometry().GetAbsolutePosition();
+	UWidget* slotWidget = (*InSlot)[TEXT("SizeBox")];
+	UCanvasPanelSlot* itemSectorPanel = Cast<UCanvasPanelSlot>(ItemSector->Slot);
+	UCanvasPanelSlot* buttonListPanel = Cast<UCanvasPanelSlot>(SlotButtonList->Slot);
+	if(slotWidget && itemSectorPanel && buttonListPanel)
+	{
+		FVector2D size = Cast<UCanvasPanelSlot>(slotWidget->Slot)->GetSize();
+		FVector2D index = FVector2D(InSlot->GetSlotIndex() % 5 + 1, InSlot->GetSlotIndex() / 5);
+		LOG_SCREEN(FColor::White, TEXT("%f, %f"), itemSectorPanel->GetPosition().X, itemSectorPanel->GetPosition().Y);
+		if(itemSectorPanel)
+			buttonListPanel->SetPosition(itemSectorPanel->GetPosition() + size * index);
+	}
 	
-	//UCanvasPanelSlot* panel = Cast<UCanvasPanelSlot>(SlotButtonList->Slot);
-	//panel->SetPosition()
 }
 
 void UInventory::OnClickedSlotButtonList(int32 InButtonIndex)
